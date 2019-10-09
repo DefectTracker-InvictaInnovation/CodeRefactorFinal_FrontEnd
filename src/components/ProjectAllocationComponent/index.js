@@ -15,6 +15,7 @@ import {
     Icon
 } from 'antd';
 import React from 'react';
+import AllocateMember from './AllocateMember';
 import App from './AllocateMember';
 import DeApp from './DeAllocateMember';
 import Roll from './RollAllocate';
@@ -312,12 +313,12 @@ export default class ProjectManageAllocation extends React.Component {
         axios.get('http://localhost:8081/defectservices/getAllRoleInfo')
             .then(function (response) {
                 // handle success
-              let role=  response.data.map((item, index) => {    
+                let role = response.data.map((item, index) => {
                     return <Option key={index} value={item.roleId}> {item.roleName}</Option>
                 });
                 console.log(response.data);
-                _this.setState({ role});
-            
+                _this.setState({ role });
+
             });
     }
 
@@ -358,36 +359,37 @@ export default class ProjectManageAllocation extends React.Component {
 
     setModal1Visible(modal1Visible) {
         console.log(this.state.data1);
-let data3=JSON.stringify(this.state.data1);
-console.log(data3)
-        axios.post("http://localhost:8081/defectservices/saverole",this.state.data1)
-        .then(res=>{
-            axios.get("http://localhost:8081/defectservices/getAllRole")
-                .then(res=>{
+        let data3 = JSON.stringify(this.state.data1);
+        console.log(data3)
+        axios.post("http://localhost:8081/defectservices/saverole", this.state.data1)
+            .then(res => {
+                axios.get("http://localhost:8081/defectservices/getAllRole")
+                    .then(res => {
 
-                    const user = {
-                        name:res.data[0].name ,
-                        username:res.data[0].firstname,
-                        email:res.data[0].email ,
-                        role: res.data[0].roleName,
-                        password:res.data[0].name 
-                      }
+                        const user = {
+                            name: res.data[0].name,
+                            username: res.data[0].firstname,
+                            email: res.data[0].email,
+                            role: res.data[0].roleName,
+                            password: res.data[0].name
+                        }
 
-                      console.log(user);
-     axios
-        .post(
-          "http://localhost:8085/loginservice/api/auth/signup",
-          user
-        )
-        .then(res => console.log(res.data))
-        .catch(error => {
-          console.log(error);
-        });
-                    console.log(res.data)
-                
-                })
+                        console.log(user);
+                        axios
+                            .post(
+                                "http://localhost:8085/loginservice/api/auth/signup",
+                                user
+                            )
+                            .then(res => console.log(res.data))
+                            .catch(error => {
+                                console.log(error);
+                            });
+                        console.log(res.data)
 
-            console.log(res)})
+                    })
+
+                console.log(res)
+            })
         this.setState({ modal1Visible });
     }
 
@@ -456,7 +458,7 @@ console.log(data3)
             //     render: actions => <a onClick={this.showModal}><Icon type="edit" style={{ fontSize: '14px', color: 'blue' }} /></a>,
             // },
         ];
-const _this=this;
+        const _this = this;
         return (
             <React.Fragment>
                 <Row>
@@ -476,7 +478,7 @@ const _this=this;
                                 <div>
 
                                     <Button type="primary" onClick={() => this.setModal1Visible(true)}>
-                                        Roll Allocation
+                                        Role Allocation
                                     </Button>
 
                                     <Modal
@@ -515,7 +517,7 @@ const _this=this;
                                             onSearch={onSearch}
                                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                             <OptGroup label="Roles">
-                                            
+
                                                 {this.state.role}
                                             </OptGroup>
 
@@ -595,8 +597,8 @@ const _this=this;
                                     </Button>
 
                                     <Modal
-                                        title="20px to Top"
-                                        width="60%"
+                                        title="Deallocation Role"
+                                        width="80%"
                                         style={{
                                             top: 20
                                         }}
@@ -611,69 +613,7 @@ const _this=this;
 
                             <Col span={3}>
                                 <div>
-                                    <Button type="primary" onClick={() => this.setModal3Visible(true)}>
-                                        Module Allocation
-                                    </Button>
-
-                                    <Modal
-                                        title="Project Allocation"
-                                        width="60%"
-                                        style={{
-                                            top: 20
-                                        }}
-                                        visible={this.state.modal3Visible}
-                                        onOk={() => this.setModal3Visible(false)}
-                                        onCancel={() => this.setModal3Visible(false)}>
-                                        <TreeSelect
-                                            showSearch
-                                            style={{
-                                                width: 300
-                                            }}
-                                            value={this.state.value}
-                                            dropdownStyle={{
-                                                maxHeight: 400,
-                                                overflow: 'auto'
-                                            }}
-                                            placeholder="Please select Module"
-                                            allowClear
-                                            multiple
-                                            treeDefaultExpandAll
-                                            onChange={this.onChange}>
-                                            <TreeNode value="Defect System " title="Defect System " key="0-1">
-                                                <TreeNode value="UI" title="UI" key="0-1-1">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random" />
-                                                    <TreeNode value="submodule2" title="submodule2" key="random1" />
-                                                </TreeNode>
-                                                <TreeNode value="Login" title="Login" key="random2">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random3" />
-                                                </TreeNode>
-                                            </TreeNode>
-                                            <TreeNode value="HRM System " title="HRM System " key="1-2">
-                                                <TreeNode value="UI" title="UI" key="1-2-1">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random4" />
-                                                    <TreeNode value="submodule2" title="submodule2" key="random5" />
-                                                </TreeNode>
-                                                <TreeNode value="Login" title="Login" key="random6">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random7" />
-                                                </TreeNode>
-                                            </TreeNode>
-                                            <TreeNode
-                                                value="Leave Management System "
-                                                title="Leave Management System "
-                                                key="2-3">
-                                                <TreeNode value="UI" title="UI" key="2-3-1">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random8" />
-                                                    <TreeNode value="submodule2" title="submodule2" key="random9" />
-                                                </TreeNode>
-                                                <TreeNode value="Login" title="Login" key="random10">
-                                                    <TreeNode value="submodule1" title="submodule1" key="random11" />
-                                                </TreeNode>
-                                            </TreeNode>
-                                        </TreeSelect>
-
-                                        <br />
-                                        <App />
-                                    </Modal>
+                                   <AllocateMember/>
                                 </div>
                             </Col>
 

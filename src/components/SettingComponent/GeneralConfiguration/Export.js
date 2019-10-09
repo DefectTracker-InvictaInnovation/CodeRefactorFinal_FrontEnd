@@ -51,11 +51,16 @@ export default class Export extends React.Component {
                       
                 
                 }>
-                <ExcelSheet data={data} name="Employees">
-                    <ExcelColumn label="Date/Time" value="date"/>
-                    <ExcelColumn label="Author" value="author"/>
-                    <ExcelColumn label="Work category" value="category"/>
-                    <ExcelColumn label="Summary" value="summary"/>
+                <ExcelSheet data={this.props.log} name="Defect Log">
+                    <ExcelColumn label="Date/Time" value="fixDate"/>
+                    <ExcelColumn label="Author" value="user"/>
+                    <ExcelColumn label="Status" value="status"/>
+                    <ExcelColumn label="Type" value="type"/>
+                    <ExcelColumn label="Severity" value="severity"/>
+                    <ExcelColumn label="Priority" value="priority"/>
+                    <ExcelColumn label="ReassignTo" value="reassignTo"/>
+                    <ExcelColumn label="DefectId" value="defectId"/>
+                    <ExcelColumn label="AuditId" value="auditId"/>
                 </ExcelSheet>
                
             </ExcelFile>

@@ -47,14 +47,6 @@ class EmployeeComponent extends React.Component {
             transition: "all 0.3s cubic-bezier(.25,.8,.25,1)"
           }}
         >
-          <Col span={4}>
-            <EmployeeAddModal />
-          </Col>
-          <Col span={4}>
-            <ImportEmployee />
-          </Col>
-          <br />
-          <br />
           <Employee />
         </div>
       </React.Fragment>

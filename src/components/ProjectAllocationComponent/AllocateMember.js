@@ -1,10 +1,15 @@
+import { Transfer, Button, Modal, Table, Select } from 'antd';
 import React from 'react';
-import { Transfer, Switch, Table, Tag, Icon, Modal, Input, Row, Col, Select, TreeSelect } from 'antd';
 import difference from 'lodash/difference';
+import axios from 'axios';
+import App from './index';
 
-const { Option } = Select;
-const TreeNode = TreeSelect.TreeNode;
-// Customize Table Transfer
+const { Option, OptGroup } = Select;
+
+function onSearch(val) {
+  console.log('search:', val);
+}
+
 const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   <Transfer {...restProps} showSelectAll={false} >
     {({
@@ -53,188 +58,230 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
   </Transfer>
 );
 
-const mockRole = ['Tech lead', 'QA Lead', 'Junior Software Engineer', 'Junior QA', 'Software Engineer', 'Senior Software Engineer', 'QA Engineer', 'Senior QA Engineer'];
-const mockModule = ['Login','Register', 'Logout', 'API Developement']
 const mockData = [];
-for (let i = 0; i < 20; i++) {
-  mockData.push({
-    key: i.toString(),
-    empname: `content${i + 1}`,
-    role: mockRole[i % 3],
-    module: mockModule[i % 3],
-    disabled: i % 4 === 0,
-  });
-}
 
 const originTargetKeys = mockData.filter(item => +item.key % 3 > 1).map(item => item.key);
-
-
-export default class ModuleAllocate extends React.Component {
+export default class AllocateMember extends React.Component {
   state = {
     targetKeys: originTargetKeys,
     disabled: false,
     showSearch: false,
+    modal3Visible: false,
     visible: false,
+    role: [],
+    project: [],
+    roleAllcation: [],
+    value: '',
+    value1: ''
   };
 
-  onChange = nextTargetKeys => {
+  componentDidMount() {
+    this.fetchRoleallocation();
+    this.fetchProjects();
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      value1: value
+    })
+    var _this = this;
+    console.log(value);
+    console.log(this.state.list);
+
+    const list1 = []
+    this.state.list.map((post, index) => {
+
+      if (post.projectId == value) {
+        list1.push({
+          key: index,
+          employeeid: post.employeeid,
+          name: post.name,
+          firstname: post.firstname,
+          roleName: post.roleName
+        });
+
+        console.log(list1)
+        _this.setState({
+          list1: list1
+        })
+      }
+    });
+
+  }
+
+  fetchProjects() {
+    var _this = this;
+    axios.get('http://localhost:8081/defectservices/GetAllproject')
+        .then(function (response) {
+            // handle success
+            console.log(response.data);
+            _this.setState({ project: response.data });
+            console.log(_this.state.project);
+
+        });
+}
+
+  onChange = (nextTargetKeys, value) => {
     this.setState({ targetKeys: nextTargetKeys });
+    console.log(value);
+    this.setState({
+      value
+    });
   };
 
-    showModal = () => {
-      this.setState({
-        visible: true,
-      });
-    };
+  showModal = () => {
+    this.setState({
+      visible: true,
+    });
+  };
 
-    handleOk = e => {
-      console.log(e);
-      this.setState({
-        visible: false,
-      });
-    };
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
 
-    handleCancel = e => {
-      console.log(e);
-      this.setState({
-        visible: false,
-      });
-    };
+  setModal3Visible(modal3Visible) {
+    this.setState({ modal3Visible });
+}
 
-    handleRollChange(value) {
-      console.log(`selected ${value}`);
-    }
-     onChangeModule = value => {
-       console.log(value);
-       this.setState({
-         value
-       });
-     };
+
+  handleCancel = e => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
+  };
+
+  fetchRoleallocation() {
+    var _this = this;
+    axios.get('http://localhost:8081/defectservices/getAllRole')
+      .then(function (response) {
+        // handle success
+        console.log(response.data);
+        let role = response.data
+        _this.setState({ role: role });
+        console.log(_this.state.roleAllcation);
+        const list = []
+
+        console.log("Get Project Role Allocation" + role)
+        response.data.map((post, index) => {
+          list.push({
+            key: index,
+            employeeid: post.employeeid,
+            name: post.name,
+            firstname: post.firstname,
+            roleName: post.roleName,
+            projectId: post.projectId
+
+          });
+          _this.setState({
+            list: list
+          })
+        })
+      });
+  }
+
 
   render() {
+    const { targetKeys } = this.state;
     const leftTableColumns = [
-  {
-    dataIndex: 'key',
-    title: 'Emp ID',
-  },
-  {
-    dataIndex: 'empname',
-    title: 'Full name',
-  },
-  {
-    dataIndex: 'role',
-    title: 'Role',
-    render: role => <Tag>{role}</Tag>,
-  },
-];
-const rightTableColumns = [
-   {
-    dataIndex: 'key',
-    title: 'Emp ID',
-  },{
-    dataIndex: 'empname',
-    title: 'Full name',
-  },{
-    dataIndex: 'role',
-    title: 'Role',
-    render: role => <Tag>{role}</Tag>,
-  },{
-    dataIndex: 'module',
-    title: 'Module Alloc.',
-    render: module => <Tag>{module}</Tag>,
-  },{
-    dataIndex: 'actions',
-    title: 'Actions',
-    render: actions => <a onClick={this.showModal}><Icon type="edit" style={{fontSize:'14px', color:'blue'}} /></a>,
-  },
-];
-    return (
-     
-      <div>
-        <TableTransfer
-          dataSource={mockData}
-          targetKeys={this.state.targetKeys}
-          showSearch={true}
-          onChange={this.onChange}
-          filterOption={(inputValue, item) =>
-            item.title.indexOf(inputValue) !== -1 || item.tag.indexOf(inputValue) !== -1
-          }
-          leftColumns={leftTableColumns}
-          rightColumns={rightTableColumns}
-        />
-         <Modal
-          title="Edit Module"
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          width="700px"
-        >
-          <Row>
-            <Col span={12}>
-                <p><b>Emp ID: </b></p>
-                <p><b>Name: </b></p>
-                <p><b>Designation: </b></p>
-                <p><b>Role: </b></p>
-                <p><b>Select Module: </b></p>
+      {
+        title: "EmpyoleeId",
+        dataIndex: "employeeid",
+        key: "employeeid",
+      },
 
-            </Col>
-               
-            <Col span={12}>
-               <p>EMP001</p>
-                <p>John Doe</p>
-                <p>Software Engineer</p>
-                <p>Tech Lead</p>
-                <p>
-                   <TreeSelect
-                      showSearch
-                      style={{
-                      width: 300
-                  }}
-                      value={this.state.value}
-                      dropdownStyle={{
-                      maxHeight: 400,
-                      overflow: 'auto'
-                  }}
-                      placeholder="Please select Module"
-                      allowClear
-                      multiple
-                      treeDefaultExpandAll
-                      onChange={this.onChangeModule}>
-                      <TreeNode value="Defect System " title="Defect System " key="0-1">
-                          <TreeNode value="UI" title="UI" key="0-1-1">
-                              <TreeNode value="submodule1" title="submodule1" key="random"/>
-                              <TreeNode value="submodule2" title="submodule2" key="random1"/>
-                          </TreeNode>
-                          <TreeNode value="Login" title="Login" key="random2">
-                              <TreeNode value="submodule1" title="submodule1" key="random3"/>
-                          </TreeNode>
-                      </TreeNode>
-                      <TreeNode value="HRM System " title="HRM System " key="1-2">
-                          <TreeNode value="UI" title="UI" key="1-2-1">
-                              <TreeNode value="submodule1" title="submodule1" key="random4"/>
-                              <TreeNode value="submodule2" title="submodule2" key="random5"/>
-                          </TreeNode>
-                          <TreeNode value="Login" title="Login" key="random6">
-                              <TreeNode value="submodule1" title="submodule1" key="random7"/>
-                          </TreeNode>
-                      </TreeNode>
-                      <TreeNode
-                          value="Leave Management System "
-                          title="Leave Management System "
-                          key="2-3">
-                          <TreeNode value="UI" title="UI" key="2-3-1">
-                              <TreeNode value="submodule1" title="submodule1" key="random8"/>
-                              <TreeNode value="submodule2" title="submodule2" key="random9"/>
-                          </TreeNode>
-                          <TreeNode value="Login" title="Login" key="random10">
-                              <TreeNode value="submodule1" title="submodule1" key="random11"/>
-                          </TreeNode>
-                      </TreeNode>
-                  </TreeSelect>
-                </p>
-            </Col>
-          </Row>
-          
+      {
+        title: "FirstName",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "LastName",
+        dataIndex: "firstname",
+        key: "firstname",
+      },
+      {
+        title: "Role",
+        dataIndex: "roleName",
+        key: "roleName",
+      },
+    ];
+    const rightTableColumns = [
+      {
+        title: "EmployeeId",
+        dataIndex: "employeeid",
+        key: "employeeid",
+      },
+
+      {
+        title: "FirstName",
+        dataIndex: "name",
+        key: "name",
+      },
+      {
+        title: "LastName",
+        dataIndex: "firstname",
+        key: "firstname",
+      },
+      {
+        title: "Role",
+        dataIndex: "roleName",
+        key: "roleName",
+      }
+    ];
+    return (
+      <div>
+        <Button type="primary" onClick={() => this.setModal3Visible(true)}>
+          Module Allocation
+        </Button>
+
+        <Modal
+          title="Project Allocation"
+          width="80%"
+          style={{
+            top: 20
+          }}
+          visible={this.state.modal3Visible}
+          onOk={() => this.setModal3Visible(false)}
+          onCancel={() => this.setModal3Visible(false)}>
+          <Select
+            showSearch
+            style={{ width: 200, marignBottom: '20px' }}
+            placeholder="Select a Project"
+            optionFilterProp="children"
+            onChange={this.handleChange}
+            // onFocus={onFocus}
+            // onBlur={onBlur}
+            onSearch={onSearch}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+            <OptGroup label="Projects">
+              {this.state.project.map((item, index) => {
+                return <Option key={index} value={item.projectId}> {item.projectName}</Option>
+              })}
+            </OptGroup>
+
+          </Select>
+          <br /><br />
+         
+
+          <TableTransfer
+            dataSource={this.state.list1}
+            targetKeys={this.state.targetKeys}
+            showSearch={true}
+            onChange={this.onChange}
+            filterOption={(inputValue, item) =>
+              item.employeeid.indexOf(inputValue) !== -1 ||
+              item.name.indexOf(inputValue) !== -1 ||
+              item.firstname.indexOf(inputValue) !== -1 ||
+              item.roleName.indexOf(inputValue) !== -1
+            }
+            leftColumns={leftTableColumns}
+            rightColumns={rightTableColumns}
+          // selectedKeys={this.saveRole(targetKeys)}
+          />
         </Modal>
       </div>
     );

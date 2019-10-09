@@ -72,7 +72,7 @@ handleSubmit(event) {
       <div className="login-bg">
         <div className="logd">
            <h1 className="h1" style={{ fontFamily: 'fantasy,serif' }}>Defect Tracker</h1>
-           <h2 className="h1">Log in to your account</h2>
+           <h2 className="h1">Login to your account</h2>
            <div className="login-card">
       <Form onSubmit={this.handleSubmit} className="login-form">
         <FormItem>

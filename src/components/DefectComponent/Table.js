@@ -5,8 +5,9 @@ import axios from "axios";
 import EditorIn from "./Editor";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { API_BASE_URL,API_BASE_URL_EMP } from '../../constants/index';
+import { API_BASE_URL,API_BASE_URL_EMP, CURRENT_USER } from '../../constants/index';
 import { ROLE_NAME } from '../../constants/index';
+import DefectLog from "./DefectLog";
 
 const TreeNode = TreeSelect.TreeNode;
 const Option = Select.Option;
@@ -125,8 +126,20 @@ class TableFilter extends React.Component {
       email:'',
       to:'',
       subject:'',
-      text:''
+      text:'',
+      befotype:'',
+      befostatus:'',
+      befoassignTo:'',
+      befopriority:'',
+      befoseverity:'',
+      afterstatus:'',
+      afterseverity:'',
+      afterpriority:'',
+      afterassignTo:'',
+      aftertype:''
+
       
+
 
 
 
@@ -309,7 +322,7 @@ class TableFilter extends React.Component {
     .then(function(response) {
       console.log("hhhhhhhhhhhhhhlllllllll"+response.data);
      let assignToopt=response.data.map((post,index)=>{
-       if((_this.state.projectId == post.projectId)&&("Developer"==(post.designationname))){
+       if((_this.state.projectId == post.projectId)&&("developer"==(post.designationname))){
         console.log("hhghjghg" );
             return <Option key={index} value={post.name}>{post.name}</Option>
        }
@@ -495,6 +508,11 @@ class TableFilter extends React.Component {
           foundIn: response.data.foundIn,
           fixedIn: response.data.fixedIn,
           dateAndTime: response.data.dateAndTime,
+           afterassignTo:response.data.assignTo,
+          afterpriority: response.data.priority,
+          afterseverity: response.data.severity,
+          afterstatus:response.data.status,
+          aftertype:response.data.type
 
           //employeeFirstName:response.data.firstname,
           // employeeDesignation: response.data.designationid,
@@ -597,15 +615,11 @@ class TableFilter extends React.Component {
   onChange1 = value => {
     console.log(`selected ${value}`);
 
-    const auditinfo = {
-      status: "Status changes to " + value,
-      user: "romi",
-      defectId: this.state.defectId
-    };
+    
 
-    this.setState({
-      audit: auditinfo
-    });
+    // this.setState({
+    //   audit: auditinfo
+    // });
     console.log(this.state.audit);
   };
   onBlur() {
@@ -681,6 +695,70 @@ class TableFilter extends React.Component {
       .then(res => {
         this.getdefectStatus();
         console.log(res.data);
+
+if(this.state.afterstatus===res.data.status){
+  this.setState({
+    befostatus:"Status Unchanged"
+  })
+}else{
+  this.setState({
+    befostatus:"Status is changes "+ this.state.afterstatus  + " to " +res.data.status
+  })
+}
+
+if(this.state.afterassignTo===res.data.assignTo){
+  this.setState({
+    befoassignTo:"assignTo Unchanged"
+  })
+}else{
+  this.setState({
+    befoassignTo:"assignTo is changes "+ this.state.afterassignTo  + " to " +res.data.assignTo
+  })
+}
+if(this.state.afterpriority===res.data.priority){
+  this.setState({
+    befopriority:"priority Unchanged"
+  })
+}else{
+  this.setState({
+    befopriority:"priority is changes "+ this.state.afterpriority  + " to " +res.data.priority
+  })
+}
+if(this.state.afterseverity===res.data.severity){
+  this.setState({
+    befoseverity:"severity Unchanged"
+  })
+}else{
+  this.setState({
+    befoseverity:"severity is changes "+ this.state.afterseverity  + " to " +res.data.severity
+  })
+}
+if(this.state.aftertype===res.data.type){
+  this.setState({
+    befotype:"type Unchanged"
+  })
+}else{
+  this.setState({
+    befotype:"type is changes "+ this.state.aftertype  + " to " +res.data.type
+  })
+}
+        const auditinfo = {
+          status:this.state.befostatus ,
+          user:localStorage.getItem(CURRENT_USER) ,
+          defectId: res.data.defectId,
+          type:this.state.befotype,
+          severity:this.state.befoseverity,
+          priority:this.state.befopriority,
+          reassignTo:this.state.befoassignTo
+        };
+        axios
+        .post(API_BASE_URL+"/audit", auditinfo)
+        .then(res => {
+          
+          console.log(res.data);
+        })
+
+
       });
 
       console.log(this.state.emailnoti);
@@ -714,11 +792,27 @@ console.log(mail);
       availableIn: "  ",
       foundIn: "",
       dateAndTime: "",
+      befostatus:'',
+       befoassignTo:'',
+      befopriority:'',
+      befoseverity:'',
+      befotype:'',
 
 
       visible1: false
     });
     message.success("Added Successfully!");
+
+
+    // const auditinfo = {
+    //   status:this.state.befostatus  + " is Status changes to " + this.state.status,
+    //   user: "romi",
+    //   defectId: this.state.defectId,
+    //   type:"type  changes to " + this.state.type,
+    //   severity:"severity changes to " + this.state.severity,
+    //   priority:"priority changes to " + this.state.priority,
+    //   reassignTo:"defect changes to " + this.state.assignTo
+    // };
   };
 
   handleOkView = e => {
@@ -956,7 +1050,7 @@ reassinNoti=(value)=>{
   }
 
   //Getting All defect details
-  getdefectStatus() {
+  getdefectStatus=() =>{
     const url = API_BASE_URL+"/getAllDefects";
     axios
       .get(url)
@@ -1170,7 +1264,7 @@ reassinNoti=(value)=>{
               onClick={this.handleEdit.bind(this, data.defectId,data.projectId)}
               style={{ fontSize: "18px", color: "green" }}
             />
-            <Divider type="vertical" />
+         
 
             <Popconfirm
               title="Are you sure want to delete this Entry ?"
@@ -1195,7 +1289,6 @@ reassinNoti=(value)=>{
                     color: "red",
                     fontSize: "18px"
                   }}
-
                 // onClick={() => this.handleDelete(data.defectId)}
                 /> */}
               </a>
@@ -1217,6 +1310,23 @@ reassinNoti=(value)=>{
               onClick={this.handleMore.bind(this, data.defectId)}
             // onClick={this.showModalView.bind(this, data.defectId)}
             />
+          </span>
+        )
+      },
+      {
+        title: "History",
+        key: "history",
+        width: "120px",
+        render: (text, data = this.state.defect, record) => (
+          <span>
+            <DefectLog id={ data.defectId}/>
+            {/* <Icon
+            id="History"
+              type="arrows-alt"
+              style={{ fontSize: "18px", color: "green" }}
+              onClick={this.handleMore.bind(this, data.defectId)}
+            // onClick={this.showModalView.bind(this, data.defectId)}
+            /> */}
           </span>
         )
       },
@@ -1578,6 +1688,9 @@ reassinNoti=(value)=>{
               <p>
                 <b>Comments:</b>
               </p>
+              <p>
+              </p>
+              
             </Col>
             <Col span={14} style={{ padding: "8px" }}>
               <p>{this.state.projectId}</p>

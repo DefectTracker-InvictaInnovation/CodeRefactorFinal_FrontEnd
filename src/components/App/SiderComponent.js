@@ -125,11 +125,6 @@ class SiderComponent extends React.Component {
               <Link to="/projectallocation">
                 <Icon type="project" /><span>Project Allocation</span></Link>
             </Menu.Item>:""}
-            {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
-            <Menu.Item key="12">
-              <Link to="/projectallocation">
-                <Icon type="project" /><span>Project Allocation</span></Link>
-            </Menu.Item>:""}
 
           {/* Project Menu -----------------------------------------------------------------*/ }
           {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 

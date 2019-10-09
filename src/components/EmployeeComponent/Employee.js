@@ -15,6 +15,8 @@ import Highlighter from "react-highlight-words";
 import React from "react";
 import axios from "axios";
 import { API_BASE_URL_EMP } from '../../constants/index';
+import EmployeeAddModal from './EmployeeAddModal';
+import ImportEmployee from './ImportEmployee'
 
 const { Option } = Select;
 
@@ -109,10 +111,10 @@ export default class App extends React.Component {
     this.fetchDesignations();
     console.log("mounting");
     this.getAllEmployees();
-    this.getTotalEmployee();
+     this.getTotalEmployee();
   }
 
-  fetchDesignations() {
+  fetchDesignations=()=> {
     var _this = this;
     axios
       .get(API_BASE_URL_EMP + "/getAllDesignation")
@@ -167,14 +169,21 @@ export default class App extends React.Component {
   };
 
   //fetching the employee with get all employee
-  async getAllEmployees() {
-    const url = API_BASE_URL_EMP + "/getallemployee";
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log(data);
-    this.setState({
-      employees: data
-    });
+   getAllEmployees=()=> {
+     const url = API_BASE_URL_EMP + "/getallemployee";
+    // const response = await fetch(url);
+    // const data = await response.json();
+    // console.log(data);
+    // this.setState({
+    //   employees: data
+    // });
+    axios
+    .get(url)
+    .then(res=> {
+        this.setState({
+          employees:res.data
+        })
+    })
     console.log(this.state.employees);
   }
   async getTotalEmployee() {
@@ -397,6 +406,14 @@ export default class App extends React.Component {
     return (
       <React.Fragment>
         <div>
+        <Col span={4}>
+        <EmployeeAddModal reload={this.getAllEmployees}/>
+            </Col>
+            <Col span={4}>
+            <ImportEmployee />
+            </Col>
+        
+            <br></br><br></br>
           <Modal
             title="Edit Employee"
             visible={this.state.visible}

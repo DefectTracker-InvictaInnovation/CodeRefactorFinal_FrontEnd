@@ -7,15 +7,6 @@ import difference from 'lodash/difference';
 
 
 const { Option, OptGroup } = Select;
-
-
-
-// axios.get("http://localhost:8081/defectservices/GetAllresources")
-// .then(function (response) {
-// console.log(response.data);
-// });
-
-
 const employee = []
 const originTargetKeys = employee.filter(item => +item.key % 5 > 1).map(item => item.key);
 
@@ -93,20 +84,12 @@ const rightTableColumns = [
 export default class Allocation extends React.Component {
 
 
-  // constructor(props){
-  // super(props);
+  constructor(props){
+  super(props);
 
-  // this.state = {
-  // resourceId:"",
-  // employeeId:"",
-  // projectId:""
-  // }
-  // this.handleOk = this.handleOk.bind(this);
-  // }
-
-  state = {
+  this.state = {
     loading: false,
-    visible: false,
+    // visible: false,
     project: [],
     employee: [],
     targetKeys: originTargetKeys,
@@ -114,9 +97,23 @@ export default class Allocation extends React.Component {
     showSearch: false,
     value1: '',
     visible1:false
+  }
+  this.handleOk = this.handleOk.bind(this);
+  }
+  state = { visible: false };
+  // state = {
+  //   loading: false,
+  //   visible: false,
+  //   project: [],
+  //   employee: [],
+  //   targetKeys: originTargetKeys,
+  //   disabled: false,
+  //   showSearch: false,
+  //   value1: '',
+  //   visible1:false
 
 
-  };
+  // };
 
   handleChange = (value) => {
     this.setState({
@@ -131,7 +128,7 @@ export default class Allocation extends React.Component {
 
   showModal = () => {
     this.setState({
-      visible1: true,
+      visible: true,
     });
   };
 
@@ -178,49 +175,21 @@ export default class Allocation extends React.Component {
 
 
 
-  handleOk = (e) => {
-
-    // this.setState({ visible1: false });
-    setTimeout(() => {
-      this.setState({ loading: false, visible1: false });
-    }, 3000);
-
-    e.preventDefault();
-
-    const empdata = {
-      resourceId: this.state.resourceId,
-      empId: this.state.empId,
-      projectId: this.state.projectId
-    }
-    console.log(this.state.data1)
-
-    //  axios
-    //             .post(
-    //               "http://localhost:8081/defectservices/saveresourceTable",
-    //               this.state.data1
-    //             )
-    //             .then(res => console.log(res.data))
-    //             .catch(error => {
-    //               console.log(error);
-    //             });
-
-
+  handleOk = e => {
+    console.log(e);
+    this.setState({
+      visible: false,
+    });
   };
 
   handleCancel = () => {
     var _this=this;
     _this.setState({ 
       
-      visible1: false ,
+      visible: false ,
     })
   };
 
-  //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-  // show=(targetKeys)=>{
-  // console.log(targetKeys)
-
-  // console.log(this.state.list[0]);
-  // }
 
   onChange1 = nextTargetKeys => {
     this.setState({ targetKeys: nextTargetKeys });
@@ -291,7 +260,17 @@ export default class Allocation extends React.Component {
               "http://localhost:8081/defectservices/saveresourceTable",
               data1
             )
-            .then(res => console.log(res.data))
+            .then(res =>{console.log(res.data)
+            
+              this.setState=({ 
+      
+                visible: false ,
+              })
+            
+            }
+            
+            
+            )
             .catch(error => {
               console.log(error);
             });
@@ -374,7 +353,7 @@ export default class Allocation extends React.Component {
 
           style={{ top: 20 }}
 
-          visible={this.state.visible1}
+          visible={this.state.visible}
           title="Allocating Members for Project"
           width="99%"
           height="40%"

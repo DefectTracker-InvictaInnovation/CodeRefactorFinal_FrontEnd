@@ -177,13 +177,18 @@ class EmployeeAddModal extends React.Component {
           API_BASE_URL_EMP + "/createemployee",
           serverport
         )
-        .then(res => console.log(res.data))
+        .then(res => {console.log(res.data)
+        
+        this.props.reload();
+        })
         .catch(error => {
           console.log(error);
         });
     } else {
       console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
     }
+
+    this.props.reload();
   };
 
   // post integration finishes

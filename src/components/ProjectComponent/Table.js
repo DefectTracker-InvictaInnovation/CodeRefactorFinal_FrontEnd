@@ -238,10 +238,10 @@ export default class App extends React.Component {
           <span>
             <Popconfirm
               id="confirmdeleteProject"
-              title="Are you sure delete this task?"
-              onConfirm={this.handleDelete.bind(this, data.projectId)}
-              onCancel={cancel}
-              okText="Yes"
+              title="If project deleted all data will lost,please ensure you want to erase the data!"
+              // onConfirm={this.handleDelete.bind(this, data.projectId)}
+              // onCancel={cancel}
+              okText="OK"
               cancelText="No"
             >
               <a href="#">

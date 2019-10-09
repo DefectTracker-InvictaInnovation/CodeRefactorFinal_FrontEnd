@@ -129,7 +129,6 @@ class AuditLog extends React.Component {
   /*
   Author: 
   Last Updated: dd/MM/YYYY
-
   Note: Please do necessary commenting and follow code standard.
     */
   onChange(pagination, filters, sorter) {
@@ -206,6 +205,22 @@ class AuditLog extends React.Component {
         sortDirections: ["descend", "ascend"]
       },
       {
+        title: "Defect Type",
+        dataIndex: "type"
+      },
+      {
+        title: "Priority ",
+        dataIndex: "priority"
+      },
+      {
+        title: "Severity",
+        dataIndex: "severity"
+      },
+      {
+        title: "Reassign To",
+        dataIndex: "reassignTo"
+      },
+      {
         title: "Defect Id",
         dataIndex: "defectId"
       },
@@ -273,7 +288,7 @@ class AuditLog extends React.Component {
           <br />
           <Row>
             <Col span={6}>
-              <Export />
+              <Export log={this.state.Data}/>
             </Col>
             <Col span={4} />
             <Col span={9}>
