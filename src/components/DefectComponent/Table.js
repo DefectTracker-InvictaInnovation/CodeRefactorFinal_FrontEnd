@@ -137,14 +137,7 @@ class TableFilter extends React.Component {
       afterpriority:'',
       afterassignTo:'',
       aftertype:''
-
-      
-
-
-
-
-
-    };
+  };
     this.handleDelete = this.handleDelete.bind(this);
     this.refreshDefect = this.refreshDefect.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -322,7 +315,7 @@ class TableFilter extends React.Component {
     .then(function(response) {
       console.log("hhhhhhhhhhhhhhlllllllll"+response.data);
      let assignToopt=response.data.map((post,index)=>{
-       if((_this.state.projectId == post.projectId)&&("developer"==(post.designationname))){
+       if((_this.state.projectId == post.projectId)&&("Developer"==(post.designationname))){
         console.log("hhghjghg" );
             return <Option key={index} value={post.name}>{post.name}</Option>
        }
@@ -1157,6 +1150,13 @@ reassinNoti=(value)=>{
       console.log(this.state.type)
   }
 
+openmore=(record)=>{
+  console.log(record)
+  this.setState({
+    showModalView: true
+  });
+}
+
   render() {
     const departureValidationMessage = 'Please select a departure country!';
     //const { formerrors } = this.state;
@@ -1289,6 +1289,7 @@ reassinNoti=(value)=>{
                     color: "red",
                     fontSize: "18px"
                   }}
+
                 // onClick={() => this.handleDelete(data.defectId)}
                 /> */}
               </a>
@@ -1345,7 +1346,7 @@ reassinNoti=(value)=>{
           columns={columns}
           dataSource={this.state.defect}
           onChange={this.handleChange}
-          // scroll={{ x: 1300 }}
+          // expandRowByClick={(e)=>this.openmore(e)}
           pagination={{
             total: this.state.Total,
             showTotal: (total, range) =>
@@ -1353,7 +1354,19 @@ reassinNoti=(value)=>{
             pageSize: 10,
             showSizeChanger: true,
 
+           
+
             // showQuickJumper: true
+          }}
+
+          onRow={(record, rowIndex) => {
+            return {
+              // onClick: () => {this.handleMore(record.defectId)}, // click row
+              onDoubleClick: () => {this.handleMore(record.defectId)}, // double click row
+              // onContextMenu: event => {}, // right button click row
+              //  onMouseEnter: () => {this.handleMore(record.defectId)}, // mouse enter row
+              // onMouseLeave: event => {}, // mouse leave row
+            };
           }}
         />
 

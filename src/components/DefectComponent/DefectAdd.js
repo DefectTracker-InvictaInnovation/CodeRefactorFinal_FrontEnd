@@ -241,7 +241,7 @@ class DefectAdd extends React.Component {
     axios
       .get(API_BASE_URL + '/getallresource')
       .then(function (response) {
-        console.log(_this.state.projectId);
+        console.log(response.data);
         let assignToopt = response.data.map((post, index) => {
           if ((_this.state.projectId == post.projectId)&&("Developer"==(post.designationname))) {
             console.log("hhghjghg");
@@ -796,6 +796,7 @@ console.log(mail);
             </Row>
             <Row>
               <Col span={8} style={{ padding: "5px" }}>
+                -
                 <Form.Item label="Status">
                   {getFieldDecorator("gender7", {
                     rules: [
@@ -806,6 +807,7 @@ console.log(mail);
                     id="Status"
                       placeholder="Status"
                       onChange={this.onChangeStatus}
+                      defaultValue="New"
                     >
                       {this.state.defectStatus.map(function (item, index) {
                         return (

@@ -1,9 +1,9 @@
-import { Transfer, Button, Modal, Table, Select } from 'antd';
+import { Transfer, Button, Modal, Table, Select, TreeSelect } from 'antd';
 import React from 'react';
 import difference from 'lodash/difference';
 import axios from 'axios';
-import App from './index';
 
+const { TreeNode } = TreeSelect;
 const { Option, OptGroup } = Select;
 
 function onSearch(val) {
@@ -72,17 +72,58 @@ export default class AllocateMember extends React.Component {
     project: [],
     roleAllcation: [],
     value: '',
-    value1: ''
+    value1: '',
+    value2: '',
+    value3: '',
+    module: [],
+    submodule:[]
   };
 
   componentDidMount() {
     this.fetchRoleallocation();
     this.fetchProjects();
+    // this.fetchModules();
+    // this.fetchfindallmain();
+    this.fetchSubModules();
   }
+
+  // onChange = value2 => {
+  //   console.log(value2);
+  //   this.setState({ value2 });
+  // };
+
+  fetchRoleallocation() {
+    var _this = this;
+    axios.get('http://localhost:8081/defectservices/getAllRole')
+        .then(function (response) {
+            // handle success
+            console.log(response.data);
+            let role = response.data
+            _this.setState({ role: role });
+            console.log(_this.state.roleAllcation);
+            const list = []
+
+            console.log("Get Project Allocation" + role)
+            response.data.map((post, index) => {
+                list.push({
+                    key: index,
+                    employeeid: post.employeeid,
+                    name: post.name,
+                    firstname: post.firstname,
+                    roleName: post.roleName,
+                    projectId: post.projectId
+
+                });
+                _this.setState({
+                    list: list
+                })
+            })
+        });
+}
 
   handleChange = (value) => {
     this.setState({
-      value1: value
+        value1: value
     })
     var _this = this;
     console.log(value);
@@ -91,35 +132,87 @@ export default class AllocateMember extends React.Component {
     const list1 = []
     this.state.list.map((post, index) => {
 
-      if (post.projectId == value) {
-        list1.push({
-          key: index,
-          employeeid: post.employeeid,
-          name: post.name,
-          firstname: post.firstname,
-          roleName: post.roleName
-        });
+        if (post.projectId == value) {
+            list1.push({
+                key: index,
+                employeeid: post.employeeid,
+                name: post.name,
+                firstname: post.firstname,
+                roleName: post.roleName,
 
-        console.log(list1)
-        _this.setState({
-          list1: list1
-        })
-      }
+
+            });
+
+            console.log(list1)
+            _this.setState({
+                list1: list1
+            })
+        }
     });
 
-  }
+}
 
   fetchProjects() {
     var _this = this;
     axios.get('http://localhost:8081/defectservices/GetAllproject')
-        .then(function (response) {
-            // handle success
-            console.log(response.data);
-            _this.setState({ project: response.data });
-            console.log(_this.state.project);
+      .then(function (response) {
+        // handle success
+        console.log(response.data);
+        _this.setState({ project: response.data });
+        console.log(_this.state.project);
 
-        });
+      });
+  }
+
+  
+  fetchSubModules() {
+    var _this = this;
+    axios.get('http://localhost:8081/defectservices/GetAllsubmodule')
+      .then(function (response) {
+        // handle success
+        console.log(response.data);
+        _this.setState({ submodule: response.data });
+        console.log(_this.state.submodule);
+
+      });
+  }
+
+  saveModule(targetKeys) {
+    console.log(targetKeys[0]);
+    console.log(this.state.role)
+
+    this.state.role.map((post, index) => {
+        console.log(post.key)
+
+        for (var i = 0; i < 11; i++) {
+            if (targetKeys[i] == index) {
+                console.log(post.projectroleId)
+                let data1 = {
+                    projectroleId: post.projectroleId,
+                    subModuleId: this.state.value3
+                }
+
+                console.log(data1)
+
+                this.state = {
+                    data1: data1
+                }
+            }
+        }
+    })
+
 }
+  // fetchModules() {
+  //   var _this = this;
+  //   axios.get('http://localhost:8081/defectservices/FindallMain')
+  //     .then(function (response) {
+  //       // handle success
+  //       console.log(response.data);
+  //       _this.setState({ module: response.data });
+  //       console.log(_this.state.module);
+
+  //     });
+  // }
 
   onChange = (nextTargetKeys, value) => {
     this.setState({ targetKeys: nextTargetKeys });
@@ -128,6 +221,13 @@ export default class AllocateMember extends React.Component {
       value
     });
   };
+
+  onChangeSubModule = (value) => {
+    this.setState({
+        value3: value
+    })
+    console.log(`selected ${value}`);
+}
 
   showModal = () => {
     this.setState({
@@ -143,6 +243,10 @@ export default class AllocateMember extends React.Component {
   };
 
   setModal3Visible(modal3Visible) {
+    console.log(this.state.data1);
+    let data3 = JSON.stringify(this.state.data1);
+    console.log(data3)
+    axios.post("http://localhost:8081/defectservices/savemoduleallocation", this.state.data1)
     this.setState({ modal3Visible });
 }
 
@@ -154,34 +258,32 @@ export default class AllocateMember extends React.Component {
     });
   };
 
-  fetchRoleallocation() {
-    var _this = this;
-    axios.get('http://localhost:8081/defectservices/getAllRole')
-      .then(function (response) {
-        // handle success
-        console.log(response.data);
-        let role = response.data
-        _this.setState({ role: role });
-        console.log(_this.state.roleAllcation);
-        const list = []
+ 
 
-        console.log("Get Project Role Allocation" + role)
-        response.data.map((post, index) => {
-          list.push({
-            key: index,
-            employeeid: post.employeeid,
-            name: post.name,
-            firstname: post.firstname,
-            roleName: post.roleName,
-            projectId: post.projectId
+//   fetchfindallmain() {
+//     var _this = this;
+//     axios.get('http://localhost:8081/defectservices/FindallMain')
+//       .then(function (response) {
+//         console.log(response.data)
 
-          });
-          _this.setState({
-            list: list
-          })
-        })
-      });
-  }
+//         let par = response.data.map((post, index) => {
+//           console.log(response.data[index].subModule)
+//           return (<TreeNode value={post.moduleName} title={post.moduleName} key={index}>
+//             {response.data[index].subModule.map((data, key) => {
+//               return <TreeNode value={data.subModuleName} title={data.subModuleName} key={key} />
+//             })
+//             })}
+          
+// </TreeNode>)
+
+//         }
+//         )
+//         _this.setState({ par })
+
+//       })
+//   }
+
+
 
 
   render() {
@@ -264,8 +366,26 @@ export default class AllocateMember extends React.Component {
             </OptGroup>
 
           </Select>
+          &nbsp;&nbsp;
+          <Select
+            showSearch
+            style={{ width: 200, marignBottom: '20px' }}
+            placeholder="Select a SubModule"
+            optionFilterProp="children"
+            onChange={this.onChangeSubModule}
+            // onFocus={onFocus}
+            // onBlur={onBlur}
+            onSearch={onSearch}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+            <OptGroup label="Sub Module">
+              {this.state.submodule.map((item, index) => {
+                return <Option key={index} value={item.subModuleId}> {item.subModuleName}</Option>
+              })}
+            </OptGroup>
+
+          </Select>
+
           <br /><br />
-         
 
           <TableTransfer
             dataSource={this.state.list1}
@@ -280,7 +400,7 @@ export default class AllocateMember extends React.Component {
             }
             leftColumns={leftTableColumns}
             rightColumns={rightTableColumns}
-          // selectedKeys={this.saveRole(targetKeys)}
+            selectedKeys={this.saveModule(targetKeys)}
           />
         </Modal>
       </div>

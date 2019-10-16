@@ -397,10 +397,6 @@ export default class ProjectManageAllocation extends React.Component {
         this.setState({ modal2Visible });
     }
 
-    setModal3Visible(modal3Visible) {
-        this.setState({ modal3Visible });
-    }
-
     render() {
         const { targetKeys } = this.state;
         const leftTableColumns = [
@@ -540,46 +536,6 @@ export default class ProjectManageAllocation extends React.Component {
                                             rightColumns={rightTableColumns}
                                             selectedKeys={this.saveRole(targetKeys)}
                                         />
-                                        {/* <Modal
-                                            title="Edit Role"
-                                            visible={this.state.visible}
-                                            onOk={this.handleOk}
-                                            onCancel={this.handleCancel}
-                                        >
-                                            <Row>
-                                                <Col span={5}>
-                                                    <p><b>EmployeeID </b></p>
-                                                    <p><b>FirstName </b></p>
-                                                    <p><b>LastName</b></p>
-                                                    <p><b>Designation </b></p>
-                                                    <p><b>Select Role</b></p>
-
-                                                </Col>
-                                                <Col span={2}>
-                                                    <p><b>:</b></p>
-                                                    <p><b>:</b></p>
-                                                    <p><b>:</b></p>
-                                                    <p><b>:</b></p>
-                                                    <p><b>:</b></p>
-                                                </Col>
-                                                <Col span={5}>
-                                                    <p>EMP001</p>
-                                                    <p>John Doe</p>
-                                                    <p>Software Engineer</p>
-                                                    <p>Developer</p>
-                                                    <p>
-                                                        <Select defaultValue="Select Role" style={{ width: 200 }} onChange={this.handleChange}>
-                                                            <Option value="Tech Lead">Tech Lead</Option>
-                                                            <Option value="QA Lead">QA Lead</Option>
-                                                            <Option value="Software Engineer">Software Engineer</Option>
-                                                            <Option value="Senior Software Engineer">Senior Software Engineer</Option>
-                                                            <Option value="Junior Software Engineer">Senior Software Engineer</Option>
-                                                        </Select>
-                                                    </p>
-                                                </Col>
-                                            </Row>
-
-                                        </Modal> */}
                                     </Modal>
                                 </div>
                             </Col>

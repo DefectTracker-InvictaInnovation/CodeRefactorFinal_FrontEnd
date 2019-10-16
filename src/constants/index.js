@@ -2,6 +2,7 @@ export const API_BASE_URL = 'http://localhost:8081/defectservices';
 export const LOGIN_API_BASE_URL="http://localhost:8085/loginservice/api/auth";
 export const API_BASE_URL_EMP='http://localhost:8084/employeeservice';
 export const API_BASE_URL_USER='http://localhost:8085/loginservice/api/auth/users';
+export const API_BASE_URL_PRODUCT='http://localhost:8083/productservice';
 export const  ROLE_NAME ='authorities';
 export const  IS_AUTHENTICATED ='authenticated';
 export const  CURRENT_USER ='username';

@@ -1,13 +1,7 @@
 import React, { Component } from 'react';
-// import PollList from '../../poll/PollList';
-// import { getUserProfile } from '../../util/APIUtils';
  import { Avatar, Tabs } from 'antd';
  import { getAvatarColor } from './Colors';
-// import { formatDate } from '../../util/Helpers';
-// import LoadingIndicator  from '../../common/LoadingIndicator';
 import './Profile.css';
-// import NotFound from '../../common/NotFound';
-// import ServerError from '../../common/ServerError';
 import axios from "axios";
 import {getUserProfile} from '../Login/util/ApiUtil';
 const TabPane = Tabs.TabPane;

@@ -3,11 +3,17 @@ import { Breadcrumb, Statistic, Card, Row, Col, Icon, Timeline, Divider, Progres
 import ChartBar from './assets/ChartBar';
 import ChartPolar from './assets/ChartPolar';
 import { Chart } from 'primereact/chart';
-import {API_BASE_URL} from '../../../src/constants/index';
-
+import {API_BASE_URL,CURRENT_USER} from '../../../src/constants/index';
+import DeveloperDefectDetail from './Elements/DeveloperDefectDetail';
+import DeveloperDefectPercentage from './Elements/DeveloperDefectPercentage';
+import DeveloperDefectStatusChart from './Elements/DeveloperDefectStatusChart';
+import DeveloperRadarChart from './Elements/DeveloperRadarChart';
+import DefectTypeDoughnutChart from './Elements/DefectTypeDoughnutChart';
+import DeveloperLineChart from './Elements/DeveloperLineChart';
 //import PrimeReact from './PrimeReact';
 import DashboardConfig from './DashboardConfig';
 import axios from 'axios';
+
 
 //table data
 
@@ -34,7 +40,14 @@ class ProjectManagerDashboard extends React.Component {
       StatusReOpen:'',
       StatusFixed:'',
       StatusDefered:'',
-      ratio:''
+      ratio:'',
+      selectedlist:'',
+      name:'',
+      name1:'',
+      name2:'',
+      name3:'',
+      name4:'',
+      name5:''
 
 
 
@@ -74,20 +87,6 @@ getLow(){
     })
 }
 
-
-
-    // constructor(props) {
-    //     super(props)
-    //     this.state = {
-    //           value:'',
-    //          density:'',
-          
-    //     }
-    //     // this.componentWillMount = this.componentWillMount.bind(this);
-    //   };
-    
-
-    //Table Declaration
     
 
     handleChange = (pagination, filters, sorter) => {
@@ -280,6 +279,7 @@ getSeverityIndex(){
 }
 
     componentDidMount() {
+        this.getConfiguration();
        this.getHigh1();
      this.getHigh();
        this.getMedium();
@@ -354,17 +354,51 @@ getSeverityIndex(){
           console.log(openHigh)
           _this.setState({ openHigh });
 
-          console.log(this.state.openHigh)
-
-
-
-//       componentDidMount() {
-//         this.getdefectdensity()
-//         this.getdefectcount()
-
-//     }
+          console.log(this.state.openHigh);
 
         })
+    }
+
+    getConfiguration=()=>{
+        axios
+        .get(`http://localhost:8083/productservice/getbyusername/`+localStorage.getItem(CURRENT_USER))
+        .then(res => {
+            let selectedlist=res.data[0];
+            console.log(selectedlist)
+            this.setState({selectedlist});
+            console.log(this.state.selectedlist)
+            console.log(res.data[0].dashboardList[0]);
+            for(var i=0;i<10;i++){
+                if(res.data[0].dashboardList[i]==="DeveloperDefectDetail"){
+                    console.log("name")
+                    this.setState({name:"DeveloperDefectDetail"})
+                }else if(res.data[0].dashboardList[i]==="DeveloperDefectPercentage"){
+                    console.log("name1")
+                    this.setState({name1:"DeveloperDefectPercentage"})
+                }else if(res.data[0].dashboardList[i]==="DeveloperDefectStatusChart"){
+                    console.log("name2")
+                    this.setState({name2:"DeveloperDefectStatusChart"})
+                }else if(res.data[0].dashboardList[i]==="DeveloperRadarChart"){
+                    console.log("name3")
+                    this.setState({name3:"DeveloperRadarChart"})
+                }else if(res.data[0].dashboardList[i]==="DefectTypeDoughnutChart"){
+                    console.log("name4")
+                    this.setState({name4:"DefectTypeDoughnutChart"})
+                }else if(res.data[0].dashboardList[i]==="DeveloperLineChart"){
+                    console.log("name5")
+                    this.setState({name5:"DeveloperLineChart"})
+                }
+            }
+ 
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        // console.log(this.state.name);
+      }
+
+      visibledash(list){
+        console.log(list);
     }
         
 
@@ -460,7 +494,7 @@ getSeverityIndex(){
                     </Col>
                     <Col span={1} >
                         <div id="components-dropdown-demo-dropdown-button" style={{ marginLeft: "-2.1em" }}>
-                            <DashboardConfig />
+                            <DashboardConfig dashconfig={this.visibledash} reload={this.getConfiguration} list={this.selectedlist}/>
                         </div>
                     </Col>
                 </Row>
@@ -601,14 +635,14 @@ getSeverityIndex(){
                     </div>
 
                     <Row style={{ margin: "-20px 0 0 0 " }}>
-                        <Col span={12}>
+                        <Col span={12} key="1">
                         <div className="content-section implementation" style={{ borderRadius: "5px", margin: "0 0 0 5px" }} >
 
 
                             <ChartBar  />
                             </div>
                         </Col>
-                        <Col span={12}>
+                        <Col span={12} key="2">
                             <Card title="Defects Status" style={{ borderRadius: "5px", margin: "0 0 0 5px" }}>
                                 <div >
                                     <label>New</label>
@@ -675,13 +709,13 @@ getSeverityIndex(){
                         <br />
                     </div>
                     <Row style={{ margin: "-10px 0 0 0 " }}>
-                        <Col span={12}>
-                            {/* <ChartPolar /> */}<div style={{ padding: 30, background: '#fff', minHeight: 307 }} >
-                            <Chart type="pie" data={data5} style={{ padding: "0 0 120px 0" }} />
+                        <Col span={12} key="3">
+                            {/* <ChartPolar /> */}<div style={{ padding: 20, background: '#fff', Height: "150px", width: "38em" }} >
+                            <Chart type="pie" data={data5} style={{ padding: "0 0 70px 0" }} />
                             </div>
                             
                         </Col>
-                        <Col span={12}>
+                        <Col span={12} key="4">
 
 
                             <Card title="Ongoing Project Updates" style={{ minHeight: '22.4rem', height: '22.4rem', borderRadius: "5px", margin: "0 0 0 5px" }}>
@@ -706,46 +740,130 @@ getSeverityIndex(){
                         </Col>
 
                     </Row>
-
-                    <div>
-                        <br />
-                    </div>
-
-                    {/* <div
-                        style={{
-
-                            padding: 24,
-                            background: '#fff',
-                            minHeight: '500px',
-                            boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
-                            borderRadius: "5px",
-                            margin: "-10px 0 0 0 "
-                        }}>
-
-
-                        <Row >
-                            <Col span={24}>
-                                <div className="table-operations" >
-
-                                    <Button onClick={this.clearFilters} type="primary">Clear filters</Button>
-
+                    <div style={{ marginBottom: "0.4em" }}></div>
+                    <Row>
+                    {this.state.name==="DeveloperDefectDetail" ? 
+                    <Col span={12} key="5">
+                    <Row>
+                                <div
+                                    style={{
+                                        padding: 24,
+                                        background: '#fff',
+                                        border: "#605877",
+                                        zIndex: "5000",
+                                        width: "532px",
+                                        borderRadius: "0.2em",
+                                        height: '280px',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                    }}>
+                                   
+                                    <DeveloperDefectDetail/>
                                 </div>
-                                <div>
-                                    <br />
+                            </Row>
+                    </Col>:''}
+                    <div style={{ marginBottom: "-1em" }}></div>
+                    <Col span={12} key="6">
+                  
+                        
+                    {this.state.name1==="DeveloperDefectPercentage" ? <div
+                                    style={{
+                                        padding: 24,
+                                        background: '#fff',
+                                        border: "#605877",
+                                        zIndex: "5000",
+                                        width: "530px",
+                                        borderRadius: "0.2em",
+                                        height: '280px',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                    }}>
+                                   
+                                    <DeveloperDefectPercentage/>
+                                    
+                                </div>:''} 
+                 
+                            
+                    </Col>
+                </Row>
+
+                <div style={{ marginBottom: "0.4em" }}></div>
+                    <Row>
+                    {this.state.name2==="DeveloperDefectStatusChart" ? 
+                    <Col span={12}   key="7" style={{
+                        padding: 2,
+                        background: '#fff',
+                        border: "#605877",
+                        zIndex: "5000",
+                        width: "532px",
+                        borderRadius: "0.2em",
+                        minHeight: '100%',
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                    }}>
+                        
+                                 <DeveloperDefectStatusChart/>          
+                    </Col>:''}
+                
+                    <div style={{ marginBottom: "0.1em" }}></div>
+                    {this.state.name3==="DeveloperRadarChart" ?      <Col span={10}>
+                                   
+                    <div
+                                    style={{
+                                        padding: 14,
+                                        marginLeft: "0.5em",
+                                        background: '#fff',
+                                        border: "#605877",
+                                        zIndex: "5000",
+                                        width: "532px",
+                                        borderRadius: "0.2em",
+                                        minHeight: '80%',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                    }}>  
+                                    <DeveloperRadarChart/>
                                 </div>
-                                
+                            
+                            
+                    </Col>:''}
+                </Row>
+                <div style={{ marginBottom: "0.4em" }}></div>
+                    <Row>
+                
+                    {this.state.name4==="DefectTypeDoughnutChart" ?               <Col span={12} key="8" style={{
+                        padding: 2,
+                        background: '#fff',
+                        border: "#605877",
+                        zIndex: "5000",
+                        width: "532px",
+                        borderRadius: "0.2em",
+                        height: "25em",
+                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                    }}>
+                        
+                                 <DefectTypeDoughnutChart/>          
+                    </Col>:''}
+                
+                    <div style={{ marginBottom: "0.1em" }}></div>
+                    {this.state.name5==="DeveloperLineChart" ?       <Col span={10} key="9"> 
+                                   
+                  <div
+                                    style={{
+                                        padding: 14,
+                                        marginLeft: "0.5em",
+                                        background: '#fff',
+                                        border: "#605877",
+                                        zIndex: "5000",
+                                        width: "532px",
+                                        borderRadius: "0.2em",
+                                        minHeight: '80%',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                    }}>  
+                                    <DeveloperLineChart/>
+                                </div>
+                            
+                            
+                    </Col>:''}
+                </Row>
 
-
-                            </Col>
-
-                        </Row>
-
-
-
-
-                    </div> */}
-                </div>
-
+                
+</div>
             </React.Fragment>
 
         );

@@ -15,8 +15,10 @@ import Highlighter from "react-highlight-words";
 import React from "react";
 import axios from "axios";
 import { API_BASE_URL_EMP } from '../../constants/index';
-import EmployeeAddModal from './EmployeeAddModal';
-import ImportEmployee from './ImportEmployee'
+import Profile from './Profile';
+import ProfileScreen from '../SettingComponent/ProfileScreen';
+import EmployeeAddModal from "./EmployeeAddModal";
+import ImportEmployee from "./ImportEmployee";
 
 const { Option } = Select;
 
@@ -53,7 +55,16 @@ export default class App extends React.Component {
       employeeName: "",
       employeeFirstName: "",
       employeeDesignation: "",
-      employeeEmail: ""
+      employeeEmail: "",
+      Name:'',
+      Email:'',
+      Designationname:'',
+      visible1:false,
+      visiblepro:false,
+      bench:"",
+      projectName:"",
+      availability:"",
+      profilePicPath:''
     };
 
     this.state = {
@@ -111,10 +122,10 @@ export default class App extends React.Component {
     this.fetchDesignations();
     console.log("mounting");
     this.getAllEmployees();
-     this.getTotalEmployee();
+    this.getTotalEmployee();
   }
 
-  fetchDesignations=()=> {
+  fetchDesignations() {
     var _this = this;
     axios
       .get(API_BASE_URL_EMP + "/getAllDesignation")
@@ -169,22 +180,19 @@ export default class App extends React.Component {
   };
 
   //fetching the employee with get all employee
-   getAllEmployees=()=> {
-     const url = API_BASE_URL_EMP + "/getallemployee";
-    // const response = await fetch(url);
-    // const data = await response.json();
-    // console.log(data);
-    // this.setState({
-    //   employees: data
-    // });
+  getAllEmployees=()=>{
+   
+var _this=this;
+    const url = API_BASE_URL_EMP + "/getallemployee";
     axios
     .get(url)
-    .then(res=> {
-        this.setState({
-          employees:res.data
-        })
-    })
-    console.log(this.state.employees);
+    .then(function (response) {
+      _this.setState({
+        employees:response.data
+      });
+    });
+   
+    console.log(_this.state.employees);
   }
   async getTotalEmployee() {
     const url = API_BASE_URL_EMP + "/getcount";
@@ -321,6 +329,80 @@ export default class App extends React.Component {
     this.setState({ searchText: "" });
   };
 
+  statuschange=(id)=>{
+console.log(id)
+    axios
+    .get("http://localhost:8081/defectservices/getemployee/"+id)
+    .then(resp => {
+      let audit = resp.data[0];
+      console.log(audit);
+      if(audit){
+        this.setState({ Name:audit.firstname,
+            Email:audit.email,
+            Designationname:audit.designationname,
+            visible1:true
+         });
+        }
+    });
+
+
+  }
+
+  showModalpro = (id) => {
+    axios
+    .get("http://localhost:8081/defectservices/getemployee/"+id)
+    .then(resp => {
+      let audit = resp.data[0];
+      console.log(resp.data);
+      if(audit){
+        this.setState({ Name:audit.firstname,
+            Email:audit.email,
+            Designationname:audit.designationname,
+            bench:"70%",
+            projectName:audit.projectName,
+            availability:audit.availability,
+            profilePicPath:audit.profilePicPath,
+            visiblepro:true
+         });
+        }else{
+          axios
+          .get("http://localhost:8084/employeeservice/getempolyeebyid/"+id)
+          .then(resp => {
+            let audit = resp.data;
+            this.setState({ Name:audit.firstname,
+              Email:audit.email,
+              Designationname:audit.designationname,
+              profilePicPath:audit.profilePicPath,
+              visiblepro:true,
+              bench:"Bench",
+            projectName:"Not allocated",
+            availability:"100%",
+          })  
+    });
+  }
+  
+     });
+  };
+  handleOkpro = () => {
+    this.setState({
+      ModalText: 'The modal will be closed after two seconds',
+      confirmLoading: true,
+    });
+    setTimeout(() => {
+      this.setState({
+        visiblepro: false,
+        confirmLoading: false,
+      });
+    }, 2000);
+  };
+  handleCancelpro = () => {
+    console.log('Clicked cancel button');
+    this.setState({
+      visiblepro: false,
+    });
+  };
+
+
   render() {
     // For Table functions
     let { sortedInfo, filteredInfo } = this.state;
@@ -407,13 +489,38 @@ export default class App extends React.Component {
       <React.Fragment>
         <div>
         <Col span={4}>
-        <EmployeeAddModal reload={this.getAllEmployees}/>
-            </Col>
-            <Col span={4}>
-            <ImportEmployee />
-            </Col>
-        
-            <br></br><br></br>
+            <EmployeeAddModal reload={this.getAllEmployees} />
+          </Col>
+          <Col span={4}>
+            <ImportEmployee  reload={this.getAllEmployees}/>
+          </Col>
+          <br/>
+          <br/>
+
+        <Modal
+          title={null}
+          visible={this.state.visiblepro}
+          onOk={this.handleOkpro}
+          // confirmLoading={confirmLoading}
+          onCancel={this.handleCancelpro}
+          width="600px"
+          footer={null}
+          headers={null}
+        >
+       <ProfileScreen 
+       Name={this.state.Name} 
+       Email={this.state.Email} 
+       Designationname={this.state.Designationname}
+       bench={this.state.bench}
+       projectName={this.state.projectName}
+       availability={this.state.availability}
+       profilePicPath={this.state.profilePicPath}
+       
+       />
+        </Modal>
+
+
+
           <Modal
             title="Edit Employee"
             visible={this.state.visible}
@@ -493,6 +600,16 @@ export default class App extends React.Component {
             pageSize: 10,
             showSizeChanger: true
             // showQuickJumper: true
+          }}
+
+          onRow={(record, rowIndex) => {
+            return {
+              // onClick: () => {this.showModalpro(record.empId)}, // click row
+              onDoubleClick: () => {this.showModalpro(record.empId)}, // double click row
+              // onContextMenu: event => {}, // right button click row
+              //  onMouseEnter: () => {this.showModalpro(record.empId)}, // mouse enter row
+              // onMouseLeave: event => {}, // mouse leave row
+            };
           }}
         />
       </React.Fragment>

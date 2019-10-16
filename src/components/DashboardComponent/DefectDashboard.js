@@ -264,10 +264,10 @@ componentDidMount(){
                                         textShadow: " 1px 6px 7px #c0c1c4",
                                         border: "#605877",
                                         zIndex: "5000",
-                                        borderRadius: "0.2em",
+                                        borderRadius: "0.7em",
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
                                     }} className="res">
-                                    <div>
+                                    <div style={{borderRadius: '0.4em'}}>
                                         <h1>Opened Defects</h1>
                                         <br></br>
                                         <div>
@@ -288,7 +288,7 @@ componentDidMount(){
                                         textShadow: " 1px 6px 7px #c0c1c4",
                                         border: "#605877",
                                         zIndex: "5000",
-                                        borderRadius: "0.2em",
+                                        borderRadius: "0.7em",
                                         minHeight: '80%',
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
                                     }}>
@@ -313,7 +313,7 @@ componentDidMount(){
                                         border: "#605877",
                                         textShadow: " 1px 6px 7px #c0c1c4",
                                         zIndex: "5000",
-                                        borderRadius: "0.2em",
+                                        borderRadius: "0.7em",
                                         minHeight: '80%',
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
                                     }}>
@@ -338,7 +338,7 @@ componentDidMount(){
                                         border: "#605877",
                                         textShadow: " 1px 6px 7px #c0c1c4",
                                         zIndex: "5000",
-                                        borderRadius: "0.2em",
+                                        borderRadius: "0.7em",
                                         minHeight: '80%',
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
                                     }}>

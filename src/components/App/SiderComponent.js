@@ -28,6 +28,7 @@ class SiderComponent extends React.Component {
           minHeight: "100vh",
           boxShadow: "2px 0 6px rgba(0,21,41,.35)"
         }}
+        
       >
         
         <div className="logo" >Defect Tracker</div>
@@ -125,7 +126,7 @@ class SiderComponent extends React.Component {
               <Link to="/projectallocation">
                 <Icon type="project" /><span>Project Allocation</span></Link>
             </Menu.Item>:""}
-
+           
           {/* Project Menu -----------------------------------------------------------------*/ }
           {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
             <Menu.Item key="13">

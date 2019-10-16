@@ -1,10 +1,9 @@
-import { Modal, Button, Form, message, Input, Select, Row, Col } from "antd";
+import { Modal, Button, Form, message, Input, Select, Row, Col,Upload,Icon } from "antd";
 import React from "react";
 import axios from "axios";
 import { API_BASE_URL_EMP } from '../../constants/index';
 
 const { Option } = Select;
-
 const emailRegex = RegExp(
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
 );
@@ -39,6 +38,7 @@ class EmployeeAddModal extends React.Component {
       employeeFirstName: "",
       employeeDesignation: "",
       employeeEmail: "",
+      employeePicture:"",
       visible: false,
       formerrors: {
         employeeId: "",
@@ -64,6 +64,8 @@ class EmployeeAddModal extends React.Component {
     this.fetchDesignations();
     console.log("mounting");
   }
+
+ 
 
   fetchDesignations() {
     var _this = this;
@@ -129,7 +131,10 @@ class EmployeeAddModal extends React.Component {
     this.setState({ formerrors, [name]: value }, () => console.log(this.state));
   };
 
-  handleOk = e => {
+  handleOk =( e,empId) => {
+
+    
+
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -145,15 +150,18 @@ class EmployeeAddModal extends React.Component {
         Employee Id: ${this.state.employeeId}
         Employee Name: ${this.state.employeeName}
         Employee FirstName:${this.state.employeeFirstName}
-        Employee Email: ${this.state.employeeEmail}      
+        Employee Email: ${this.state.employeeEmail}  
+        Employee Picture: ${this.state.employeePicture}    
       `);
 
-      const serverport = {
+      const empJson = {
         employeeid: this.state.employeeId,
         name: this.state.employeeName,
         firstname: this.state.employeeFirstName,
         designationid: this.state.employeeDesignation,
-        email: this.state.employeeEmail
+        email: this.state.employeeEmail,
+        profilePicPath:this.state.employeePicture
+
       };
 
       const user = {
@@ -163,34 +171,44 @@ class EmployeeAddModal extends React.Component {
         role: this.state.employeeDesignation,
         password: this.state.employeeName
       }
-      // axios
-      //   .post(
-      //     "http://localhost:8085/loginservice/api/auth/signup",
-      //     user
-      //   )
-      //   .then(res => console.log(res.data))
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
-      axios
-        .post(
-          API_BASE_URL_EMP + "/createemployee",
-          serverport
-        )
-        .then(res => {console.log(res.data)
-        
-        this.props.reload();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+this.setState({empJson})
+
+axios.post("http://localhost:8084/employeeservice/saveemployee", this.state.formData)
+.then(res => {
+        console.log(res.data);
+           
+            this.props.reload();
+       
+})
+    
     } else {
       console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
     }
 
-    this.props.reload();
+  
   };
+  onFileChangeHandler = (e) => {
+    console.log(this.state)
+    const formData = new FormData();
+    for(let i = 0; i< e.target.files.length; i++) {
+        formData.append('file', e.target.files[i])
+       
+    }
 
+    const data1={       
+      employeeid: this.state.employeeId,
+      name: this.state.employeeName,
+      firstname: this.state.employeeFirstName,
+      designationid: this.state.employeeDesignation,
+      email: this.state.employeeEmail,
+      profilePicPath:this.state.employeePicture
+      }
+    console.log(JSON.stringify(data1))
+    formData.append('extra',JSON.stringify(data1))
+    console.log(formData)
+    this.setState({formData})
+   
+};
   // post integration finishes
   state = { visible: false };
 
@@ -207,6 +225,7 @@ class EmployeeAddModal extends React.Component {
       employeeFirstName: "null",
       employeeDesignation: "null",
       employeeEmail: "null",
+      employeePicture:"null",
       visible: false
     });
 
@@ -395,6 +414,23 @@ class EmployeeAddModal extends React.Component {
                     </span>
                   )}
                 </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={6} style={{ padding: "5px" }}>
+              <Form.Item label="Profile Picture">
+              {/* {getFieldDecorator("employeePicture", {
+                    rules: [
+                      {
+                        required: true,
+                        message: "Please input your Photo!"
+                      }
+                    ]
+                  })(
+              
+                  )} */}
+                   <input type="file" className="form-control" name="file" multiple onChange={this.onFileChangeHandler}/>
+              </Form.Item>
               </Col>
             </Row>
           </Form>

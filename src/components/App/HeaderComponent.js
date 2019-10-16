@@ -19,6 +19,9 @@ import {Link} from 'react-router-dom';
 import axios from "axios";
 import index from './Login';
 import {  ROLE_NAME ,CURRENT_USER} from '../../constants/index';
+
+import "./Style.css"
+
 //import './Dashboard.css';
 const Search = Input.Search;
 const {Header} = Layout;
@@ -32,6 +35,7 @@ class HeaderComponent extends React.Component {
           currentUser: null,
           isAuthenticated: false,
           isLoading: false,
+          isBlinking:false
           
         }
         this.handleMenuClick = this.handleMenuClick.bind(this);   
@@ -49,7 +53,9 @@ state={
 featchdefectbyassign=()=>{
     axios.get("http://localhost:8081/defectservices/getDefectsByAssignTo/"+localStorage.getItem(CURRENT_USER))
             .then(res => {
-                console.log(res.data)
+
+                console.log(res.data.length)
+                let count=res.data.length;
                 let noti=res.data.map((post,index)=>{
                     return <Menu.Item key={index}>
                     <Avatar
@@ -85,8 +91,9 @@ featchdefectbyassign=()=>{
                     </div>
                 </Menu.Item> 
                 })
-this.setState({noti})
+this.setState({noti,count})
             })
+             this.setState({isBlinking:true})
 }
 
     componentDidMount() {
@@ -187,7 +194,7 @@ this.setState({noti})
 
             <Header
                 style={{
-                background: '#fff',
+                backgroundColor:"red",
                 paddingLeft: '14px',
                 position: 'relative',
                 height: '64px',
@@ -227,14 +234,20 @@ this.setState({noti})
                     <Col span={8}>
                         <Dropdown overlay={menu} trigger={["click"]}>
                             <a className="ant-dropdown-link" href="#">
-                                <Badge count={3} showZero>
-                                    <Icon
+                                <Badge count={this.state.count}  showZero>
+                                <span class="blink_me">
+
+                                <Icon
                                         style={{
                                         fontSize: "18px",
                                         float: "right"
                                     }}
                                         align="right"
                                         type="bell"/>
+                                </span>
+                                
+                                   
+                                    
                                 </Badge>
                             </a>
                         </Dropdown>

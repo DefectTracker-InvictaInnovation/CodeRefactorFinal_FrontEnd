@@ -15,7 +15,7 @@ export default class ImportEmployee extends React.Component {
     const { fileList } = this.state;
     const formData = new FormData();
     fileList.forEach(file => {
-      formData.append('files[]', file);
+      formData.append('uploadfile', file);
     });
 
     this.setState({
@@ -30,8 +30,8 @@ export default class ImportEmployee extends React.Component {
       processData: false,
       data: formData,
       success: () => {
+        this.props.reload()
         this.setState({
-          fileList: [],
           uploading: false
         });
         message.success("upload successfully.");
@@ -47,7 +47,7 @@ export default class ImportEmployee extends React.Component {
 
   onChange(info) {
     if (info.file.status !== "uploading") {
-      console.log(info.file, info.fileList);
+      console.log(info.file, info.uploadfile);
     }
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);

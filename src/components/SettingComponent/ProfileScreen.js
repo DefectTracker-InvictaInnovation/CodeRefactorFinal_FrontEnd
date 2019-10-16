@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    Breadcrumb, Row, Col, Button, Input, Icon
+    Breadcrumb, Row, Col, Button, Input, Icon,Avatar
 } from 'antd';
-import UserIcon from './images/user.png';
+
 
 class ProfileScreen extends React.Component {
 
@@ -30,13 +30,7 @@ class ProfileScreen extends React.Component {
     render() {
 
         return (
-            <React.Fragment>
-                <Breadcrumb style={{
-                    margin: '16px 0'
-                }}>
-                    <Breadcrumb.Item>User Component</Breadcrumb.Item>
-                    <Breadcrumb.Item>User Edit</Breadcrumb.Item>
-                </Breadcrumb>
+           
                 <div
                     style={{
                         padding: 24,
@@ -48,135 +42,67 @@ class ProfileScreen extends React.Component {
                     {/* first row */}
                     <Row>
                         <Col span={24}>
-                            <h2>Profile Photo</h2>
+                            <h2>Profile</h2>
                         </Col>
                     </Row>
                     <br />
 
                     {/* profile image area */}
                     <Row gutter={10}>
-                        <Col span={4}>
-                            <img src={UserIcon} alt="sorry no img" style={{ height: "10em" }} />
-                            {/* <Avatar
-                                style={{ backgroundColor: this.state.color, verticalAlign: "middle" }}
-                                size="large"
-                            >
-                                {this.state.user}
-                            </Avatar> */}
+                        <Col span={10}>
+                      
+                                      <Avatar size={140}src={this.props.profilePicPath} />
+                            
                         </Col>
-                        <Col span={20}>
-                            <h2>Upload Your Photo</h2>
-                            <p>Photo should be atleast 300px x 300px</p>
+                        <Col span={14}>
+                            <h2>{this.props.Name}</h2>
+                            <br/>
+                            <h3>{this.props.Email}</h3>
+                            <h3>{this.props.Designationname}</h3>
                             {/* upload button */}
-                            <Button type="primary" icon="upload" size={this.state.size}>
-                                Upload Photo
-                            </Button>
-
-                            <Button type="default" icon="camera" size={this.state.size} style={{ marginLeft: "1em" }}>
-                                Take Photo
-                            </Button>
+                           
                         </Col>
                     </Row>
 
                     <br /><br />
                     {/* form area     */}
                     <Row gutter={10}>
-                        <Col span={12}>
-                            <h2>Basic Information</h2>
-                            <br />
-
-                            {/* basic information form */}
-                            <form action="" style={{ width: "25em" }}>
-                                <label>Username</label>
-                                <Input
-                                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="Krish007"
-                                />
-                                <br /><br />
-                                <label>First Name</label>
-                                <Input
-                                    prefix={<Icon type="form" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="Kishanth"
-                                />
-                                <br /><br />
-                                <label>Last Name</label>
-                                <Input
-                                    prefix={<Icon type="form" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="Shanthakumar"
-                                />
-                                <br /><br />
-                                <label>Email</label>
-                                <Input
-                                    prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="kishanth001@gmail.com"
-                                />
-                                <br /><br />
-                                <label>Website</label>
-                                <Input
-                                    prefix={<Icon type="global" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    placeholder="www.krishglob.com"
-                                />
-                            </form>
-                            <br />
-                            <Button className="customBtn" icon="upload" size={this.state.size}>
-                                Update
-                            </Button>
-
+                        <Row>  <h2>Basic Information</h2></Row>
+                        <Row>
+                        <Col span={11}>
+                            <h3>Current Status  </h3>
                         </Col>
-                        <Col span={12}>
-                            <h2>Change Password</h2>
-                            <br />
-
-                            <form action="" style={{ width: "25em" }}>
-                                <label>Verify Current Password</label>
-                                <Input
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                                <br /><br />
-                                <label>New Password</label ><span style={{ marginLeft: "6.5em", textDecoration: "underline", color: "blue" }}>Generate Strong Password</span>
-                                <Input
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                                <br />  <br />
-
-                                {/* list items for password warnings 
-                                <Row gutter={2}>
-                                    <Col span={12}>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />One LowerCase Character</div>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />One UpperCase Character</div>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />One Number</div>
-                                    </Col>
-                                    <Col span={12}>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />One Special Character</div>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />8 Character Minimum</div>
-                                        <div style={{ color: "#ff8246" }}><Icon type="warning" theme="filled" />50 Character Maximum</div>
-                                    </Col>
-                                < /Row>*/
-                                }
-                                <br />
-                                <br />
-                                <label>Verify New Password</label>
-                                <Input
-                                    prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                                    type="password"
-                                    placeholder="Password"
-                                />
-                            </form>
-                            <br />
-                            <div className="customBtn">
-                                <Button icon="upload" size={this.state.size}>
-                                    Update
-                            </Button>
-                            </div>
+                        <Col span={2}>
+                        <h3> :  </h3>
                         </Col>
+                        <Col span={11}>
+                            <h3>{this.props.bench}</h3>      
+                        </Col>
+                        </Row>
+                        <Row>  <Col span={11}>
+                            <h3>Working Project </h3>  
+                        </Col>
+                        <Col span={2}>
+                        <h3> :  </h3>
+                        </Col>
+                        <Col span={11}>
+                            <h3>{this.props.projectName}</h3>
+                        </Col></Row>
+
+                        <Row>
+                        <Col span={11}>
+                          <h3>Working Availability </h3>
+                        </Col>
+                        <Col span={2}>
+                        <h3> :  </h3>
+                        </Col>
+                        <Col span={11}>
+                            <h3>{this.props.availability}</h3>          
+                        </Col>
+                        </Row>
                     </Row>
                 </div>
 
-            </React.Fragment>
 
         );
     }

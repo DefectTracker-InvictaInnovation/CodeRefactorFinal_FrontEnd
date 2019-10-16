@@ -1,16 +1,20 @@
 import React from "react";
 import { Drawer, Button, Row, Col, Checkbox } from "antd";
+import { ROLE_NAME ,CURRENT_USER,API_BASE_URL_PRODUCT} from '../../constants/index';
+import axios from "axios";
 
 const CheckboxGroup = Checkbox.Group;
 
-const plainOptions = ['Opened Defects', 'Fixed Defects', 'Reopened Defects', 'Rejected Defects', 'Severity Meter', 'DoughnutChart', 'LineChart', 'Projects', 'Project Managers', 'QA Leads', 'Tech Leads', 'Software Engineers', 'QA Engineers', 'Productivity Meter', 'Timeline', 'Our Clients', 'Defect Status Chart', 'Defect', 'RadarChart', 'Total Defect', 'Severity & Priority', 'Success Ratio', 'Defects Ratio', 'Software Engineers', 'Software Engineers', 'QA Engineers'];
-const defaultCheckedList = ['Opened Defects', 'Reopened Defects'];
+const plainOptions = ['CompanyClientTable', 'CompanyProductivityMeter', 'CompanyTimeLine', 'DefectPriorityAndSeverityChart', 'DefectTypeDoughnutChart', 'DeveloperDefectDetail', 'DeveloperDefectPercentage', 'DeveloperDefectStatusChart', 'DeveloperLineChart', 'DeveloperPrioChart', 'DeveloperRadarChart', 'PMprojectMemberTable', 'SeverityMeter'];
+const defaultCheckedList = [];
+
 export default class DashboardConfig extends React.Component {
     state = {
         visible: false,
-        checkedList: defaultCheckedList,
+        selectedlist:[],
         indeterminate: true,
-        checkAll: false
+        checkAll: false,
+        id:''
     };
 
     showDrawer = () => {
@@ -34,12 +38,89 @@ this.props.dashconfig(checkedList);
         });
     };
 
+    postConfigure =()=>{
+        console.log(this.state.checkedList)
+        const obj = {
+            roleName:localStorage.getItem(ROLE_NAME),
+            userName: localStorage.getItem(CURRENT_USER),
+            dashboardList:this.state.checkedList,
+
+          }
+          axios
+            .post(API_BASE_URL_PRODUCT +'/createdashboardconfig',obj)
+            .then(res => {
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+    }
+
+  componentDidMount(){
+      
+        axios
+        .get(API_BASE_URL_PRODUCT +'/getbyusername/'+localStorage.getItem(CURRENT_USER))
+        .then(res => {
+            if(res.data.length>0){
+            let selectedlist=res.data[0].dashboardList;
+
+            const con=[];
+
+            for(var i=0;i<selectedlist.length;i++){
+                defaultCheckedList.push(selectedlist[i])
+            }
+        }
+             console.log(res.data.length)
+            //  this.setState({con});
+            // console.log(this.state.selectedlist)
+        
+
+        });
+
+      
+    }
+
+ 
+    state={
+        checkedList:defaultCheckedList,
+    }
+
+    refs=()=>{
+        this.props.reload();
+    }
+
     onCheckAllChange = e => {
         this.setState({
             checkedList: e.target.checked ? plainOptions : [],
             indeterminate: false,
             checkAll: e.target.checked,
         });
+    }
+
+    editConfigure=()=>{
+         axios
+        .get(API_BASE_URL_PRODUCT +'/getbyusername/'+localStorage.getItem(CURRENT_USER))
+        .then(res => {
+            const obj = {
+                configId:res.data[0].configId,
+                roleName:res.data[0].roleName,
+                userName: localStorage.getItem(CURRENT_USER),
+                dashboardList:this.state.checkedList,
+    
+              }
+              console.log(obj)
+            axios
+            .put(API_BASE_URL_PRODUCT +'/updatedashboardconfig/'+res.data[0].configId,obj)
+            .then(res => {
+                this.props.reload();
+                 console.log(res.data)
+               
+            })
+            this.setState({
+                visible: false
+            });
+    
+        })
+
     }
     render() {
         return (
@@ -58,7 +139,7 @@ this.props.dashconfig(checkedList);
                                     placement="right"
                                     closable={false}
                                     onClose={this.onClose}
-                                    width="220px"
+                                    width="300px"
                                     visible={this.state.visible}
                                     style={{ marginLeft: "18%" }}
                                 >
@@ -73,12 +154,19 @@ this.props.dashconfig(checkedList);
                                             </Checkbox>
                                     </div>
                                     <br />
-                                    <CheckboxGroup style={{ width: '160px' }}
+                                    <CheckboxGroup style={{ width: '240px' }}
                                         options={plainOptions}
                                         value={this.state.checkedList}
                                         onChange={this.onChange}
+                                        defaultValue={this.state.selectedlist}
                                     />
-
+                                    <br/>
+                                    <Row>
+                                       
+                                        <Col span={12}><Button type="dashed" onClick={this.postConfigure}>Configure</Button></Col>
+                                        <Col span={12}><Button type="dashed" onClick={this.editConfigure}>EditConfigure</Button></Col>
+                                    </Row>
+                                   
                                 </Drawer>
 
                             </Col>
