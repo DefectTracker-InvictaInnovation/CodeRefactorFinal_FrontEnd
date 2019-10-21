@@ -89,7 +89,7 @@ export default class Allocation extends React.Component {
 
   this.state = {
     loading: false,
-    // visible: false,
+    visible: false,
     project: [],
     employee: [],
     targetKeys: originTargetKeys,
@@ -175,11 +175,10 @@ export default class Allocation extends React.Component {
 
 
 
-  handleOk = e => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
+  handleOk = () => {
+    // console.log(e);
+    this.close();
+    
   };
 
   handleCancel = () => {
@@ -254,22 +253,15 @@ export default class Allocation extends React.Component {
           this.setState = {
             data1
           }
-          console.log(this.state.data1)
+          console.log(data1)
           axios
             .post(
               "http://localhost:8081/defectservices/saveresourceTable",
               data1
             )
-            .then(res =>{console.log(res.data)
-            
-              this.setState=({ 
-      
-                visible: false ,
-              })
+            .then(res =>{console.log(res.data)          
             
             }
-            
-            
             )
             .catch(error => {
               console.log(error);
@@ -280,6 +272,12 @@ export default class Allocation extends React.Component {
 
     });
 
+  }
+
+  close=()=>{
+    this.setState({
+      visible: false,
+    });
   }
   //aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   render() {

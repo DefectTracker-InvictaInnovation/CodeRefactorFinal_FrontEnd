@@ -271,7 +271,10 @@ class Model extends React.Component {
       axios
         .post(
           "http://localhost:8081/defectservices/createproject", projectData)
-        .then(res => console.log(res.data))
+        .then(res => {console.log(res.data)
+        this.props.reload()
+        
+        })
         .catch(error => {
           console.log(error);
         });

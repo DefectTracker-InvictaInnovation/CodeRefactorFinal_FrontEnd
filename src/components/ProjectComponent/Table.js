@@ -3,6 +3,7 @@ import Highlighter from "react-highlight-words";
 import React from "react";
 import EditModel from "./EditModel";
 import axios from "axios";
+import Model from './Model';
 
 function confirm(e) {
   console.log(e)
@@ -63,7 +64,7 @@ export default class App extends React.Component {
   };
 
 
-  getAllProjects() {
+  getAllProjects=()=> {
     const obj = {
       projectName: this.state.projectName,
       duration: this.state.duration,
@@ -260,14 +261,21 @@ export default class App extends React.Component {
       }
     ];
 
-    return <Table id="countData" columns={columns} dataSource={this.state.projects} pagination={{
-      total: this.state.Total,
-      showTotal: (total, range) =>
-        `${range[0]}-${range[1]} of ${total} items`,
-      pageSize: 10,
-      showSizeChanger: true
-      // showQuickJumper: true
-    }} />;
+    return(
+      <div>
+        <Model/>
+     <br/>
+      <Table id="countData" columns={columns} dataSource={this.state.projects} pagination={{
+        total: this.state.Total,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} items`,
+        pageSize: 10,
+        showSizeChanger: true
+        // showQuickJumper: true
+      }} 
+      reload={this.getAllProjects()}/>
+       </div>
+    )
   }
 }
 // ReactDOM.render(<Pagination defaultCurrent={1} total={50} />, document.getElementById('container'));
