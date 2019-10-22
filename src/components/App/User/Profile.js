@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
- import { Avatar, Tabs } from 'antd';
+ import { Avatar, Tabs,Row,Col,} from 'antd';
+ import UserIcon from '../../SettingComponent/images/user.png';
  import { getAvatarColor } from './Colors';
 import './Profile.css';
 import axios from "axios";
@@ -78,54 +79,100 @@ class Profile extends Component {
 
         return (
             <div className="profile">
-                { 
-                    this.state.user ? (
-                        <div className="user-profile">
-                            <div className="user-details" 
-                            style={{
-                                marginbottom: "44px",
-                                paddingtop: "40px",
-                                paddingbottom: "20px",
-                                margin: "auto" ,
-                                textalign: "center",
-                             } }
-                            >
-                                <div className="user-avatar">
-                              
-                                    <Avatar className="user-avatar-circle"   
-                                    style={{ backgroundColor: getAvatarColor(this.state.user.name), lineheight: "120px",fontsize: "40px", left: 0 ,width: "120px",
-                                                height: "120px",
-                                                borderradius: "60px",
-                                                lineheight:"60px" 
-                                            }}>
-                                         {this.state.user.name[0].toUpperCase()}
-                                    </Avatar>
+            { 
+                this.state.user ? (
+                    <div className="user-profile">
+                        <div className="user-details" 
+                        style={{
+                            marginbottom: "44px",
+                            paddingtop: "40px",
+                            paddingbottom: "20px",
+                            margin: "auto" ,
+                            textalign: "center",
+                         } }
+                        >
+                            <div className="user-avatar">
+                          
+                                <Avatar className="user-avatar-circle"   
+                                style={{ backgroundColor: getAvatarColor(this.state.user.name), lineheight: "120px",fontsize: "40px", left: 0 ,width: "120px",
+                                            height: "120px",
+                                            borderradius: "60px",
+                                            lineheight:"60px" 
+                                        }}>
+                                     {this.state.user.name[0].toUpperCase()}
+                                </Avatar>
+                            </div>
+                            <div className="user-summary">
+                            <br/>
+                                <div className="full-name" style={{width:"180px"}}>
+                                {this.state.user.name}
                                 </div>
-                                <div className="user-summary">
-                                    <div className="full-name" style={{width:"180px"}}>
-                                    {this.state.user.name}
+                               
+                                <div className="username">
+                                    
                                     </div>
-                                    <div className="username">
-                                        @{this.state.user.username}
-                                        </div>
-                                    <div className="user-joined">
-                                        {/* Joined {formatDate(this.state.user.joinedAt)} */}
-                                    </div>
+                                <div className="user-joined">
+                                    {/* Joined {formatDate(this.state.user.joinedAt)} */}
                                 </div>
                             </div>
-                            <div className="user-poll-details">    
-                                {/* <Tabs defaultActiveKey="1" 
-                                    animated={false}
-                                    tabBarStyle={tabBarStyle}
-                                    size="large"
-                                    className="profile-tabs">
-                                   
-                                </Tabs> */}
-                            </div>  
-                        </div>  
-                    ): null               
-                }
-            </div>
+                        </div>
+                        
+                        <div
+                style={{
+                    padding: 24,
+                    background: '#fff',
+                    minHeight: '500px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                }}> 
+                    
+                {/* profile image area */}
+                <Row gutter={10}>
+                    <Col span={4}>
+                        <img src={UserIcon} alt="sorry no img" style={{ height: "10em" }} />
+                        {/* <Avatar
+                            style={{ backgroundColor: this.state.color, verticalAlign: "middle" }}
+                            size="large"
+                        >
+                            {this.state.user}
+                        </Avatar> */}
+                    </Col>
+                   
+                </Row>
+                <Row gutter={10}>
+                    <Col span={12}>
+                        <h2>Basic Information</h2>
+                        <br />
+
+                        {/* basic information form */}
+                        <form action="" style={{ width: "25em" }}>
+                            <label style={{ color: 'blue' }}>User Name :- </label>
+                            <lable>  {this.state.user.username} </lable>
+                            <br /><br />
+                            <label style={{ color: 'blue' }}>First Name :- </label>
+                            <label>{this.state.user.name}</label>
+                            <br /><br />
+                            <label style={{ color: 'blue' }}>Last Name :- </label>
+                            <lable>  {this.state.user.lastname} </lable>
+                            <br /><br />
+                            <label style={{ color: 'blue' }}>Email :- </label>
+                            <label > {this.state.user.email} </label>
+                            <br /><br />  
+                            <label style={{ color: 'blue' }}>Role :- </label>
+                            <label>{this.state.user.role[0].name}</label>                        
+                           
+                        </form>
+                       
+                        
+                        
+
+                    </Col>
+                    
+                </Row>
+                </div>  
+                    </div> 
+                ): null               
+            }
+        </div>
         );
     }
 }
