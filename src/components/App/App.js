@@ -169,6 +169,10 @@ else if(localStorage.getItem(ROLE_NAME)==='ROLE_DEVELOPER'){
   history.push('/dashboard/developer');
   console.log("ROLE_DEVELOPER")
 }
+else if(localStorage.getItem(ROLE_NAME)==='ROLE_HR'){
+  history.push('/dashboard/product');
+  console.log("ROLE_HR")
+}
 else if(localStorage.getItem(ROLE_NAME)==='ROLE_PRODUCT_ADMIN'){
   history.push('/productadministration');
   console.log("ROLE_DEVELOPER")

@@ -191,6 +191,7 @@ export default class Model extends React.Component {
                     placeholder="Project Id"
                     value={this.state.projectId}
                     onChange={this.onChangeprojectId}
+                    disabled
                   />
                 </Form.Item>
               </Col>

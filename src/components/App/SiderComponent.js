@@ -68,10 +68,14 @@ class SiderComponent extends React.Component {
             <Menu.Item key="5">
               <Link to="/dashboard/qa">QA</Link>
             </Menu.Item> :""}
+            {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
+            <Menu.Item key="6">
+              <Link to="/dashboard/product">Product</Link>
+            </Menu.Item> :""}
           </SubMenu>
 
           {/* Product Administration Menu  -----------------------------------------------------------------*/ }
-          {localStorage.getItem(ROLE_NAME)==='ROLE_PRODUCT_ADMIN' ? 
+          {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
             <Menu.Item key="6">
               <Link to="/productadministration">
                 <Icon type="project" /><span>Product Administration</span></Link>
@@ -85,7 +89,7 @@ class SiderComponent extends React.Component {
             </Menu.Item>:""}
 
           {/* Company Menu -----------------------------------------------------------------*/ }
-
+          {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ?
           <SubMenu
             key="sub2"
             title={
@@ -111,7 +115,7 @@ class SiderComponent extends React.Component {
             <Menu.Item key="10"> 
               <Link to="/company/employee">Employee</Link>
             </Menu.Item>:""}
-          </SubMenu>
+          </SubMenu>:""}
 
           {/* Module Menu -----------------------------------------------------------------*/ }
           {localStorage.getItem(ROLE_NAME)==='ROLE_PM' ? 
