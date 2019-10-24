@@ -230,7 +230,7 @@ export default class App extends React.Component {
           </span>
         )
       },
-      {
+     /* {
         title: "Delete ",
         dataIndex: "delete",
         key: "delete",
@@ -258,7 +258,7 @@ export default class App extends React.Component {
             </Popconfirm>
           </span>
         )
-      }
+      }*/
     ];
 
     return(
