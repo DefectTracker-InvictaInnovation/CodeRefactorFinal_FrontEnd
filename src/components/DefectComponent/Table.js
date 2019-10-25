@@ -678,7 +678,7 @@ class TableFilter extends React.Component {
       enteredBy: "enterby",
       fixedBy: "fixed",
       availableIn: " availableIn ",
-      foundIn: "foundIn",
+      foundIn: this.state.foundIn,
       dateAndTime: "2015-05-05"
     };
 
@@ -1478,11 +1478,11 @@ openmore=(record)=>{
                     name="enteredBy"
                     type="text"
                     value={this.state.enteredBy}
-                    
+                    disabled
                   >
-                    <Option value="user1">User 1</Option>
+                    {/* <Option value="user1">User 1</Option>
                     <Option value="user2">User 2</Option>
-                    <Option value="user3">User 3</Option>
+                    <Option value="user3">User 3</Option> */}
                   </Select>
                  
                    
@@ -1495,11 +1495,11 @@ openmore=(record)=>{
                 <Form.Item label="Found In ">
                 <Select
                  
-                id="foundIn"
+                       id="foundIn"
                        placeholder="Found In "
                        //value={this.state.foundIn}
                        //onChange={this.handlechange}
-                       name="foundIn"
+                      //  name="foundIn"
                        type="text"
                        value={this.state.foundIn}
                     onChange={this.handleChangeFoundIn}
