@@ -679,7 +679,7 @@ class TableFilter extends React.Component {
       fixedBy: "fixed",
       availableIn: " availableIn ",
       foundIn: this.state.foundIn,
-      dateAndTime: "2015-05-05"
+      dateAndTime: this.state.dateAndTime
     };
 
     console.log("dddddddddddddddddddd" + defectList);
@@ -925,6 +925,10 @@ console.log(mail);
   handleChangeFoundIn = value => {
     this.setState({ foundIn: value });
   };
+
+  handleChangeDateandTime = value =>{
+    this.setState({dateAndTime:value})
+  }
   // handleChangeFixedIn = value => {
   //    this.setState({ type: value });
   //};
@@ -1698,9 +1702,9 @@ openmore=(record)=>{
               <p>
                 <b>Status:</b>
               </p>
-              <p>
+              {/* <p>
                 <b>Comments:</b>
-              </p>
+              </p> */}
               <p>
               </p>
               
@@ -1750,10 +1754,10 @@ openmore=(record)=>{
                 {this.state.status}
               </p>
 
-              <p>{this.state.comment}</p>
+              {/* <p>{this.state.comment}</p> */}
             </Col>
           </Row>
-          <Row>
+          {/* <Row>
             <Col span={10} style={{ padding: "5px" }}>
               <Button
               id=" ViewAttachments"
@@ -1792,7 +1796,7 @@ openmore=(record)=>{
                 </Button>
               </Upload>
             </Col>
-          </Row>
+          </Row> */}
           {/* <Divider /> */}
           {/* <h3>Comments</h3> */}
           {/* {comments.length > 0 && <CommentList comments={comments} />} */}

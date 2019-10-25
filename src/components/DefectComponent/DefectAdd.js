@@ -52,9 +52,9 @@ class DefectAdd extends React.Component {
       enteredBy: "",
       fixedBy: "FixedBy",
       availableIn: "Available",
-      foundIn: "FoundIn",
+      foundIn: "",
       fixedIn: "FixedIn",
-      dateAndTime: "2015-08-02",
+      dateAndTime: "",
 
       visible: false,
       formerrors: {
@@ -261,6 +261,10 @@ class DefectAdd extends React.Component {
 
   handleChangeFoundIn = value => {
     this.setState({ foundIn: value });
+  };
+
+  handleChangeDateAndTime = value => {
+    this.setState({ dateAndTime: value });
   };
 
   handleChangeAssignTo = value => {
