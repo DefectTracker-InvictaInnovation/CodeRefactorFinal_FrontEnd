@@ -1,8 +1,9 @@
-import { Modal, Form, Row, Col, message,Input, Icon, DatePicker } from "antd";
+import { Modal, Form, Row, Col, message,Input, Icon, DatePicker,Select } from "antd";
 import Table from "./Table"
 import React from "react";
 import axios from "axios";
 import moment from "moment";
+const { Option } = Select;
 
 function confirm(e) {
   console.log(e)
@@ -32,11 +33,20 @@ export default class Model extends React.Component {
       endDate: '',
       status: '',
       type: '',
+      projecttype:[],
+      projectstatus:[]
     }
+
+    this.fetchTypes = this.fetchTypes.bind(this);
+    this.onChangeType = this.onChangeType.bind(this);
+    this.fetchStatus = this.fetchStatus.bind(this);
+    this.onChangeStatus = this.onChangeStatus.bind(this);
   };
   // state= {visibleEditModal:false};
   componentDidMount() {
     this.handleEdit(this.props.projectProps)
+    this.fetchTypes();
+    this.fetchStatus();
 
   }
   toggleDisable = () => {
@@ -54,25 +64,49 @@ export default class Model extends React.Component {
       projectName: e.target.value
     });
   };
-  onChangeType = e => {
-    console.log("checked = ", e.target.checked);
+  onChangeType = (value) => {
     this.setState({
-      type: e.target.value
+      type: `${value}`
     });
+    console.log(this.state.type);
   };
+
+  fetchTypes() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/getallprojecttype")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ projecttype: response.data });
+        console.log(_this.state.projecttype);
+      });
+  }
+
   onChangeDuration = e => {
     console.log("checked = ", e.target.checked);
     this.setState({
       duration: e.target.value
     });
   };
-  onChangeStatus = e => {
-    console.log("checked = ", e.target.checked);
+  onChangeStatus = (value) => {
     this.setState({
-      status: e.target.value
+      status: `${value}`
     });
+    console.log(this.state.status);
   };
 
+  fetchStatus() {
+    var _this = this;
+    axios
+      .get('http://localhost:8081/defectservices/getallprostatus')
+      .then(function (response) {
+
+        // handle success
+        console.log(response.data);
+        _this.setState({ projectstatus: response.data });
+        console.log(_this.state.projectstatus);
+      });
+  }
   onChange = e => {
     console.log("checked = ", e.target.checked);
     this.setState({
@@ -210,11 +244,21 @@ export default class Model extends React.Component {
             <Row gutter={16}>
               <Col span={8}>
                 <Form.Item label="Type">
-                  <Input
-                    placeholder="Type"
-                    value={this.state.type}
-                    onChange={this.onChangeType}
-                  />
+                <Select
+                      id="SelectType"
+                      placeholder="Type "
+                      defaultValue="Select Type"
+                      value={this.state.type}
+                      onChange={this.onChangeType}
+                    >
+                      {this.state.projecttype.map(function (item, index) {
+                        return (
+                          <Option key={index} value={item.projecttypeName}>
+                            {item.projecttypeName}
+                          </Option>
+                        );
+                      })}
+                    </Select>
                 </Form.Item>
               </Col>
 
@@ -256,11 +300,21 @@ export default class Model extends React.Component {
 
               <Col span={12} style={{ padding: "5px" }}>
                 <Form.Item label="Status">
-                  <Input
-                    placeholder="Status"
-                    value={this.state.status}
-                    onChange={this.onChangeStatus}
-                  />
+                <Select
+                        id="status"
+                        placeholder="Status"
+                        name="status"
+                        onChange={this.onChangeStatus}
+                        value={this.state.status}
+                      >
+                        {this.state.projectstatus.map(function (item, index) {
+                        return (
+                          <Option key={index} value={item.projectstatusName}>
+                            {item.projectstatusName}
+                          </Option>
+                        );
+                      })}
+                      </Select>
                 </Form.Item>
               </Col>
               {/* 

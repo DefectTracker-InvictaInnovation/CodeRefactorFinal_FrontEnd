@@ -71,7 +71,8 @@ export default class App extends React.Component {
       searchText: "",
       employees: [],
       patients: [],
-      Total: ""
+      Total: "",
+      des:[]
     };
   }
 
@@ -134,7 +135,7 @@ export default class App extends React.Component {
 
         let des= response.data.map(function (item, index) {
           return (
-            <Option key={index} value={item.designationname}>
+            <Option key={index} value={item.designationid}>
               {item.designationname}
             </Option>
           );
@@ -156,8 +157,8 @@ export default class App extends React.Component {
       email: this.state.employeeEmail
     };
     axios
-      .put(API_BASE_URL_EMP + "/update/" + empId, obj)
-      .then(response => this.getAllEmployees());
+      .put(API_BASE_URL_EMP +"/update/"+ empId, obj)
+      // .then(response => this.getAllEmployees());
     this.setState({
       employeeautoId: "",
       employeeId: "",
