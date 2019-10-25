@@ -1,494 +1,596 @@
-import React from 'react';
-import {
-    Breadcrumb, Row, Col, Progress, Icon, Button, Menu, message, Dropdown, Table, Divider, Tag, Timeline
-} from 'antd';
-import { Chart } from 'primereact/chart';
-import './index.css';
-import clients from './images/client.png';
-import license1 from "./images/license1.png";
-import license2 from './images/license2.png';
-import license3 from './images/license3.png';
-import license4 from './images/license4.png';
 
+    import React from 'react';
+    import { Table, Divider, Modal, Button, Icon, Form, Input, Popconfirm, message,Select,TreeSelect } from 'antd';
+    // import { SketchPicker } from 'react-color';
+    // import reactCSS from 'reactcss';
+    import axios from 'axios';
+    import { Row, Col } from 'antd';
 
-
-const doughData = {
-    labels: ['A','B','C'],
-    datasets: [
-        {
-            data: [300, 50, 100],
-            backgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ],
-            hoverBackgroundColor: [
-                "#FF6384",
-                "#36A2EB",
-                "#FFCE56"
-            ]
-        }]    
+    const TreeNode = TreeSelect.TreeNode;
+    const Option = Select.Option;
+    
+    const NameRegex = RegExp(/^[a-zA-Z ]+$/);
+    //const ValidRegex = RegExp(/^[0-9a-zA-Z]+$/);
+    
+    const formValid = ({ formErrors, ...rest }) => {
+      let valid = true;
+    
+      // validate form errors being empty
+      Object.values(formErrors).forEach(val => {
+        val.length > 0 && (valid = false);
+      });
+    
+      // validate the form was filled out
+      Object.values(rest).forEach(val => {
+        val === null && (valid = false);
+      });
+    
+      return valid;
     };
-
-//table data column setting
-const columns = [
-    {
-        title: 'Company Name',
-        dataIndex: 'name',
-        key: 'name',
-        render: text => <a href="javascript:;">{text}</a>,
-    },
-    {
-        title: 'Company Email',
-        dataIndex: 'email',
-        key: 'email',
-    },
-    {
-        title: 'License Type',
-        key: 'tags',
-        dataIndex: 'tags',
-        render: tags => (
-            <span>
-                {tags.map(tag => {
-                    let color;
-                    if (tag === 'License 4' || tag === 'License 3') {
-                        color = 'volcano';
-                    }
-                    else if (tag === 'License 2') {
-                        color = 'blue';
-                    }
-                    else if (tag === 'License 1') {
-                        color = "green"
-                    }
-
-                    return (
-                        <Tag color={color} key={tag}>
-                            {tag.toUpperCase()}
-                        </Tag>
-                    );
-                })}
-            </span>
-        ),
-    }
-];
-
-//data for the table
-const tabledata = [
-    {
-        key: '1',
-        name: 'Virtusa',
-        email: 'abc@gmail.com',
-        tags: ['License 1']
-    },
-    {
-        key: '1',
-        name: 'Mitra Innovations',
-        email: 'def@gmail.com',
-        tags: ['License 2']
-    },
-    {
-        key: '1',
-        name: 'Virtusa',
-        email: 'ghi@gmail.com',
-        tags: ['License 3']
-    },
-];
-
-//data source for radar chart
-const radarData = {
-    datasets: [{
-        data: [
-            5,
-            7,
-            9,
-            4,
-        ],
-        backgroundColor: [
-            "#FF6384",
-            "#4BC0C0",
-            "#FFCE56",
-            "#E7E9ED",
-        ],
-        label: 'My dataset'
-    }],
-    labels: [
-        "Platinum",
-        "Gold",
-        "Silver",
-        "Bronze"
-    ]
-};
-
-// handling the menu for filter
-function handleMenuClick(e) {
-    message.info("Click on menu item.");
-    console.log("click", e);
-}
-
-
-// filter icon specs
-const menu = (
-    <Menu onClick={handleMenuClick}>
-        <Menu.Item key="1">
-            <Icon type="user" />
-            Type 1
-      </Menu.Item>
-        <Menu.Item key="2">
-            <Icon type="user" />
-            Type 2
-      </Menu.Item>
-        <Menu.Item key="3">
-            <Icon type="user" />
-            Type 3
-      </Menu.Item>
-    </Menu>
-);
-
-
-class ProductAdministration extends React.Component {
-
-    /*
-    Author: 
-    Last Updated: dd/MM/YYYY
-    Note: Please do necessary commenting and follow code standard.
-      */
-    // constructor(props) {
-    //     super(props);
-    // }
-
-
-
-    componentWillMount() {
-    }
-
-
-
-    render() {
-
-
+    
+    export default class ProductAdministration extends React.Component {
+      state = {
+        visible: false,
+        visibleEditModal: false,
+        DefectType: [],
+    
+        def: [],
+        CountDefectType: []
+    
+      };
+    
+    
+      constructor(props) {
+        super(props);
+        //this.onChangeName = this.onChangeName.bind(this);
+        //this.onChangeValue = this.onChangeValue.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleOk = this.handleOk.bind(this);
+        this.handleEditOk = this.handleEditOk.bind(this);
+        this.deleteDefect = this.deleteDefect.bind(this);
+    
+    
+        this.state = {
+          name: '',
+          value: '',
+          // id: '',
+          formErrors: {
+            name: "",
+            value: ""
+            //id: ""
+          }
+        }
+      };
+    
+    
+      componentDidMount() {
+        //this.componentWillMount();
+        this.getdefectType();
+        this.getCountDefectType();
+        //setInterval(this.componentWillMount);
+    
+      }
+      // onChangeName(e) {
+      //   this.setState({
+      //     name: e.target.value
+      //   })
+      // };
+      // onChangeValue(e) {
+      //   this.setState({
+      //     value: e.target.value
+      //   })
+      //};
+    
+      showModal = () => {
+        this.setState({
+          visible: true,
+        });
+      };
+    
+      getdefectType() {
+        const url = 'http://localhost:8083/productservice/defecttypes';
+        axios.get(url)
+    
+          .then(response => this.setState({
+            DefectType: response.data,
+          }))
+          .catch(function (error) {
+            console.log(error);
+          });
+    
+      }
+    
+      getCountDefectType() {
+        const url = 'http://localhost:8083/productservice/defecttype';
+        axios.get(url)
+          .then(response => this.setState({
+            CountDefectType: response.data,
+          }))
+          .catch(function (error) {
+            console.log(error);
+          });
+    
+      }
+    
+    
+      editDefect = (id) => {
+        this.showEditModal();
+        this.setState({ id: id })
+        console.log(id);
+    
+        axios.get('http://localhost:8083/productservice/defecttype/' + id)
+    
+          .then(response => {
+            this.setState({
+              name: response.data.name,
+              value: response.data.value
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+          })
+        this.setState({ visible: false })
+      }
+    
+      deleteDefect(id) {
+    
+        console.log(id)
+    
+        fetch(`http://localhost:8083/productservice/defecttype/` + id, {
+    
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.state)
+        })
+        console.log(id);
+        const DefectType = this.state.DefectType.filter(DefectType => {
+          return DefectType.id !== id;
+        });
+        this.setState({
+          DefectType
+        })
+        this.getCountDefectType();
+        message.error("Defect Type Successfully Deleted");
+      }
+    
+      handleOk = e => {
+        this.getdefectType();
+        const obj = {
+          name: this.state.name,
+          value: this.state.value,
+        }
+        if (this.state.name === "" || this.state.value === "" || (!NameRegex.test(this.state.name) || !NameRegex.test(this.state.value))) {
+          message.warn("Invalid Data");
+        }
+    
+        else if (NameRegex.test(this.state.name) && NameRegex.test(this.state.value)) {
+          // axios.post('http://localhost:8081/defectservice/defecttype/', obj)
+          //   .then(res => this.getdefectType());
+          axios.post('http://localhost:8083/productservice/defecttype/', obj).then((response) => {
+            // console.log(response);
+            this.setState({ events: response.data })
+            if (response.data.status === "OK") {
+              message.success("Defect Type Successfully Added");
+              this.getdefectType();
+              this.getCountDefectType();
+            }
+          })
+            .catch((error) => {
+              console.log(error);
+              message.warn("Invalid Data");
+            });
+        }
+    
+        // else if (newName.length < 2 || newName.length > 15 || newValue.length < 10 || newValue.length > 50) {
+        //   message.warn("aaaa");
+        // }
+    
+    
+        this.setState({
+          formErrors: {
+            name: "",
+            value: ""
+            //id: ""
+          },
+          visible: false,
+          name: "",
+          value: ""
+        })
+    
+      };
+    
+      handleEditOk = (id) => {
+    
+        const obj = {
+          id:this.state.id,
+          name: this.state.name,
+          value: this.state.value
+        }
+    
+        if (this.state.name === "" || this.state.value === "" || (!NameRegex.test(this.state.name) || !NameRegex.test(this.state.value))) {
+          message.warn("Invalid Data");
+        }
+        else if (NameRegex.test(this.state.name) && NameRegex.test(this.state.value)) {
+          axios.put("http://localhost:8083/productservice/defecttype/"+ id, obj)
+            .then((response) => {
+              //console.log(response.data);
+              this.setState({ events: response.data })
+              if (response.data.status === "OK") {
+                message.success("Defect Type Successfully Updated");
+                this.getdefectType();
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              message.warn("Invalid Data");
+            });
+        }
+    
+    
+        this.setState({
+          name: '',
+          value: '',
+          visible: false,
+          visibleEditModal: false
+        })
+    
+      };
+    
+      showEditModal = () => {
+        console.log("showEditModal clicked");
+        this.setState({
+          visibleEditModal: true,
+        });
+      };
+    
+      handleCancel = e => {
+        console.log(e);
+        this.setState({
+          visible: false,
+          name: null,
+          value: null
+        });
+      };
+    
+      handleEditPriorityCancel = e => {
+        console.log(e);
+        this.setState({
+          visibleEditModal: false,
+          name: null,
+          value: null
+        });
+    
+      };
+    
+      state = {
+        displayColorPicker: false,
+        color: {
+          r: '241',
+          g: '112',
+          b: '19',
+          a: '1',
+        },
+      };
+    
+      handleClick = () => {
+        this.setState({ displayColorPicker: !this.state.displayColorPicker })
+      };
+    
+      handleClose = () => {
+        this.setState({ displayColorPicker: false })
+      };
+    
+      handleChange = e => {
+        e.preventDefault();
+        const { name, value } = e.target;
+        let formErrors = { ...this.state.formErrors };
+        var newStr = value.replace(/\s+/g, '');
+        //console.log(newStr);
+        switch (name) {
+          case "name":
+            if (!NameRegex.test(value)) {
+              formErrors.name = "Invalid Defect Type";
+            }
+            else if (newStr.length > 15) {
+              formErrors.name = "Required less than 15 characters";
+            }
+            else if (newStr.length < 2) {
+              formErrors.name = "Required greater than 2 characters";
+            }
+            else if (newStr.length === 0) {
+              formErrors.name = "Can't leave this field blank";
+            }
+            else {
+              formErrors.name = "";
+            }
+            break;
+          case "value":
+            if (!NameRegex.test(value)) {
+              formErrors.value = "Invalid Description";
+              //this.handleOk = false;
+            }
+            else if (newStr.length > 50) {
+              formErrors.value = "Required less than 50 characters";
+            }
+            else if (newStr.length < 10) {
+              formErrors.value = "Required greater than 10 characters";
+            }
+            else if (newStr.length === 0) {
+              formErrors.value = "Can't leave this field blank";
+            }
+            else {
+              formErrors.value = "";
+            }
+            break;
+          default:
+            break;
+        }
+    
+        this.setState({ formErrors, [name]: value }, () => console.log(this.state));
+      };
+    
+     
+    
+      handleSubmit = e => {
+        e.preventDefault();
+    
+        if (formValid(this.state)) {
+          console.log(`
+            --SUBMITTING--
+            name :${this.state.name}
+            value: ${this.state.value}
+          `);
+        } else {
+          console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+        }
+    
+    
+      }
+    
+      normFile = e => {
+        console.log('Upload event:', e);
+        if (Array.isArray(e)) {
+          return e;
+        }
+        return e && e.fileList;
+      };
+    
+      render() {
+        const { formErrors } = this.state;
+    
+        const columns = [
+         
+          {
+            title: 'License Type',
+            dataIndex: 'name',
+            key: 'name',
+    
+          },
+          {
+            title: 'Year',
+            dataIndex: 'value',
+            key: 'Description',
+          },
+          {
+            title: 'Price',
+            key: 'Colour',
+             dataIndex: 'Colour',
+            render: (colour) => <Icon type="border" style={{ color: colour, background: colour }} />,
+           },
+          {
+            title: 'Action',
+            key: 'Action',
+            render: (text, data = this.state.def) => (
+              <span>
+    
+                <Icon id="editDefectType" onClick={this.editDefect.bind(this, data.id)} type="edit" style={{ fontSize: '17px', color: 'blue' }} />
+    
+    
+                <Divider type="vertical" />
+    
+                <Popconfirm
+                  id="deleteConfirmTLicenseType"
+                  title="Are you sure, Do you want to delete this ?"
+                  icon={<Icon type="delete" style={{ color: 'red' }}
+    
+                  />}
+                  onConfirm={this.deleteDefect.bind(this, data.id)}
+                >
+                  <Icon id="deleteLicenseType" type="delete" style={{ fontSize: '17px', color: 'red' }} />
+                </Popconfirm>
+    
+              </span >
+            ),
+          },
+        ];
+    
         return (
-            <React.Fragment>
-
-                {/* BreadCrumbs */}
-
-                <Row>
-                    <Col span={23}>
-                        <Breadcrumb style={{
-                            marginBottom: '6px',
-                            marginTop: '-10px'
-                        }}>
-                            <Breadcrumb.Item>Dashboard Component</Breadcrumb.Item>
-                            <Breadcrumb.Item>Product Admin Dashboard</Breadcrumb.Item>
-
-                        </Breadcrumb>
+          <React.Fragment>
+            <div
+              style={{
+                padding: 24,
+                background: '#fff',
+                minHeight: '500px',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+              }}>
+    
+              <Row>
+                <Col span={8}><h3>Manage Product License</h3></Col>
+                <Col span={6}></Col>
+                <Col span={10}></Col>
+              </Row>
+    
+              <br></br>
+              <div>
+                <Button id="addDefectType" type="primary" onClick={this.showModal}>
+                  Add License 
+            </Button>
+              </div>
+              <br></br>
+    
+              <Modal
+                title="Add License"
+                visible={this.state.visible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+                style={{ padding: "60px", }}
+                width="550px"
+    
+              >
+                <div
+                  style={{
+                    margin: "0 -20px 0 0",
+                    background: '#fff',
+                    minHeight: '200px',
+                    
+                  }}>
+    
+                  
+                  <Form>
+                  <Row>
+                  <Col>
+                    <Col span={24} style={{ padding: "5px" }}>
+                    <Form.Item label="License Name">
+                      <Input
+                        id="defectTypeName"
+                        type="text"
+                        name="name"/>
+                    </Form.Item>
                     </Col>
-                    <Col span={1}>
-                        <div id="components-dropdown-demo-dropdown-button">
-                            <Dropdown overlay={menu}>
-                                <Button>
-                                    <img src="https://img.icons8.com/ios/20/000000/filter.png" alt="sorry no img" />
-                                </Button>
-                            </Dropdown>
-                        </div>
-                        {/* <Button type="primary"><img src="https://img.icons8.com/ios/20/000000/filter-filled.png" alt="sorry no img" /></Button> */}
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Year">
+                    <Select defaultValue="1 Year" style={{ width: '100%' }} >
+                         <Option value="1 ">1 Year</Option>
+                         <Option value="2 ">2 Year</Option>
+                         <Option value="3 ">3 Year</Option>
+                         <Option value="4">4 Year</Option>
+                    </Select>
+                    </Form.Item>
                     </Col>
-                </Row>
-
-
-                {/* dashboard starts here  */}
-                <div className="gutter-example" style={{ textAlign: "center" }}>
-
-                    {/* the embedded and seperatd row  - row1 */}
-                    <Row gutter={224}>
-
-                        {/*projects box */}
-                        <Col className="gutter-row" span={4}>
-
-                            {/* opened defects box */}
-                            <div className="gutter-box">
-                                <div
-                                    style={{
-                                        padding: "10px 0 10px 0",
-                                        background: '#fff',
-                                        minHeight: '80%',
-                                        width: "12.4em",
-                                        textShadow: " 1px 2px 3px #c0c1c4",
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }} className="res">
-                                    <div>
-                                        <h1>Clients</h1>
-                                        <h2>15</h2>
-
-                                        <div>
-                                            {/* <img src={ProjectIcon} alt="sorry no img" style={{ height: "8em" }} /> */}
-                                            <img src={clients} alt="sorry no img" />
-                                            {/* <Progress strokeColor="454d66" type="dashboard" percent="60" /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-                        {/* project manager box */}
-                        <Col className="gutter-row" span={4}>
-
-                            {/* opened defects box */}
-                            <div className="gutter-box">
-                                <div
-                                    style={{
-                                        padding: "10px 0 10px 0",
-                                        background: '#fff',
-                                        minHeight: '80%',
-                                        width: "13em",
-                                        textShadow: " 1px 2px 3px #c0c1c4",
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }} className="res">
-                                    <div>
-                                        <h1>Platinum Licensed</h1>
-                                        <h2>10</h2>
-
-                                        <div>
-                                            <img src={license1} alt="sorry no img" />
-                                            {/* <img src={ProjectManagerIcon} alt="sorry no img" style={{ height: "8em" }} /> */}
-                                            {/* <Progress strokeColor="454d66" type="dashboard" percent="60" /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-                        {/* qalead box */}
-                        <Col className="gutter-row" span={4}>
-
-                            {/* opened defects box */}
-                            <div className="gutter-box">
-                                <div
-                                    style={{
-                                        padding: "10px 0 10px 0",
-                                        background: '#fff',
-                                        minHeight: '80%',
-                                        width: "13em",
-                                        textShadow: " 1px 2px 3px #c0c1c4",
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }} className="res">
-                                    <div>
-                                        <h1>Gold Licensed</h1>
-                                        <h2>5</h2>
-
-                                        <div>
-                                            <img src={license2} alt="sorry no img"  />
-                                            {/* <Progress strokeColor="454d66" type="dashboard" percent="60" /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-
-                        {/* techlead box */}
-                        <Col className="gutter-row" span={4}>
-                            <div className="gutter-box">
-                                <div
-                                    style={{
-                                        padding: "10px 0 10px 0",
-                                        background: '#fff',
-                                        textShadow: " 1px 2px 3px #c0c1c4",
-                                        width: "13em",
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        minHeight: '80%',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-                                    <div>
-                                        <h1>Silver Licensed</h1>
-                                        <h2>5</h2>
-
-                                        <div>
-                                            <img src={license3} alt="sorry no img" />
-                                            {/* <img src={TechLeadIcon} alt="sorry no img" style={{ height: "8em" }} /> */}
-                                            {/* <Progress strokeColor="454d66" type="dashboard" percent="60" /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-
-                        {/* software Engineer box */}
-                        <Col className="gutter-row" span={4}>
-                            <div className="gutter-box">
-                                <div
-                                    style={{
-                                        padding: "10px 0 10px 0",
-                                        background: '#fff',
-                                        border: "#605877",
-                                        width: "13em",
-                                        textShadow: " 1px 2px 3px #c0c1c4",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        minHeight: '80%',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-                                    <div>
-                                        <h1>Bronze Licensed</h1>
-                                        <h2>5</h2>
-
-                                        <div>
-                                            {/* <img src={EngineerIcon} alt="sorry no img" style={{ height: "8em" }} /> */}
-                                            <img src={license4} alt="sorry no img" />
-                                            {/* <Progress strokeColor="454d66" type="dashboard" percent="60" /> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Col>
-
-
-                    </Row>
-                </div>
-
-
-
-                {/* Row 2 for big area */}
-                <Row gutter={10} style={{ textAlign: "center" }}>
-
-                    {/* column 1 for row 2.. it includes 2 rows to seperate vertically  */}
-                    <Col className="gutter-row" span={12}>
-                        <div className="gutter-box" >
-
-                            {/* polar area starts here */}
-                            <Row>
-
-                                <div
-                                    style={{
-                                        padding: 24,
-                                        borderRadius: "0.2em",
-                                        background: '#fff',
-                                        minHeight: '250px',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-
-                                   
-                                    {/* radar chart starts here */}
-                                    <div>
-                                        <div className="content-section introduction">
-                                            <div className="feature-intro">
-                                                <h1>License Feasibility</h1>
-                                                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi adipisci dolores, saepe quae facilis ullam recusandae excepturi amet est facere? Animi, ratione.</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="content-section implementation">
-                                            <Chart type="polarArea" data={radarData} />
-                                        </div>
-                                    </div>
-                                    {/* radar chart ends here */}
-
-                                </div>
-                            </Row>
-                            {/* progress lines starts here */}
-
-                            {/* little seperator between progress bar and line chart */}
-                            <div style={{ marginBottom: "0.7em", marginTop: "1em" }}></div>
-
-                            {/* line chart starts here */}
-                            <Row>
-                                <div
-                                    style={{
-                                        padding: 24,
-                                        background: '#fff',
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        borderRadius: "0.2em",
-                                        minHeight: '80%',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-                                    <h1>Our Consumers</h1>
-                                    <br></br>
-                                    <Table columns={columns} dataSource={tabledata} />
-                                </div>
-                            </Row>
-                            {/* line chart ends here */}
-                        </div>
-
-                    </Col >
-
-                    {/* alignment adjuster */}
-                    <div style={{ marginBottom: "0.6em" }}></div>
-
-                    {/* Column 2 of Row 2 */}
-                    < Col className="gutter-row" span={12} >
-                        <div
-                            style={{
-                                padding: 24,
-                                background: '#fff',
-                                borderRadius: "0.2em",
-                                minHeight: '27.1em',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                            }}>
-                                
-                            {/* progress area */}
-                            <h1>Customer License Expiry Count</h1>
-                            <div>
-                                <h5 style={{textAlign: "left"}}>Company A</h5>
-                                <Progress percent={30} status="active" strokeColor="#FF6B6C" />
-                                <br/> <br/>
-                                <h5 style={{textAlign: "left"}}>Company B</h5>
-                                <Progress percent={50} status="active" strokeColor="#D8572A"/>
-                                <br/>  <br/>
-                                <h5 style={{textAlign: "left"}}>Company C</h5>
-                                <Progress percent={70} status="active" strokeColor="#98CE00"/>
-                                <br/> <br/>
-                                <h5 style={{textAlign: "left"}}>Company D</h5>
-                                <Progress percent={100} status="active" strokeColor="#F00699"/>
-                                <br/> <br/>
-                                <h5 style={{textAlign: "left"}}>Company E</h5>
-                                <Progress percent={50} status="active" strokeColor="#1B998B"/>
-                                
-                            </div>
-
-                        </div>
-                        {/* seperator */}
-                        <div style={{ marginBottom: "0.7em", marginTop: "1em" }}></div>
-
-                            {/* doughnut chart */}
-                            <div style={{
-                                padding: 24,
-                                background: '#fff',
-                                borderRadius: "0.2em",
-                                minHeight: '27.1em',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                            }}>
-                                     <div>
-                <div className="content-section introduction">
-                    <div className="feature-intro">
-                        <h1>DoughnutChart</h1>
-                        <p>A doughnut chart is a variant of the pie chart, with a blank center allowing for additional information about the data as a whole to be included.</p>
-                    </div>
-                </div>
-
-                <div className="content-section implementation">
-                    <Chart type="doughnut" data={doughData} />
-                </div>
-
-           
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Price">
+                    <Select defaultValue="100$" style={{ width: '100%' }} >
+                         <Option value="1 ">100$</Option>
+                         <Option value="2 ">200$</Option>
+                         <Option value="3 ">300$</Option>
+                         <Option value="4 ">400$</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                 
+                  
+                    
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="User">
+                    <Select defaultValue="below 100" style={{ width: '100%' }} >
+                         <Option value="1 ">below 100</Option>
+                         <Option value="2 ">100-249</Option>
+                         <Option value="3 ">250-500</Option>
+                         <Option value="4">Above 500</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Year">
+                    <Select defaultValue="100$" style={{ width: '100%' }} >
+                         <Option value="1 ">100$</Option>
+                         <Option value="2 ">200$</Option>
+                         <Option value="3 ">300$</Option>
+                         <Option value="4 ">400$</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                   
+                  </Col>
+                  </Row>
+                  </Form>
+                  </div>
+    
+              </Modal>
+              <Modal
+                title="Edit License Type"
+                visible={this.state.visibleEditModal}
+                onOk={this.handleEditOk.bind(this, this.state.id)}
+                onCancel={this.handleEditPriorityCancel}
+                style={{ padding: "60px", }}
+              >
+                <div
+                  style={{
+                    margin: "0 -20px 0 0",
+                    background: '#fff',
+                    minHeight: '200px',
+                    
+                  }}>
+    
+                  
+                  <Form>
+                  <Row>
+                  <Col>
+                    <Col span={18}>
+                    <Form.Item label="License Name">
+                      <Input
+                        id="defectTypeName"
+                        type="text"
+                        name="name"/>
+                    </Form.Item>
+                    </Col>
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Year">
+                    <Select defaultValue="1 Year" style={{ width: '100%' }} >
+                         <Option value="1 ">1 Year</Option>
+                         <Option value="2 ">2 Year</Option>
+                         <Option value="3 ">3 Year</Option>
+                         <Option value="4">4 Year</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Price">
+                    <Select defaultValue="100$" style={{ width: '100%' }} >
+                         <Option value="1 ">100$</Option>
+                         <Option value="2 ">200$</Option>
+                         <Option value="3 ">300$</Option>
+                         <Option value="4 ">400$</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                 
+                  
+                    
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="User">
+                    <Select defaultValue="below 100" style={{ width: '100%' }} >
+                         <Option value="1 ">below 100</Option>
+                         <Option value="2 ">100-249</Option>
+                         <Option value="3 ">250-500</Option>
+                         <Option value="4">Above 500</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                    <Col span={12} style={{ padding: "5px" }}>
+                    <Form.Item label="Year">
+                    <Select defaultValue="100$" style={{ width: '100%' }} >
+                         <Option value="1 ">100$</Option>
+                         <Option value="2 ">200$</Option>
+                         <Option value="3 ">300$</Option>
+                         <Option value="4 ">400$</Option>
+                    </Select>
+                    </Form.Item>
+                    </Col>
+                   
+                  </Col>
+                  </Row>
+                  </Form>
+                  </div>
+              </Modal>
+              <Table id="countDefectType" columns={columns} dataSource={this.state.DefectType} />
+             
+              <Icon type="square" />
             </div>
-                            </div>
-                    </Col >     
-
-                </Row >
-
-
-            </React.Fragment >
-
+          </React.Fragment >
         );
+      }
+    
     }
-}
-
-export default ProductAdministration;

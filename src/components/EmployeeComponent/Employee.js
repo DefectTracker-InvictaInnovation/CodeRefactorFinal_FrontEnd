@@ -247,7 +247,7 @@ var _this=this;
           employeeId: response.data.employeeid,
           employeeName: response.data.name,
           employeeFirstName: response.data.firstname,
-          employeeDesignation: response.data.designationid,
+          employeeDesignation: response.data.designationname,
           employeeEmail: response.data.email
         });
       })
@@ -566,16 +566,19 @@ console.log(id)
               <Row>
                 <Col span={8} style={{ padding: "5px" }}>
                   <Form.Item label="Designation">
-                    <Select
+                   <Select
                       // defaultValue="Select Designation"
                       id="employeeDesignation"
-                      onChange={this.onChangeEmployeeDesignation}
                       value={this.state.employeeDesignation}
+                      onChange={this.onChangeEmployeeDesignation}
+                      
                     >
-                     {this.state.des}
-                    </Select>
+                      {this.state.des}
+                    </Select> 
+                   
                   </Form.Item>
                 </Col>
+                
                 <Col span={16} style={{ padding: "5px" }}>
                   <Form.Item label="Email Id">
                     <Input

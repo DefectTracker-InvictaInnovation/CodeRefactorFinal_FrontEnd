@@ -7,6 +7,8 @@ import SiderComponent from '../SiderComponent';
 
 // Dashboard Components
 import DefectDashboard from '../../DashboardComponent/DefectDashboard';
+//import ProductDashboard from '../DashboardComponent/ProductDashboard';
+import ProductDashboard from '../../DashboardComponent/ProductDashboard'
 import CompanyDashboard from '../../DashboardComponent/CompanyDashboard';
 import DeveloperDashboard from '../../DashboardComponent/DeveloperDashboard'
 import ProjectManagerDashboard from '../../DashboardComponent/ProjectManagerDashboard';
@@ -107,7 +109,7 @@ clearTimeout() {
   setTimeout() {
     // this.warnTimeout = setTimeout(this.warn, 16 * 1000);
 
-    this.logoutTimeout = setTimeout(this.handleLogout ,300 * 1000);
+    this.logoutTimeout = setTimeout(this.handleLogout ,1800 * 1000);
   }
 
   resetTimeout() {
@@ -239,7 +241,10 @@ clearTimeout() {
                             <Route path='/dashboard/qa'>
                                 <QADashboard/>
                             </Route>
-
+                            <Route path='/dashboard/product'>
+                                <ProductDashboard/>
+                            </Route>
+                            
                             {/* Product Administration Route*/}
                             <Route path='/productadministration'>
                                 <ProductAdministration/>
