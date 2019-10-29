@@ -195,6 +195,11 @@ export default class SeverityConfig extends React.Component {
     console.log(e);
     this.setState({
       visible: false,
+      id:"",
+      name:"",
+      value:"",
+      icon:"",
+      color:""
     });
   };
 

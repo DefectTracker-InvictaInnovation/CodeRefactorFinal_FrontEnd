@@ -563,10 +563,10 @@ console.log(id)
         render: (text, data = this.state.patients) => (
           <Popconfirm
             id="employeeDelete"
-            title="Are you sure delete this Row?"
-            onConfirm={this.handleDelete.bind(this, data.empId)}
+            title="Warning:Do you want to Delete this Whole Data?"
+            // onConfirm={this.handleDelete.bind(this, data.empId)}
             onCancel={cancel}
-            okText="Yes"
+            okText="OK"
             cancelText="No"
           >
             <a>
