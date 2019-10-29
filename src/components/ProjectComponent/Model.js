@@ -52,6 +52,7 @@ class Model extends React.Component {
       projectId: "",
       projectName: "",
       type: "",
+      projectAbbr:"",
       startDate: "",
       endDate: "",
       duration: "",
@@ -161,6 +162,14 @@ class Model extends React.Component {
     });
     console.log(this.state.projectId);
   }
+  onChangeProjectAbbre(value) {
+    this.setState({
+      projectAbbr: `${value}`
+    });
+    console.log(this.state.projectAbbr);
+  }
+
+
   onChangeProjectName(value) {
     this.setState({
       projectName: `${value}`
@@ -269,6 +278,7 @@ class Model extends React.Component {
         Project End Date: ${this.state.endDate}
         Project Duration: ${this.state.duration}
         Project Status : ${this.state.status}
+        Project Abbre: ${this.state.projectAbbr}
  `);
 
       const projectData = {
@@ -278,7 +288,8 @@ class Model extends React.Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         duration: this.state.duration,
-        status: this.state.status
+        status: this.state.status,
+        projectAbbr:this.state.projectAbbr
       };
 
       console.log(projectData);
@@ -378,6 +389,41 @@ class Model extends React.Component {
                         placeholder="Project Name"
                         name="projectName"
                         value={this.state.projectName}
+                        onChange={this.handlechange}
+                      />
+                    )}
+                  </div>
+                  {formerrors.projectName.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.projectName}
+                    </span>
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item label="Project Abbrevation">
+                  <div>
+                    {getFieldDecorator("projectAbbr", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Project Abbrevation!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        id="projectAbbr"
+                        className={
+                          formerrors.projectName.length > 0 ? "error" : null
+                        }
+                        placeholder="Project Abbrevation"
+                        name="projectAbbr"
+                        value={this.state.projectAbbr}
                         onChange={this.handlechange}
                       />
                     )}

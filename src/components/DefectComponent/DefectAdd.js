@@ -39,7 +39,9 @@ class DefectAdd extends React.Component {
     this.state = {
       moduleId: "",
       defectId: "",
-      abbre: "abbre",
+      abbre: "",
+      projectAbbr:"",
+      defectAbbr:"",
       projectId: "",
       priority: "",
       severity: "",
@@ -54,7 +56,7 @@ class DefectAdd extends React.Component {
       availableIn: "Available",
       foundIn: "",
       fixedIn: "FixedIn",
-      dateAndTime: "",
+      // dateAndTime: "",
 
       visible: false,
       formerrors: {
@@ -87,6 +89,7 @@ class DefectAdd extends React.Component {
       prioritys: [],
       severitys: [],
       types: [],
+     defectfoundIn:[],
       assignToopt: "",
       assproid: ""
     };
@@ -116,6 +119,9 @@ class DefectAdd extends React.Component {
     this.fetchProjects = this.fetchProjects.bind(this);
     this.onChangeProject = this.onChangeProject.bind(this);
 
+    this.fetchFoundIn = this.fetchFoundIn.bind(this);
+    this.onChangeFoundIn = this.onChangeFoundIn.bind(this);
+
     this.handleOk = this.handleOk.bind(this);
   }
 
@@ -129,6 +135,7 @@ class DefectAdd extends React.Component {
     this.enteredBy();
     this.showModalView();
     console.log("mounting");
+    this.fetchFoundIn();
   }
 
   fetchStatus() {
@@ -139,6 +146,17 @@ class DefectAdd extends React.Component {
         console.log(response);
         _this.setState({ defectStatus: response.data });
         console.log(_this.state.defectStatus);
+      });
+  }
+
+  fetchFoundIn() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/releases")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ defectfoundIn: response.data });
+        console.log(_this.state.defectfoundIn);
       });
   }
 
@@ -195,6 +213,13 @@ class DefectAdd extends React.Component {
         _this.setState({ prioritys: response.data });
         console.log(_this.state.prioritys);
       });
+  }
+
+  onChangeFoundIn(value) {
+    this.setState({
+      foundIn: `${value}`
+    });
+    console.log(this.state.foundIn);
   }
 
   onChangeType(value) {
@@ -261,10 +286,6 @@ class DefectAdd extends React.Component {
 
   handleChangeFoundIn = value => {
     this.setState({ foundIn: value });
-  };
-
-  handleChangeDateAndTime = value => {
-    this.setState({ dateAndTime: value });
   };
 
   handleChangeAssignTo = value => {
@@ -359,8 +380,9 @@ class DefectAdd extends React.Component {
     if (formValid(this.state)) {
       console.info(`
         --SUBMITTING--    
-        Defect Id: ${this.state.defectId}   
-        Abbre: ${this.state.abbre}
+        Defect Id: ${this.state.defectId}  
+        Defect Abbr:${this.state.defectAbbr}
+        Abbre: ${this.state.projectAbbr}
         Assign To: ${this.state.assignTo}
         Available In: ${this.state.availableIn}
         Data And Time: ${this.state.dateAndTime}
@@ -383,8 +405,9 @@ class DefectAdd extends React.Component {
         defectId: this.state.defectId,
         projectId: this.state.projectId,
         type: this.state.type,
+        defectAbbr:this.state.defectAbbr,
         moduleId: this.state.moduleId,
-        abbre: this.state.abbre,
+        abbre: this.state.projectAbbr,
         priority: this.state.priority,
         severity: this.state.severity,
         status: this.state.status,
@@ -397,7 +420,7 @@ class DefectAdd extends React.Component {
         availableIn: this.state.availableIn,
         foundIn: this.state.foundIn,
         fixedIn: this.state.fixedIn,
-        dateAndTime: this.state.dateAndTime,
+        // dateAndTime: this.state.dateAndTime,
       };
       console.log(serverport);
       axios.post(API_BASE_URL + "/saveDefect/", serverport)
@@ -443,6 +466,8 @@ console.log(mail);
       assignTo: "",
       enteredBy: "",
       foundIn: "",
+      defectAbbr:"",
+      // dateAndTime:"",
 
       visible: false
     });
@@ -699,11 +724,15 @@ console.log(mail);
                     placeholder="Found In "
                     name="foundIn"
                     type="text"
-                    onChange={this.handleChangeFoundIn}
+                    onChange={this.onChangeFoundIn}
                   >
-                    <Option value="Release1">Release1</Option>
-                    <Option value="Release2">Release2</Option>
-                    <Option value="Release3">Release3</Option>
+                    {this.state.defectfoundIn.map(function (item, index) {
+                        return (
+                          <Option key={index} value={item.releaseName}>
+                            {item.releaseName}
+                          </Option>
+                        );
+                      })}
                   </Select>
 
 
@@ -800,7 +829,6 @@ console.log(mail);
             </Row>
             <Row>
               <Col span={8} style={{ padding: "5px" }}>
-                -
                 <Form.Item label="Status">
                   {getFieldDecorator("gender7", {
                     rules: [

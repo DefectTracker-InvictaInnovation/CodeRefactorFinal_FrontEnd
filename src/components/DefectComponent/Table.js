@@ -5,7 +5,7 @@ import axios from "axios";
 import EditorIn from "./Editor";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { API_BASE_URL,API_BASE_URL_EMP, CURRENT_USER } from '../../constants/index';
+import { API_BASE_URL, API_BASE_URL_EMP, CURRENT_USER } from '../../constants/index';
 import { ROLE_NAME } from '../../constants/index';
 import DefectLog from "./DefectLog";
 
@@ -16,7 +16,7 @@ const id = 1;
 const props = {
   name: "files",
   action:
-  API_BASE_URL+"/uploadMultipleFiles?defectId=" + id,
+    API_BASE_URL + "/uploadMultipleFiles?defectId=" + id,
   headers: {
     authorization: "authorization-text"
   },
@@ -86,6 +86,7 @@ class TableFilter extends React.Component {
       defectId: "",
       abbre: "",
       projectId: "",
+      defectAbbr:"",
       //moduleId: "",
       priority: "Medium",
       severity: "Medium",
@@ -97,6 +98,7 @@ class TableFilter extends React.Component {
       reassignTo: "",
       enteredBy: "",
       fixedBy: "",
+      fixDate:"",
       availableIn: "",
       foundIn: "",
       fixedIn: "",
@@ -121,23 +123,24 @@ class TableFilter extends React.Component {
       submitting: false,
       value: "",
       types: [],
-      defid:'',
-      assin:'',
-      email:'',
-      to:'',
-      subject:'',
-      text:'',
-      befotype:'',
-      befostatus:'',
-      befoassignTo:'',
-      befopriority:'',
-      befoseverity:'',
-      afterstatus:'',
-      afterseverity:'',
-      afterpriority:'',
-      afterassignTo:'',
-      aftertype:''
-  };
+      defid: '',
+      assin: '',
+      email: '',
+      to: '',
+      subject: '',
+      text: '',
+      befotype: '',
+      befostatus: '',
+      befoassignTo: '',
+      befopriority: '',
+      befoseverity: '',
+      afterstatus: '',
+      afterseverity: '',
+      afterpriority: '',
+      afterassignTo: '',
+      aftertype: '',
+      
+    };
     this.handleDelete = this.handleDelete.bind(this);
     this.refreshDefect = this.refreshDefect.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -147,36 +150,41 @@ class TableFilter extends React.Component {
       searchText: "",
       employees: [],
       patients: [],
-      projects:[],
-      modules:[],
+      projects: [],
+      modules: [],
       Total: "",
-      assignToopt:'',
-      defectTypes:[],
-      defectSeverity:[],
-      defectPriority:[],
-      defectStatus:[]
+      assignToopt: '',
+      defectTypes: [],
+      defectSeverity: [],
+      defectPriority: [],
+      defectStatus: [],
+      defectfoundIn: [],
+      defectfixedIn: []
     };
 
     this.fetchProjects = this.fetchProjects.bind(this);
     this.onChangeProject = this.onChangeProject.bind(this);
     this.fetchModules = this.fetchModules.bind(this);
     this.onChangeModule = this.onChangeModule.bind(this);
-    this.fetchTypes= this.fetchTypes.bind(this);
+    this.fetchTypes = this.fetchTypes.bind(this);
     this.onChangeType = this.onChangeType.bind(this);
-    this.fetchSeverity= this.fetchSeverity.bind(this);
+    this.fetchSeverity = this.fetchSeverity.bind(this);
     this.onChangeSeverity = this.onChangeSeverity.bind(this);
-    this.fetchPriority= this.fetchPriority.bind(this);
+    this.fetchPriority = this.fetchPriority.bind(this);
     this.onChangePriority = this.onChangePriority.bind(this);
     this.fetchStatus = this.fetchStatus.bind(this);
     this.onChangeStatus = this.onChangeStatus.bind(this);
-
+    this.fetchFoundIn = this.fetchFoundIn.bind(this);
+    this.onChangeFoundIn = this.onChangeFoundIn.bind(this);
+    this.fetchFixedIn = this.fetchFixedIn.bind(this);
+    this.onChangeFixedIn = this.onChangeFixedIn.bind(this);
   }
 
-  fetchStatus(){
+  fetchStatus() {
     var _this = this;
     axios
       .get("http://localhost:8083/productservice/defectstatuses")
-      .then(function(response) {
+      .then(function (response) {
         console.log(response);
         _this.setState({ defectStatus: response.data });
         console.log(_this.state.defectStatus);
@@ -186,7 +194,7 @@ class TableFilter extends React.Component {
   componentDidMount() {
 
     console.log("mounting");
-   
+
     this.getAllEmployees();
     this.fetchProjects();
     this.fetchModules();
@@ -194,39 +202,62 @@ class TableFilter extends React.Component {
     this.fetchSeverity();
     this.fetchPriority();
     this.fetchStatus();
-   
+    this.fetchFoundIn();
+    this.fetchFixedIn();
   }
 
-  fetchSeverity(){
+  fetchFoundIn() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/releases")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ defectfoundIn: response.data });
+        console.log(_this.state.defectfoundIn);
+      });
+  }
+
+  fetchFixedIn() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/releases")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ defectfixedIn: response.data });
+        console.log(_this.state.defectfixedIn);
+      });
+  }
+
+  fetchSeverity() {
     var _this = this;
     axios
       .get("http://localhost:8083/productservice/Severitys")
-      .then(function(response) {
-        
+      .then(function (response) {
+
         console.log(response.data);
         _this.setState({ defectSeverity: response.data });
         console.log(_this.state.defectSeverity);
       });
   }
 
-  fetchPriority(){
+  fetchPriority() {
     var _this = this;
     axios
       .get("http://localhost:8083/productservice/defectpriorities")
-      .then(function(response) {
-      
+      .then(function (response) {
+
         console.log(response.data);
         _this.setState({ defectPriority: response.data });
         console.log(_this.state.defectPriority);
       });
   }
 
-  fetchTypes(){
+  fetchTypes() {
     var _this = this;
     axios
       .get("http://localhost:8083/productservice/defecttypes")
-      .then(function(response) {
-       
+      .then(function (response) {
+
         // handle success
         console.log(response);
         _this.setState({ defectTypes: response.data });
@@ -234,11 +265,11 @@ class TableFilter extends React.Component {
       });
   }
 
-  fetchProjects(){
+  fetchProjects() {
     var _this = this;
     axios
-      .get(API_BASE_URL+"/GetAllproject")
-      .then(function(response) {
+      .get(API_BASE_URL + "/GetAllproject")
+      .then(function (response) {
         // handle success
         console.log(response.data);
         _this.setState({ projects: response.data });
@@ -248,8 +279,8 @@ class TableFilter extends React.Component {
   fetchModules() {
     var _this = this;
     axios
-      .get(API_BASE_URL+"/FindallMain")
-      .then(function(response) {
+      .get(API_BASE_URL + "/FindallMain")
+      .then(function (response) {
         // handle success
         console.log(response.data);
         _this.setState({ modules: response.data });
@@ -275,6 +306,18 @@ class TableFilter extends React.Component {
     });
     console.log(this.state.type);
   }
+  onChangeFoundIn(value) {
+    this.setState({
+      foundIn: `${value}`
+    });
+    console.log(this.state.foundIn);
+  }
+  onChangeFixedIn(value) {
+    this.setState({
+      fixedIn: `${value}`
+    });
+    console.log(this.state.fixedIn);
+  }
   onChangeStatus(value) {
     this.setState({
       status: `${value}`
@@ -287,7 +330,7 @@ class TableFilter extends React.Component {
     });
     console.log(this.state.severity);
   }
-   onChangePriority(value) {
+  onChangePriority(value) {
     this.setState({
       priority: `${value}`
     });
@@ -307,28 +350,28 @@ class TableFilter extends React.Component {
   onChangeProject(value) {
     this.setState({
       projectId: `${value}`,
-      assproid:`${value}`
+      assproid: `${value}`
     });
-    var _this=this;
+    var _this = this;
     axios
-    .get(API_BASE_URL+'/getallresource')
-    .then(function(response) {
-      console.log("hhhhhhhhhhhhhhlllllllll"+response.data);
-     let assignToopt=response.data.map((post,index)=>{
-       if((_this.state.projectId == post.projectId)&&("Developer"==(post.designationname))){
-        console.log("hhghjghg" );
+      .get(API_BASE_URL + '/getallresource')
+      .then(function (response) {
+        console.log("hhhhhhhhhhhhhhlllllllll" + response.data);
+        let assignToopt = response.data.map((post, index) => {
+          if ((_this.state.projectId == post.projectId) && ("Developer" == (post.designationname))) {
+            console.log("hhghjghg");
             return <Option key={index} value={post.name}>{post.name}</Option>
-       }
-     });
+          }
+        });
 
-     _this.setState({assignToopt});
-      // handle success
-      console.log(response.data);
-     
-    });
+        _this.setState({ assignToopt });
+        // handle success
+        console.log(response.data);
+
+      });
     console.log(_this.state.projectId);
   }
-  
+
 
 
   onChangeDefectDescription(e) {
@@ -336,6 +379,13 @@ class TableFilter extends React.Component {
       defectDescription: e.target.value
     });
   }
+
+  onChangeDefectFixedDate(e) {
+    this.setState({
+      fixDate: e.target.value
+    });
+  }
+
   onChangeStepsToRecreate(e) {
     this.setState({
       stepsToRecreate: e.target.value
@@ -368,16 +418,16 @@ class TableFilter extends React.Component {
       availableIn: e.target.value
     });
   }
-  onChangeFoundIn(e) {
-    this.setState({
-      foundIn: e.target.value
-    });
-  }
-  onChangeFixedIn(e) {
-    this.setState({
-      fixedIn: e.target.value
-    });
-  }
+  // onChangeFoundIn(e) {
+  //   this.setState({
+  //     foundIn: e.target.value
+  //   });
+  // }
+  // onChangeFixedIn(e) {
+  //   this.setState({
+  //     fixedIn: e.target.value
+  //   });
+  // }
   onChangeDateAndTime(e) {
     this.setState({
       dateAndTime: e.target.value
@@ -410,7 +460,7 @@ class TableFilter extends React.Component {
       dateAndTime: this.state.dateAndTime,
     };
     axios
-      .put(API_BASE_URL+"/updateDefect/" + defectId, obj)
+      .put(API_BASE_URL + "/updateDefect/" + defectId, obj)
       .then(response => this.getAllEmployees());
     this.setState({
       // employeeautoId: "",
@@ -449,7 +499,7 @@ class TableFilter extends React.Component {
 
   //fetching the employee with get all employee
   async getAllEmployees() {
-    const url = API_BASE_URL+"/getAllDefects";
+    const url = API_BASE_URL + "/getAllDefects";
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);
@@ -469,7 +519,7 @@ class TableFilter extends React.Component {
     });
   };
 
-  handleEdit = (defectId,projectId) => {
+  handleEdit = (defectId, projectId) => {
     this.onChangeProject(projectId)
     this.showModal();
     console.log(projectId);
@@ -478,7 +528,7 @@ class TableFilter extends React.Component {
       defectId: defectId
     });
     axios
-      .get(API_BASE_URL+"/getDefectById/" + defectId)
+      .get(API_BASE_URL + "/getDefectById/" + defectId)
       .then(response => {
         console.log(response);
         this.setState({
@@ -501,11 +551,11 @@ class TableFilter extends React.Component {
           foundIn: response.data.foundIn,
           fixedIn: response.data.fixedIn,
           dateAndTime: response.data.dateAndTime,
-           afterassignTo:response.data.assignTo,
+          afterassignTo: response.data.assignTo,
           afterpriority: response.data.priority,
           afterseverity: response.data.severity,
-          afterstatus:response.data.status,
-          aftertype:response.data.type
+          afterstatus: response.data.status,
+          aftertype: response.data.type
 
           //employeeFirstName:response.data.firstname,
           // employeeDesignation: response.data.designationid,
@@ -513,16 +563,16 @@ class TableFilter extends React.Component {
         });
 
 
-        let datalist=[];
+        let datalist = [];
         datalist.push(response.data.assignTo)
 
-        this.setState({datalist:datalist})
+        this.setState({ datalist: datalist })
       })
       .catch(function (error) {
         console.log(error);
       });
 
-      console.log(this.state.datalist)
+    console.log(this.state.datalist)
   };
 
   onChange2 = e => {
@@ -532,11 +582,11 @@ class TableFilter extends React.Component {
   };
   attachment = id => {
     axios
-      .get(API_BASE_URL+"/listFile/" + id)
+      .get(API_BASE_URL + "/listFile/" + id)
       .then(data => {
         data.data.map(file => {
           console.log(file.fileDownloadUri);
-          var duri="http:"+file.fileDownloadUri;
+          var duri = "http:" + file.fileDownloadUri;
           console.log(duri);
           this.setState({
             images: [...this.state.images, duri],
@@ -569,7 +619,7 @@ class TableFilter extends React.Component {
     console.log(commentsu);
     if (this.state.count < 5) {
       axios
-        .post(API_BASE_URL+"/comments", commentsu)
+        .post(API_BASE_URL + "/comments", commentsu)
         .then(res => {
           console.log(res);
           console.log(res.data);
@@ -594,7 +644,7 @@ class TableFilter extends React.Component {
   //}
   refreshDefect() {
     axios
-      .get(API_BASE_URL+"/getAllDefects")
+      .get(API_BASE_URL + "/getAllDefects")
       .then(response => {
         console.warn("Refresh Service is working");
         this.setState({ defect: response.data });
@@ -608,7 +658,7 @@ class TableFilter extends React.Component {
   onChange1 = value => {
     console.log(`selected ${value}`);
 
-    
+
 
     // this.setState({
     //   audit: auditinfo
@@ -635,14 +685,14 @@ class TableFilter extends React.Component {
     });
   };
   showModalView = (defectId) => {
-    var id="Def001";
+    var id = "Def001";
     console.log(defectId)
     this.setState({
       addAttachment: {
         name: "files",
         action:
-        API_BASE_URL+"/uploadMultipleFiles?defectId=" +
-        defectId,
+          API_BASE_URL + "/uploadMultipleFiles?defectId=" +
+          defectId,
         headers: {
           authorization: "authorization-text"
         },
@@ -657,6 +707,7 @@ class TableFilter extends React.Component {
       comments: "",
       images: []
     });
+    
   };
 
   handleOk = () => {
@@ -669,13 +720,13 @@ class TableFilter extends React.Component {
       priority: this.state.priority,
       type: this.state.type,
       status: this.state.status,
-      fixedIn: "Release1",
+      fixedIn: this.state.fixedIn,
       abbre: "abbre",
       defectDescription: this.state.defectDescription,
       stepsToRecreate: this.state.stepsToRecreate,
       assignTo: this.state.assignTo,
       reassignTo: "Reassign",
-      enteredBy: "enterby",
+      enteredBy: this.state.enteredBy,
       fixedBy: "fixed",
       availableIn: " availableIn ",
       foundIn: this.state.foundIn,
@@ -684,83 +735,83 @@ class TableFilter extends React.Component {
 
     console.log("dddddddddddddddddddd" + defectList);
     axios
-      .post(API_BASE_URL+"/saveDefect", defectList)
+      .post(API_BASE_URL + "/saveDefect", defectList)
       .then(res => {
         this.getdefectStatus();
         console.log(res.data);
 
-if(this.state.afterstatus===res.data.status){
-  this.setState({
-    befostatus:"Status Unchanged"
-  })
-}else{
-  this.setState({
-    befostatus:"Status is changes "+ this.state.afterstatus  + " to " +res.data.status
-  })
-}
+        if (this.state.afterstatus === res.data.status) {
+          this.setState({
+            befostatus: "Status Unchanged"
+          })
+        } else {
+          this.setState({
+            befostatus: "Status is changes " + this.state.afterstatus + " to " + res.data.status
+          })
+        }
 
-if(this.state.afterassignTo===res.data.assignTo){
-  this.setState({
-    befoassignTo:"assignTo Unchanged"
-  })
-}else{
-  this.setState({
-    befoassignTo:"assignTo is changes "+ this.state.afterassignTo  + " to " +res.data.assignTo
-  })
-}
-if(this.state.afterpriority===res.data.priority){
-  this.setState({
-    befopriority:"priority Unchanged"
-  })
-}else{
-  this.setState({
-    befopriority:"priority is changes "+ this.state.afterpriority  + " to " +res.data.priority
-  })
-}
-if(this.state.afterseverity===res.data.severity){
-  this.setState({
-    befoseverity:"severity Unchanged"
-  })
-}else{
-  this.setState({
-    befoseverity:"severity is changes "+ this.state.afterseverity  + " to " +res.data.severity
-  })
-}
-if(this.state.aftertype===res.data.type){
-  this.setState({
-    befotype:"type Unchanged"
-  })
-}else{
-  this.setState({
-    befotype:"type is changes "+ this.state.aftertype  + " to " +res.data.type
-  })
-}
+        if (this.state.afterassignTo === res.data.assignTo) {
+          this.setState({
+            befoassignTo: "assignTo Unchanged"
+          })
+        } else {
+          this.setState({
+            befoassignTo: "assignTo is changes " + this.state.afterassignTo + " to " + res.data.assignTo
+          })
+        }
+        if (this.state.afterpriority === res.data.priority) {
+          this.setState({
+            befopriority: "priority Unchanged"
+          })
+        } else {
+          this.setState({
+            befopriority: "priority is changes " + this.state.afterpriority + " to " + res.data.priority
+          })
+        }
+        if (this.state.afterseverity === res.data.severity) {
+          this.setState({
+            befoseverity: "severity Unchanged"
+          })
+        } else {
+          this.setState({
+            befoseverity: "severity is changes " + this.state.afterseverity + " to " + res.data.severity
+          })
+        }
+        if (this.state.aftertype === res.data.type) {
+          this.setState({
+            befotype: "type Unchanged"
+          })
+        } else {
+          this.setState({
+            befotype: "type is changes " + this.state.aftertype + " to " + res.data.type
+          })
+        }
         const auditinfo = {
-          status:this.state.befostatus ,
-          user:localStorage.getItem(CURRENT_USER) ,
+          status: this.state.befostatus,
+          user: localStorage.getItem(CURRENT_USER),
           defectId: res.data.defectId,
-          type:this.state.befotype,
-          severity:this.state.befoseverity,
-          priority:this.state.befopriority,
-          reassignTo:this.state.befoassignTo
+          type: this.state.befotype,
+          severity: this.state.befoseverity,
+          priority: this.state.befopriority,
+          reassignTo: this.state.befoassignTo
         };
         axios
-        .post(API_BASE_URL+"/audit", auditinfo)
-        .then(res => {
-          
-          console.log(res.data);
-        })
+          .post(API_BASE_URL + "/audit", auditinfo)
+          .then(res => {
+
+            console.log(res.data);
+          })
 
 
       });
 
-      console.log(this.state.emailnoti);
-var mail=this.state.emailnoti;
-console.log(mail);
-      axios
-      .post(API_BASE_URL_EMP+"/sendmail", mail)
+    console.log(this.state.emailnoti);
+    var mail = this.state.emailnoti;
+    console.log(mail);
+    axios
+      .post(API_BASE_URL_EMP + "/sendmail", mail)
       .then(res => {
-        
+
         console.log(res.data);
       });
     this.setState({
@@ -785,16 +836,16 @@ console.log(mail);
       availableIn: "  ",
       foundIn: "",
       dateAndTime: "",
-      befostatus:'',
-       befoassignTo:'',
-      befopriority:'',
-      befoseverity:'',
-      befotype:'',
+      befostatus: '',
+      befoassignTo: '',
+      befopriority: '',
+      befoseverity: '',
+      befotype: '',
 
 
       visible1: false
     });
-    message.success("Added Successfully!");
+    message.success("Updated Successfully!");
 
 
     // const auditinfo = {
@@ -811,7 +862,7 @@ console.log(mail);
   handleOkView = e => {
     console.log(e);
     axios
-      .post(API_BASE_URL+"/audit/", this.state.audit)
+      .post(API_BASE_URL + "/audit/", this.state.audit)
       .then(res => {
         console.log(res);
         console.log(res.data);
@@ -926,16 +977,18 @@ console.log(mail);
     this.setState({ foundIn: value });
   };
 
-  handleChangeDateandTime = value =>{
-    this.setState({dateAndTime:value})
+  handleChangeDateandTime = value => {
+    this.setState({ dateAndTime: value })
   }
   // handleChangeFixedIn = value => {
   //    this.setState({ type: value });
   //};
 
   handleChangeAssignTo = value => {
-    this.setState({ assignTo: value,
-    assin:this.state.assignTo });
+    this.setState({
+      assignTo: value,
+      assin: this.state.assignTo
+    });
     console.log(this.state.assin)
     this.reassinNoti(value);
   };
@@ -943,7 +996,7 @@ console.log(mail);
 
   remove = id => {
     console.log(id);
-    fetch(API_BASE_URL+"/delete/" + id, {
+    fetch(API_BASE_URL + "/delete/" + id, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -958,40 +1011,40 @@ console.log(mail);
   // componentDidMount() {
   //   this.getComment();
   // }
-reassinNoti=(value)=>{
-  axios
-      .get(API_BASE_URL_EMP+"/getallemployee")
+  reassinNoti = (value) => {
+    axios
+      .get(API_BASE_URL_EMP + "/getallemployee")
       .then(response => {
         console.log(response.data);
         console.log(value);
-        response.data.map((post,index)=>{
-          if(value===post.name){
-            this.setState({email:post.email})
+        response.data.map((post, index) => {
+          if (value === post.name) {
+            this.setState({ email: post.email })
           }
 
 
         })
-        const emailnoti={
-          email:this.state.email,
-          subject:"This defect assign",
-          text:"check"
+        const emailnoti = {
+          email: this.state.email,
+          subject: "This defect assign",
+          text: "check"
         };
-        this.setState({emailnoti})
+        this.setState({ emailnoti })
         console.log(this.state.assignTo);
-       
+
       })
       .catch(function (error) {
         console.log(error);
       });
 
-     
-     
-}
+
+
+  }
 
 
   getComment = id => {
     axios
-      .get(API_BASE_URL+"/comments/" + id)
+      .get(API_BASE_URL + "/comments/" + id)
       .then(resp => {
         let Data = resp.data;
         this.setState({ count: Data.length });
@@ -1047,8 +1100,8 @@ reassinNoti=(value)=>{
   }
 
   //Getting All defect details
-  getdefectStatus=() =>{
-    const url = API_BASE_URL+"/getAllDefects";
+  getdefectStatus = () => {
+    const url = API_BASE_URL + "/getAllDefects";
     axios
       .get(url)
       .then(response =>
@@ -1068,7 +1121,7 @@ reassinNoti=(value)=>{
   //Deleting defect details
   handleDelete = defectId => {
     axios
-      .delete(API_BASE_URL+"/deleteDefect/" + defectId)
+      .delete(API_BASE_URL + "/deleteDefect/" + defectId)
       .then(console.log(defectId))
       .catch(err => console.log(err));
 
@@ -1085,7 +1138,7 @@ reassinNoti=(value)=>{
     const _this = this;
 
     axios
-      .get(API_BASE_URL+"/getAllDefects")
+      .get(API_BASE_URL + "/getAllDefects")
       .then(function (response) {
         // handle success
         console.log(response);
@@ -1116,10 +1169,10 @@ reassinNoti=(value)=>{
   handleMore = (defectId) => {
     this.showModalView(defectId);
     console.log(defectId);
-    this.setState({defid:defectId})
+    this.setState({ defid: defectId })
 
     axios
-      .get(API_BASE_URL+"/getDefectById/" + defectId)
+      .get(API_BASE_URL + "/getDefectById/" + defectId)
       .then(response => {
         console.log(response);
         this.setState({
@@ -1142,7 +1195,7 @@ reassinNoti=(value)=>{
           foundIn: response.data.foundIn,
           fixedIn: response.data.fixedIn,
           dateAndTime: response.data.dateAndTime,
-
+          fixDate:response.data.fixDate
           //employeeFirstName:response.data.firstname,
           // employeeDesignation: response.data.designationid,
           //employeeEmail: response.data.email
@@ -1151,15 +1204,15 @@ reassinNoti=(value)=>{
       .catch(function (error) {
         console.log(error);
       });
-      console.log(this.state.type)
+    console.log(this.state.type)
   }
 
-openmore=(record)=>{
-  console.log(record)
-  this.setState({
-    showModalView: true
-  });
-}
+  openmore = (record) => {
+    console.log(record)
+    this.setState({
+      showModalView: true
+    });
+  }
 
   render() {
     const departureValidationMessage = 'Please select a departure country!';
@@ -1173,8 +1226,8 @@ openmore=(record)=>{
     const columns = [
       {
         title: "Defect Id",
-        dataIndex: "defectId",
-        key: "defectId",
+        dataIndex: "defectAbbr",
+        key: "defectAbbr",
         width: "60px",
         //filters: [{ text: 'Joe', value: 'Joe' }, { text: 'Jim', value: 'Jim' }],
         //filteredValue: filteredInfo.defectId || null,
@@ -1263,12 +1316,12 @@ openmore=(record)=>{
         render: (text, data = this.state.defect, record) => (
           <span>
             <Icon
-            id="edit"
+              id="edit"
               type="edit"
-              onClick={this.handleEdit.bind(this, data.defectId,data.projectId)}
+              onClick={this.handleEdit.bind(this, data.defectId, data.projectId)}
               style={{ fontSize: "18px", color: "green" }}
             />
-         
+
 
             <Popconfirm
               title="Are you sure want to delete this Entry ?"
@@ -1309,7 +1362,7 @@ openmore=(record)=>{
         render: (text, data = this.state.defect, record) => (
           <span>
             <Icon
-            id="More"
+              id="More"
               type="arrows-alt"
               style={{ fontSize: "18px", color: "green" }}
               onClick={this.handleMore.bind(this, data.defectId)}
@@ -1324,7 +1377,7 @@ openmore=(record)=>{
         width: "120px",
         render: (text, data = this.state.defect, record) => (
           <span>
-            <DefectLog id={ data.defectId}/>
+            <DefectLog id={data.defectId} />
             {/* <Icon
             id="History"
               type="arrows-alt"
@@ -1358,7 +1411,7 @@ openmore=(record)=>{
             pageSize: 10,
             showSizeChanger: true,
 
-           
+
 
             // showQuickJumper: true
           }}
@@ -1366,7 +1419,7 @@ openmore=(record)=>{
           onRow={(record, rowIndex) => {
             return {
               // onClick: () => {this.handleMore(record.defectId)}, // click row
-              onDoubleClick: () => {this.handleMore(record.defectId)}, // double click row
+              onDoubleClick: () => { this.handleMore(record.defectId) }, // double click row
               // onContextMenu: event => {}, // right button click row
               //  onMouseEnter: () => {this.handleMore(record.defectId)}, // mouse enter row
               // onMouseLeave: event => {}, // mouse leave row
@@ -1379,7 +1432,7 @@ openmore=(record)=>{
 
 
         {/* Edit Defects Part  */}
-      
+
         <Modal
           title="Edit Defects"
           visible={this.state.visible}
@@ -1392,92 +1445,92 @@ openmore=(record)=>{
             <Row>
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Defect Id">
-                      <Input
-                      id="defectId"
-                        placeholder="Defect Id"
-                        value={this.state.defectId}
-                        name="defectId"
-                        type="text"
-                        onChange={this.handlechange}
-                      />
+                  <Input
+                    id="defectId"
+                    placeholder="Defect Id"
+                    value={this.state.defectId}
+                    name="defectId"
+                    type="text"
+                    onChange={this.handlechange}
+                  />
                 </Form.Item>
               </Col>
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Project">
-                    <Select
+                  <Select
                     id="Project"
-                      placeholder="Project "
-                      defaultValue="Select Project"
-                      //style={{ width: 120 }}
-                      onChange={this.onChangeProject}
-                      value={this.state.projectId}
-                    >
-                      {this.state.projects.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.projectId}>
-                            {item.projectName}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    placeholder="Project "
+                    defaultValue="Select Project"
+                    //style={{ width: 120 }}
+                    onChange={this.onChangeProject}
+                    value={this.state.projectId}
+                  >
+                    {this.state.projects.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.projectId}>
+                          {item.projectName}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Module">
                   <Select
-                  id="Module"
+                    id="Module"
                     placeholder="Module "
-                      defaultValue="Select Module"
-                      //style={{ width: 120 }}
-                      
-                      onChange={this.onChangeModule}
-                      value={this.state.moduleId}
-                    >
-                      {this.state.modules.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.moduleId}>
-                            {item.moduleName}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    defaultValue="Select Module"
+                    //style={{ width: 120 }}
+
+                    onChange={this.onChangeModule}
+                    value={this.state.moduleId}
+                  >
+                    {this.state.modules.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.moduleId}>
+                          {item.moduleName}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={24} style={{ padding: "5px" }}>
                 <Form.Item label="Defect Description">
-               <TextArea
-               id="defectDescription"
-                      placeholder="Defect Description"
-                      value={this.state.defectDescription}
-                      onChange={this.onChangeDefectDescription}
-                      name="defectDescription"
-                      type="text"
-                      // autosize={{ minRows: 4, maxRows: 10 }}
-                    />                     
+                  <TextArea
+                    id="defectDescription"
+                    placeholder="Defect Description"
+                    value={this.state.defectDescription}
+                    onChange={this.onChangeDefectDescription}
+                    name="defectDescription"
+                    type="text"
+                  // autosize={{ minRows: 4, maxRows: 10 }}
+                  />
                 </Form.Item>
               </Col>
               <Col span={24} style={{ padding: "5px" }}>
                 <Form.Item label="Steps To Recreate ">
-                    <TextArea
+                  <TextArea
                     id="stepsToRecreate"
-                      placeholder="Steps To Recreate "
-                      value={this.state.stepsToRecreate}
-                      onChange={this.onChangeStepsToRecreate}
-                      name="stepsToRecreate"
-                      type="text"
-                      // autosize={{ minRows: 4, maxRows: 10 }}
-                    />          
+                    placeholder="Steps To Recreate "
+                    value={this.state.stepsToRecreate}
+                    onChange={this.onChangeStepsToRecreate}
+                    name="stepsToRecreate"
+                    type="text"
+                  // autosize={{ minRows: 4, maxRows: 10 }}
+                  />
                 </Form.Item>
               </Col>
-            
+
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Entered By">
-                <Select 
+                  <Select
 
-                
-                id="enteredBy"                   
+
+                    id="enteredBy"
                     placeholder="Entered By"
-                  //  value={this.state.enteredBy}
+                    //  value={this.state.enteredBy}
                     onChange={this.handleChangeEnterrdBy}
                     name="enteredBy"
                     type="text"
@@ -1488,162 +1541,188 @@ openmore=(record)=>{
                     <Option value="user2">User 2</Option>
                     <Option value="user3">User 3</Option> */}
                   </Select>
-                 
-                   
-                                
+
+
+
                 </Form.Item>
               </Col>
-              
-              
+
+
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Found In ">
-                <Select
-                 
-                       id="foundIn"
-                       placeholder="Found In "
-                       //value={this.state.foundIn}
-                       //onChange={this.handlechange}
-                      //  name="foundIn"
-                       type="text"
-                       value={this.state.foundIn}
-                    onChange={this.handleChangeFoundIn}
-                  
+                  <Select
+                    id="foundIn"
+                    placeholder="Found In "
+                    value={this.state.foundIn}
+                    onChange={this.onChangeFoundIn}
+
                   >
-                    <Option value="Release1">Release1</Option>
-                    <Option value="Release2">Release2</Option>
-                    <Option value="Release3">Release3</Option>
+                    {this.state.defectfoundIn.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.releaseName}>
+                          {item.releaseName}
+                        </Option>
+                      );
+                    })}
                   </Select>
-                 
-                   
-                                
+
+
+
                 </Form.Item>
               </Col>
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Status">
                   <Select
-                  id="Status"
+                    id="Status"
                     placeholder="Status"
-                      //defaultValue={"Medium"}
-                      //style={{ width: 120 }}
-                      value={this.state.status}
-                      onChange={this.onChangeStatus}
-                    >
-                      {this.state.defectStatus.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    //defaultValue={"Medium"}
+                    //style={{ width: 120 }}
+                    value={this.state.status}
+                    onChange={this.onChangeStatus}
+                  >
+                    {this.state.defectStatus.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.name}>
+                          {item.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
-              </Col> 
-              
+              </Col>
+
             </Row>
 
             <Row>
-            <Col span={8} style={{ padding: "5px" }}>
+              <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Type">
                   <Select
-                  id="type"
+                    id="type"
                     placeholder="Type "
-                      defaultValue={this.state.type}
-                      value={this.state.type}
-                      //style={{ width: 120 }}
-                      // name={this.state.type}
-                      onChange={this.onChangeType}
-                    >
-                      {this.state.defectTypes.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    defaultValue={this.state.type}
+                    value={this.state.type}
+                    //style={{ width: 120 }}
+                    // name={this.state.type}
+                    onChange={this.onChangeType}
+                  >
+                    {this.state.defectTypes.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.name}>
+                          {item.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
-            
+
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Severity">
-                 <Select
-                 id="Severity"
+                  <Select
+                    id="Severity"
                     placeholder="Severity "
-                     // defaultValue="Select Severity"
-                      //style={{ width: 120 }}
-                      value={this.state.severity}
-                      onChange={this.onChangeSeverity}
-                    >
-                      {this.state.defectSeverity.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    // defaultValue="Select Severity"
+                    //style={{ width: 120 }}
+                    value={this.state.severity}
+                    onChange={this.onChangeSeverity}
+                  >
+                    {this.state.defectSeverity.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.name}>
+                          {item.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
               </Col>
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Priority">
                   <Select
-                  id="Priority"
+                    id="Priority"
                     placeholder="Priority"
-                      //defaultValue={"Medium"}
-                      //style={{ width: 120 }}
-                      value={this.state.priority}
-                      onChange={this.onChangePriority}
-                    >
-                      {this.state.defectPriority.map(function(item, index) {
-                        return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
+                    //defaultValue={"Medium"}
+                    //style={{ width: 120 }}
+                    value={this.state.priority}
+                    onChange={this.onChangePriority}
+                  >
+                    {this.state.defectPriority.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.name}>
+                          {item.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
                 </Form.Item>
-              </Col>      
+              </Col>
             </Row>
             <Row>
-            <Col span={8} style={{ padding: "5px" }}>
-            {localStorage.getItem(ROLE_NAME)==='ROLE_QA' ? 
-                <Form.Item label="Assign To">
-                <Select
-                id="assignTo"
-                   placeholder="Assign To"
-                   name="assignTo"
-                   type="text"
-                   value={this.state.assignTo}
-                    onChange={this.handleChangeAssignTo}
-                  >
-                    {this.state.assignToopt}
-                    {/* <Option value="user1">User 1</Option>
+              <Col span={8} style={{ padding: "5px" }}>
+                {localStorage.getItem(ROLE_NAME) === 'ROLE_QA' ?
+                  <Form.Item label="Assign To">
+                    <Select
+                      id="assignTo"
+                      placeholder="Assign To"
+                      name="assignTo"
+                      type="text"
+                      value={this.state.assignTo}
+                      onChange={this.handleChangeAssignTo}
+                    >
+                      {this.state.assignToopt}
+                      {/* <Option value="user1">User 1</Option>
                     <Option value="user2">User 2</Option>
                     <Option value="user3">User 3</Option> */}
-                  </Select>
-                         
-                </Form.Item>:  <Form.Item label="Re Assign To">
-                <Select
-                id="assignTo"
-                   placeholder="ReAssign To"
-                  // value={this.state.assignTo}
-                  // onChange={this.handlechange}
-                   name="assignTo"
-                   type="text"
-                   value={this.state.assignTo}
-                    onChange={this.handleChangeAssignTo}
-                  >
-                    {this.state.assignToopt}
-                    {/* <Option value="user1">User 1</Option>
+                    </Select>
+
+                  </Form.Item> : <Form.Item label="Re Assign To">
+                    <Select
+                      id="assignTo"
+                      placeholder="ReAssign To"
+                      // value={this.state.assignTo}
+                      // onChange={this.handlechange}
+                      name="assignTo"
+                      type="text"
+                      value={this.state.assignTo}
+                      onChange={this.handleChangeAssignTo}
+                    >
+                      {this.state.assignToopt}
+                      {/* <Option value="user1">User 1</Option>
                     <Option value="user2">User 2</Option>
                     <Option value="user3">User 3</Option> */}
-                  </Select>
-                         
-                </Form.Item>}
+                    </Select>
+
+                  </Form.Item>}
               </Col>
-           
-              </Row>
+              <Col span={8} style={{ padding: "5px" }}>
+                <Form.Item label="Fixed In ">
+                  <Select
+
+                    id="fixedIn"
+                    placeholder="Fixed In "
+                    //value={this.state.foundIn}
+                    //onChange={this.handlechange}
+                    //  name="foundIn"
+                    type="text"
+                    value={this.state.fixedIn}
+                    onChange={this.onChangeFixedIn}
+
+                  >
+                    {this.state.defectfixedIn.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.releaseName}>
+                          {item.releaseName}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+
+
+
+                </Form.Item>
+              </Col>
+
+            </Row>
           </Form>
         </Modal>
         {/* More Details View */}
@@ -1707,7 +1786,7 @@ openmore=(record)=>{
               </p> */}
               <p>
               </p>
-              
+
             </Col>
             <Col span={14} style={{ padding: "8px" }}>
               <p>{this.state.projectId}</p>
@@ -1817,6 +1896,9 @@ openmore=(record)=>{
               />
             }
           /> */}
+          <div>
+          <p><b>Updated Date and Time: {this.state.fixDate}</b></p>
+          </div>
         </Modal>
 
       </div>

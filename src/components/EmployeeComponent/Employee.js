@@ -36,9 +36,30 @@ function onChange(sorter) {
   console.log("params", sorter);
 }
 
+const emailRegex = RegExp(
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+);
 
+const NameRegex = RegExp(/^[a-zA-Z]+$/);
+const ValidRegex = RegExp(/^[0-9a-zA-Z]+$/);
 
-export default class App extends React.Component {
+const formValid = ({ formerrors, ...rest }) => {
+  let valid = true;
+
+  // validate form errors being empty
+  Object.values(formerrors).forEach(val => {
+    val.length > 0 && (valid = false);
+  });
+
+  // validate the form was filled out
+  Object.values(rest).forEach(val => {
+    val === null && (valid = false);
+  });
+
+  return valid;
+};
+
+ class App extends React.Component {
   constructor(props) {
     super(props);
     this.onChangeEmployeeId = this.onChangeEmployeeId.bind(this);
@@ -61,6 +82,12 @@ export default class App extends React.Component {
       Designationname:'',
       visible1:false,
       visiblepro:false,
+      formerrors: {
+        employeeId: "",
+        employeeName: "",
+        employeeFirstName: "",
+        employeeEmail: ""
+      },
       bench:"",
       projectName:"",
       availability:"",
@@ -147,6 +174,23 @@ export default class App extends React.Component {
   }
 
   handleOk = empId => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+        message.success("Successfully Added!!!")
+        this.setState({ visible: false });
+      } else {
+      }
+    });
+    if (formValid(this.state)) {
+      console.info(`
+        --SUBMITTING--
+        Employee Id: ${this.state.employeeId}
+        Employee Name: ${this.state.employeeName}
+        Employee FirstName:${this.state.employeeFirstName}
+        Employee Email: ${this.state.employeeEmail}  
+        Employee Picture: ${this.state.employeePicture}    
+      `);
     console.log(empId);
     const obj = {
       empId: this.state.employeeautoId,
@@ -170,7 +214,10 @@ export default class App extends React.Component {
     });
 
     message.success("Updated Successfully!!!");
-  };
+  }else {
+    console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+  }
+};
 
   handleCancel = e => {
     console.log(e);
@@ -224,12 +271,55 @@ var _this=this;
     });
   };
 
-  handleChange = (pagination, filters, sorter) => {
+  handleChange = (pagination, filters, sorter,e) => {
     console.log("Various parameters", pagination, filters, sorter);
     this.setState({
       filteredInfo: filters,
       sortedInfo: sorter
     });
+    e.preventDefault();
+
+    const { name, value } = e.target;
+    let formerrors = { ...this.state.formerrors };
+
+    switch (name) {
+      case "employeeId":
+        if (!ValidRegex.test(value)) {
+          formerrors.employeeId = "Invalid Id";
+        } else if (value.length > 8) {
+          formerrors.employeeId = "Should be less than 8 characters";
+        } else if (value.length < 2) {
+          formerrors.employeeId = "Should be greater than 2 characters";
+        } else {
+          formerrors.employeeId = "";
+        }
+        break;
+      case "employeeName":
+        if (!NameRegex.test(value)) {
+          formerrors.employeeName = "Invalid Name";
+        } else if (value.length > 30) {
+          formerrors.employeeName = "Should be less than 30 characters";
+        } else {
+          formerrors.employeeName = "";
+        }
+      case "employeeFirstName":
+        if (!NameRegex.test(value)) {
+          formerrors.employeeFirstName = "Invalid Name";
+        } else if (value.length > 30) {
+          formerrors.employeeFirstName = "Should be less than 30 characters";
+        } else {
+          formerrors.employeeFirstName = "";
+        }
+        break;
+      case "employeeEmail":
+        formerrors.employeeEmail = emailRegex.test(value)
+          ? ""
+          : "Invalid email address";
+        break;
+      default:
+        break;
+    }
+    this.setState({ formerrors, [name]: value }, () => console.log(this.state));
   };
 
   handleEdit = empId => {
@@ -406,6 +496,8 @@ console.log(id)
 
   render() {
     // For Table functions
+    const { formerrors } = this.state;
+    const { getFieldDecorator } = this.props.form;
     let { sortedInfo, filteredInfo } = this.state;
     sortedInfo = sortedInfo || {};
     filteredInfo = filteredInfo || {};
@@ -544,49 +636,95 @@ console.log(id)
                 </Col>
                 <Col span={8} style={{ padding: "5px" }}>
                   <Form.Item label="Employee Name">
+                  <div>
+                  {getFieldDecorator("employeeId", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input employeeId!"
+                        }
+                      ]
+                    })(
                     <Input
                       id="employeeName"
                       placeholder="Employee Name"
                       value={this.state.employeeName}
                       onChange={this.onChangeEmployeeName}
+                      onChange={this.onChange}
                     />
+                    )}
+                    </div>
                   </Form.Item>
                 </Col>
                 <Col span={8} style={{ padding: "5px" }}>
                   <Form.Item label="Employee FirstName">
+                  <div>
+                  {getFieldDecorator("employeeId", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input employeeId!"
+                        }
+                      ]
+                    })(
                     <Input
                       id="employeeFirstName"
                       placeholder="Employee FirstName"
                       value={this.state.employeeFirstName}
                       onChange={this.onChangeEmployeeFirstName}
+                      onChange={this.onChange}
                     />
+                    )}
+                    </div>
                   </Form.Item>
                 </Col>
               </Row>
               <Row>
                 <Col span={8} style={{ padding: "5px" }}>
                   <Form.Item label="Designation">
+                  <div>
+                  {getFieldDecorator("employeeId", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input employeeId!"
+                        }
+                      ]
+                    })(
                    <Select
                       // defaultValue="Select Designation"
                       id="employeeDesignation"
                       value={this.state.employeeDesignation}
                       onChange={this.onChangeEmployeeDesignation}
-                      
+                      onChange={this.onChange}
                     >
                       {this.state.des}
                     </Select> 
-                   
+                    )}
+                    </div>
                   </Form.Item>
                 </Col>
                 
                 <Col span={16} style={{ padding: "5px" }}>
                   <Form.Item label="Email Id">
+                  <div>
+                  {getFieldDecorator("employeeId", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input employeeId!"
+                        }
+                      ]
+                    })(
                     <Input
                       id="employeeEmail"
                       placeholder="Email Id"
                       value={this.state.employeeEmail}
                       onChange={this.onChangeEmployeeEmail}
+                      onChange={this.onChange}
                     />
+                    )}
+                    </div>
                   </Form.Item>
                 </Col>
               </Row>
@@ -620,3 +758,4 @@ console.log(id)
     );
   }
 }
+export default Form.create()(App);
