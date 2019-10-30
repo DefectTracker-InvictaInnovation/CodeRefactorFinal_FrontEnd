@@ -551,28 +551,9 @@ class DefectAdd extends React.Component {
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Col span={5}>
         <Button id="addDefect" type="primary" onClick={this.showModal}>
           Add Defect
         </Button>
-        </Col><Col span={13}></Col>
-        <Col span={6}>
-        <Select
-          placeholder="Select the Project"
-          style={{ width: 220 }}
-          onChange={this.handleChangeProject}
-        >
-           {this.state.projects.map(function (item, index) {
-                        return (
-                          <Option key={index} value={item.projectId}>
-                            {item.projectName}
-                          </Option>
-                        );
-                      })}
-          {/* <Option value="jack">Jack (100)</Option>
-          <Option value="lucy">Lucy (101)</Option> */}
-        </Select>
-        </Col>
         <Modal
           title="Add Defect"
           visible={this.state.visible}

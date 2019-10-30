@@ -21,7 +21,6 @@ const { MonthPicker, RangePicker } = DatePicker;
 const NameRegex = RegExp(/^[a-zA-Z]+$/);
 const ValidRegex = RegExp(/^[0-9a-zA-Z]+$/);
 const DurationRegex = RegExp(/^[0-9]+$/);
-const ProjectAbbrRegex = RegExp(/^[0-9]+$/);
 
 const config = {
   rules: [{ type: "object", required: true, message: "Please select time!" }]
@@ -76,11 +75,6 @@ class Model extends React.Component {
       projectstatus:[]
       
     };
-
-
-    // this.handleChange = this.handleChange.bind(this);
-    // this.handleOk = this.handleOk.bind(this);
-
     this.handlechange = this.handlechange.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.fetchTypes = this.fetchTypes.bind(this);
@@ -151,15 +145,6 @@ class Model extends React.Component {
           formerrors.duration = "";
         }
         break;
-        // case "abbreviation":
-        //   if (!AbbreviationRegex.test(value)) {
-        //     formerrors.abbreviation = "Invalid Abbreviation";
-        //   } else if (value.length > 30) {
-        //     formerrors.abbreviation = "Should be less than 10 characters";
-        //   } else {
-        //     formerrors.abbreviation = "";
-        //   }
-        //   break;
       default:
         break;
     }
@@ -250,8 +235,6 @@ class Model extends React.Component {
   };
 
   onChangeStartDate = (date, dateString) => {
-    // this.setState({startDate: dateString});
-
     this.setState({ startDate: dateString }, () =>
       console.log(this.state.startDate)
     );
@@ -265,11 +248,6 @@ class Model extends React.Component {
 
     console.log(this.state.endDate);
   };
-  // state = {
-  //   disabled: true,
-  //   visible: false
-  // };
-
 
   showModal = () => {
     this.setState({
@@ -522,7 +500,6 @@ class Model extends React.Component {
                       {formerrors.startDate}
                     </span>
                   )}
-                  {/* </Form.Item> */}
                 </Form.Item>
               </Col>
 
@@ -618,50 +595,12 @@ class Model extends React.Component {
                           </Option>
                         );
                       })}
-                        {/* <Option value="new">New</Option>
-                        <Option value="open">Open</Option>
-                        <Option value="reopen">ReOpen</Option>
-                        <Option value="rejected">Rejected</Option>
-                        <Option value="closed">Colsed</Option> */}
                       </Select>
                     )}
                   </div>
                 </Form.Item>
               </Col>
             </Row>
-            <Row gutter={16}>
-            <Col span={12}>
-                <Form.Item
-                  label="Abbreviation">
-                  <div>
-                    {getFieldDecorator("projectAbbr", {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please input Project Abbreviation!"
-                        }
-                      ]
-                    })(
-                      <Input
-                        id="projectAbbr"
-                        placeholder="Abbreviation"
-                        name="projectAbbr"
-                        value={this.state.projectAbbr}
-                        onChange={this.handlechange}
-                      />
-                    )}
-                  </div>
-                  {formerrors.projectAbbr.length > 0 && (
-                    <span
-                      className="error"
-                      style={{ color: "red", fontSize: "14px" }}
-                    >
-                      {formerrors.projectAbbr}
-                    </span>
-                  )}
-                </Form.Item>
-              </Col>
-              </Row>
           </Form>
         </Modal>
       </div>
