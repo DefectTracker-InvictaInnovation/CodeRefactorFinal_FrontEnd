@@ -54,6 +54,7 @@ class Model extends React.Component {
       projectId: "",
       projectName: "",
       type: "",
+      projectAbbr:"",
       startDate: "",
       endDate: "",
       duration: "",
@@ -70,8 +71,10 @@ class Model extends React.Component {
         projectAbbr: "",
         status: ""
       },
-      // defectType: [],
-      // defectStatus:[]
+
+      projecttype:[],
+      projectstatus:[]
+      
     };
 
 
@@ -80,10 +83,10 @@ class Model extends React.Component {
 
     this.handlechange = this.handlechange.bind(this);
     this.handleOk = this.handleOk.bind(this);
-    // this.fetchTypes = this.fetchTypes.bind(this);
-    // this.onChangeType = this.onChangeType.bind(this);
-    // this.fetchStatus = this.fetchStatus.bind(this);
-    // this.onChangeStatus = this.onChangeStatus.bind(this);
+    this.fetchTypes = this.fetchTypes.bind(this);
+    this.onChangeType = this.onChangeType.bind(this);
+    this.fetchStatus = this.fetchStatus.bind(this);
+    this.onChangeStatus = this.onChangeStatus.bind(this);
     this.onChangeProjectId = this.onChangeProjectId.bind(this);
     this.onChangeProjectName = this.onChangeProjectName.bind(this);
     this.onChangeDuration = this.onChangeDuration.bind(this);
@@ -164,8 +167,8 @@ class Model extends React.Component {
   };
 
   componentDidMount() {
-    // this.fetchTypes();
-    // this.fetchStatus();
+    this.fetchTypes();
+    this.fetchStatus();
   }
   onChangeProjectId(value) {
     this.setState({
@@ -173,6 +176,14 @@ class Model extends React.Component {
     });
     console.log(this.state.projectId);
   }
+  onChangeProjectAbbre(value) {
+    this.setState({
+      projectAbbr: `${value}`
+    });
+    console.log(this.state.projectAbbr);
+  }
+
+
   onChangeProjectName(value) {
     this.setState({
       projectName: `${value}`
@@ -196,25 +207,43 @@ class Model extends React.Component {
     this.setState({ type: value });
   };
 
-  // fetchStatus() {
-  //   var _this = this;
-  //   axios
-  //     .get('http://localhost:8081/defectservices/defectstatuses')
-  //     .then(function (response) {
+  fetchTypes() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/getallprojecttype")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ projecttype: response.data });
+        console.log(_this.state.projecttype);
+      });
+  }
 
-  //       // handle success
-  //       console.log(response.data);
-  //       _this.setState({ defectStatus: response.data });
-  //       console.log(_this.state.defectStatus);
-  //     });
-  // }
+  onChangeType(value) {
+    this.setState({
+      type: `${value}`
+    });
+    console.log(this.state.type);
+  }
 
-  // onChangeStatus(value) {
-  //   this.setState({
-  //     status: `${value}`
-  //   });
-  //   console.log(this.state.status);
-  // }
+  fetchStatus() {
+    var _this = this;
+    axios
+      .get('http://localhost:8081/defectservices/getallprostatus')
+      .then(function (response) {
+
+        // handle success
+        console.log(response.data);
+        _this.setState({ projectstatus: response.data });
+        console.log(_this.state.projectstatus);
+      });
+  }
+
+  onChangeStatus(value) {
+    this.setState({
+      status: `${value}`
+    });
+    console.log(this.state.status);
+  }
 
   handleChangeStatus = value => {
     this.setState({ status: value });
@@ -270,6 +299,7 @@ class Model extends React.Component {
         Project Duration: ${this.state.duration}
         project Project Abbr: ${this.state.projectAbbr}
         Project Status : ${this.state.status}
+        Project Abbre: ${this.state.projectAbbr}
  `);
 
       const projectData = {
@@ -279,8 +309,8 @@ class Model extends React.Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         duration: this.state.duration,
-        projectAbbr:this.state.projectAbbr,
-        status: this.state.status
+        status: this.state.status,
+        projectAbbr:this.state.projectAbbr
       };
 
       console.log(projectData);
@@ -306,18 +336,6 @@ class Model extends React.Component {
       visible: false
     });
   };
-
-  // fetchTypes() {
-  //   var _this = this;
-  //   axios
-  //     .get('http://localhost:8081/defectservices/defecttypes')
-  //     .then(function (response) {
-  //       // handle success
-  //       console.log(response);
-  //       _this.setState({ defectType: response.data });
-  //       console.log(_this.state.defectType);
-  //     });
-  // }
 
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -407,6 +425,41 @@ class Model extends React.Component {
                 </Form.Item>
               </Col>
             </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <Form.Item label="Project Abbrevation">
+                  <div>
+                    {getFieldDecorator("projectAbbr", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Project Abbrevation!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        id="projectAbbr"
+                        className={
+                          formerrors.projectName.length > 0 ? "error" : null
+                        }
+                        placeholder="Project Abbrevation"
+                        name="projectAbbr"
+                        value={this.state.projectAbbr}
+                        onChange={this.handlechange}
+                      />
+                    )}
+                  </div>
+                  {formerrors.projectName.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.projectName}
+                    </span>
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
 
             <Row gutter={16}>
               <Col span={8}>
@@ -422,20 +475,19 @@ class Model extends React.Component {
                       ]
                     })(
                       <Select
-                        id="type"
-                        placeholder="Type"
-                        name="type"
-                        onChange={this.handleChangeType}>
-                        {/* {this.state.defectType.map(function (item, index) {
+                      id="SelectType"
+                      placeholder="Type "
+                      defaultValue="Select Type"
+                      onChange={this.onChangeType}
+                    >
+                      {this.state.projecttype.map(function (item, index) {
                         return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
+                          <Option key={index} value={item.projecttypeName}>
+                            {item.projecttypeName}
                           </Option>
                         );
-                      })} */}
-                        <Option value="MobileApp">Mobile Application</Option>
-                        <Option value="WebApp">Web Application</Option>
-                      </Select>
+                      })}
+                    </Select>
                     )}
                   </div>
                 </Form.Item>
@@ -557,20 +609,20 @@ class Model extends React.Component {
                         id="status"
                         placeholder="Status"
                         name="status"
-                        onChange={this.handleChangeStatus}
+                        onChange={this.onChangeStatus}
                       >
-                        {/* {this.state.defectStatus.map(function (item, index) {
+                        {this.state.projectstatus.map(function (item, index) {
                         return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
+                          <Option key={index} value={item.projectstatusName}>
+                            {item.projectstatusName}
                           </Option>
                         );
-                      })} */}
-                        <Option value="new">New</Option>
+                      })}
+                        {/* <Option value="new">New</Option>
                         <Option value="open">Open</Option>
                         <Option value="reopen">ReOpen</Option>
                         <Option value="rejected">Rejected</Option>
-                        <Option value="closed">Colsed</Option>
+                        <Option value="closed">Colsed</Option> */}
                       </Select>
                     )}
                   </div>

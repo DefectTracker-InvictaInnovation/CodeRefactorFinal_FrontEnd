@@ -199,16 +199,15 @@ else if(localStorage.getItem(ROLE_NAME)==='ROLE_PRODUCT_ADMIN'){
     render={(props) => <WrappedNormalLoginForm onLogin={this.handleLogin} {...props} />}> 
           
         </Route> 
-        {/* <Route path='/' component={Dashboard}/> */}
+        <Route path='/' component={Dashboard}/>
       
-       <PrivateRoute 
+       {/* <PrivateRoute 
         authenticated={this.state.isAuthenticated} 
         path="/" 
         component={Dashboard}
         currentUser={this.state.currentUser} 
         handleLogout={this.handleLogout} >
-        </PrivateRoute>
-   
+        </PrivateRoute> */}
 
        
 

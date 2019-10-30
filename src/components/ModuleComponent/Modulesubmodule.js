@@ -27,6 +27,7 @@ class Modulesubmodule extends Component {
       moduleId: "",
       moduleName: "",
       projectid: "",
+      projectName:"",
       projectId: "",
       subModuleId: "",
       subModuleName: "",
@@ -44,7 +45,8 @@ class Modulesubmodule extends Component {
       modules: [],
       submodules: [],
       allModules: [],
-      projectId1:''
+      projectId1:'',
+      id:''
       // data6:[]
 
     };
@@ -247,6 +249,13 @@ class Modulesubmodule extends Component {
       subModuleName: e.target.value
     });
     console.log(this.state.subModuleName);
+  }
+
+  onChangeprojectName(e) {
+    this.setState({
+      projectName: e.target.value
+    });
+    console.log(this.state.projectName);
   }
 
   handleChange3 = (e) => {
@@ -487,6 +496,7 @@ class Modulesubmodule extends Component {
             moduleId: res.data[i].moduleId,
             moduleName: res.data[i].moduleName,
             projectid: res.data[i].project.projectId,
+            projectName: res.data[i].project.projectName,
             subModule: res.data[i].subModule,
 
 
@@ -582,7 +592,7 @@ class Modulesubmodule extends Component {
       { title: "Submodule ID", dataIndex: "subModuleId", key: "subModuleId" },
       { title: "Submodule Name", dataIndex: "subModuleName", key: "subModuleName" },
       {
-        render: (text, data = this.state.patients) => (
+        render: (text, data = this.state.patients,expanded) => (
           <Icon
             id="editModule"
             type="edit"
@@ -627,7 +637,6 @@ class Modulesubmodule extends Component {
   };
   render() {
 
-
     const hoverContent = <h5>Add Sub Module</h5>;
 
 
@@ -635,6 +644,7 @@ class Modulesubmodule extends Component {
     const columns = [
       { title: "Module ID", dataIndex: "moduleId", key: "moduleId" },
       { title: "Module Name", dataIndex: "moduleName", key: "moduleName" },
+      { title: "Project Name", dataIndex: "projectName", key: "projectName" },
 
       {
         render: (text, data = this.state.patients) => (

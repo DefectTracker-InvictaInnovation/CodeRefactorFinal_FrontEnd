@@ -1,8 +1,8 @@
 import { Modal, Button, Form, message, Input, Select, Row, Col, Upload, Icon } from "antd";
 import React from "react";
 import axios from "axios";
-import { API_BASE_URL,API_BASE_URL_EMP } from '../../constants/index';
-import {getcuruser} from './../App/Login/util/ApiUtil'
+import { API_BASE_URL, API_BASE_URL_EMP } from '../../constants/index';
+import { getcuruser } from './../App/Login/util/ApiUtil'
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -39,7 +39,9 @@ class DefectAdd extends React.Component {
     this.state = {
       moduleId: "",
       defectId: "",
-      abbre: "abbre",
+      abbre: "",
+      projectAbbr: "",
+      defectAbbr: "",
       projectId: "",
       priority: "",
       severity: "",
@@ -52,9 +54,9 @@ class DefectAdd extends React.Component {
       enteredBy: "",
       fixedBy: "FixedBy",
       availableIn: "Available",
-      foundIn: "FoundIn",
+      foundIn: "",
       fixedIn: "FixedIn",
-      dateAndTime: "2015-08-02",
+      // dateAndTime: "",
 
       visible: false,
       formerrors: {
@@ -87,6 +89,7 @@ class DefectAdd extends React.Component {
       prioritys: [],
       severitys: [],
       types: [],
+      defectfoundIn: [],
       assignToopt: "",
       assproid: ""
     };
@@ -116,6 +119,9 @@ class DefectAdd extends React.Component {
     this.fetchProjects = this.fetchProjects.bind(this);
     this.onChangeProject = this.onChangeProject.bind(this);
 
+    this.fetchFoundIn = this.fetchFoundIn.bind(this);
+    this.onChangeFoundIn = this.onChangeFoundIn.bind(this);
+
     this.handleOk = this.handleOk.bind(this);
   }
 
@@ -129,6 +135,7 @@ class DefectAdd extends React.Component {
     this.enteredBy();
     this.showModalView();
     console.log("mounting");
+    this.fetchFoundIn();
   }
 
   fetchStatus() {
@@ -139,6 +146,17 @@ class DefectAdd extends React.Component {
         console.log(response);
         _this.setState({ defectStatus: response.data });
         console.log(_this.state.defectStatus);
+      });
+  }
+
+  fetchFoundIn() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/releases")
+      .then(function (response) {
+        console.log(response);
+        _this.setState({ defectfoundIn: response.data });
+        console.log(_this.state.defectfoundIn);
       });
   }
 
@@ -197,6 +215,13 @@ class DefectAdd extends React.Component {
       });
   }
 
+  onChangeFoundIn(value) {
+    this.setState({
+      foundIn: `${value}`
+    });
+    console.log(this.state.foundIn);
+  }
+
   onChangeType(value) {
     this.setState({
       type: `${value}`
@@ -243,7 +268,7 @@ class DefectAdd extends React.Component {
       .then(function (response) {
         console.log(response.data);
         let assignToopt = response.data.map((post, index) => {
-          if ((_this.state.projectId == post.projectId)&&("Developer"==(post.designationname))) {
+          if ((_this.state.projectId == post.projectId) && ("Developer" == (post.designationname))) {
             console.log("hhghjghg");
             return <Option key={index} value={post.name}>{post.name}</Option>
           }
@@ -267,6 +292,10 @@ class DefectAdd extends React.Component {
     this.setState({ assignTo: value });
     this.assinNoti(value);
   };
+
+  handleChangeProject(value) {
+    console.log(value); 
+  }
 
   handlechange = e => {
     e.preventDefault();
@@ -302,47 +331,47 @@ class DefectAdd extends React.Component {
     this.setState({ formerrors, [name]: value }, () => console.log(this.state));
   };
 
-  enteredBy(){
-    getcuruser().then(res=>{
+  enteredBy() {
+    getcuruser().then(res => {
       this.setState({
-        enteredBy:res.data.name
+        enteredBy: res.data.name
       })
     })
   }
 
-  assinNoti=(value)=>{
+  assinNoti = (value) => {
     axios
-        .get(API_BASE_URL_EMP+"/getallemployee")
-        .then(response => {
-          console.log(response.data);
-          console.log(value);
-          response.data.map((post,index)=>{
-            if(value===post.name){
-              this.setState({email:post.email})
-            }
-  
-  
-          })
-          const emailnoti={
-            email:this.state.email,
-            subject:"This defect assign ",
-            text:"check"
-          };
-          this.setState({emailnoti})
-          console.log(this.state.assignTo);
-         
+      .get(API_BASE_URL_EMP + "/getallemployee")
+      .then(response => {
+        console.log(response.data);
+        console.log(value);
+        response.data.map((post, index) => {
+          if (value === post.name) {
+            this.setState({ email: post.email })
+          }
+
+
         })
-        .catch(function (error) {
-          console.log(error);
-        });
-  
-       
-       
+        const emailnoti = {
+          email: this.state.email,
+          subject: "This defect assign ",
+          text: "check"
+        };
+        this.setState({ emailnoti })
+        console.log(this.state.assignTo);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
+
   }
-  
+
 
   handleOk = e => {
-   
+
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -355,8 +384,9 @@ class DefectAdd extends React.Component {
     if (formValid(this.state)) {
       console.info(`
         --SUBMITTING--    
-        Defect Id: ${this.state.defectId}   
-        Abbre: ${this.state.abbre}
+        Defect Id: ${this.state.defectId}  
+        Defect Abbr:${this.state.defectAbbr}
+        Abbre: ${this.state.projectAbbr}
         Assign To: ${this.state.assignTo}
         Available In: ${this.state.availableIn}
         Data And Time: ${this.state.dateAndTime}
@@ -379,8 +409,9 @@ class DefectAdd extends React.Component {
         defectId: this.state.defectId,
         projectId: this.state.projectId,
         type: this.state.type,
+        defectAbbr: this.state.defectAbbr,
         moduleId: this.state.moduleId,
-        abbre: this.state.abbre,
+        abbre: this.state.projectAbbr,
         priority: this.state.priority,
         severity: this.state.severity,
         status: this.state.status,
@@ -393,7 +424,7 @@ class DefectAdd extends React.Component {
         availableIn: this.state.availableIn,
         foundIn: this.state.foundIn,
         fixedIn: this.state.fixedIn,
-        dateAndTime: this.state.dateAndTime,
+        // dateAndTime: this.state.dateAndTime,
       };
       console.log(serverport);
       axios.post(API_BASE_URL + "/saveDefect/", serverport)
@@ -407,12 +438,12 @@ class DefectAdd extends React.Component {
     }
 
 
-    var mail=this.state.emailnoti;
-console.log(mail);
-      axios
-      .post(API_BASE_URL_EMP+"/sendmail", mail)
+    var mail = this.state.emailnoti;
+    console.log(mail);
+    axios
+      .post(API_BASE_URL_EMP + "/sendmail", mail)
       .then(res => {
-        
+
         console.log(res.data);
       });
   };
@@ -439,6 +470,8 @@ console.log(mail);
       assignTo: "",
       enteredBy: "",
       foundIn: "",
+      defectAbbr: "",
+      // dateAndTime:"",
 
       visible: false
     });
@@ -473,11 +506,11 @@ console.log(mail);
 
   attachment = id => {
     axios
-      .get(API_BASE_URL+"/listFile/" + id)
+      .get(API_BASE_URL + "/listFile/" + id)
       .then(data => {
         data.data.map(file => {
           console.log(file.fileDownloadUri);
-          var duri="http:"+file.fileDownloadUri;
+          var duri = "http:" + file.fileDownloadUri;
           console.log(duri);
           this.setState({
             images: [...this.state.images, duri],
@@ -488,14 +521,14 @@ console.log(mail);
   };
 
   showModalView = () => {
-    var id="Def002";
-     console.log(this.state.defectId)
+    var id = "Def002";
+    console.log(this.state.defectId)
     this.setState({
       addAttachment: {
         name: "files",
         action:
-        API_BASE_URL+"/uploadMultipleFiles?defectId=" +
-        id,
+          API_BASE_URL + "/uploadMultipleFiles?defectId=" +
+          id,
         headers: {
           authorization: "authorization-text"
         },
@@ -518,9 +551,28 @@ console.log(mail);
     const { getFieldDecorator } = this.props.form;
     return (
       <div>
-        <Button  id="addDefect" type="primary" onClick={this.showModal}>
+        <Col span={5}>
+        <Button id="addDefect" type="primary" onClick={this.showModal}>
           Add Defect
         </Button>
+        </Col><Col span={13}></Col>
+        <Col span={6}>
+        <Select
+          placeholder="Select the Project"
+          style={{ width: 220 }}
+          onChange={this.handleChangeProject}
+        >
+           {this.state.projects.map(function (item, index) {
+                        return (
+                          <Option key={index} value={item.projectId}>
+                            {item.projectName}
+                          </Option>
+                        );
+                      })}
+          {/* <Option value="jack">Jack (100)</Option>
+          <Option value="lucy">Lucy (101)</Option> */}
+        </Select>
+        </Col>
         <Modal
           title="Add Defect"
           visible={this.state.visible}
@@ -542,7 +594,7 @@ console.log(mail);
                       ]
                     })(
                       <Input
-                      id="DefectId"
+                        id="DefectId"
                         className={
                           formerrors.defectId.length > 0 ? "error" : null
                         }
@@ -574,7 +626,7 @@ console.log(mail);
                     ]
                   })(
                     <Select
-                    id="Project"
+                      id="Project"
                       placeholder="Project "
                       defaultValue="Select Project"
                       onChange={this.onChangeProject}
@@ -598,7 +650,7 @@ console.log(mail);
                     ]
                   })(
                     <Select
-                    id="Module"
+                      id="Module"
                       placeholder="Module "
                       defaultValue="Select Module"
                       onChange={this.onChangeModule}
@@ -627,7 +679,7 @@ console.log(mail);
                     })(
 
                       <TextArea
-                      id="DefectDescription"
+                        id="DefectDescription"
                         placeholder="Defect Description"
                         value={this.state.defectDescription}
                         onChange={this.handlechange}
@@ -652,7 +704,7 @@ console.log(mail);
                     })(
 
                       <TextArea
-                      id="stepsToRecreate"
+                        id="stepsToRecreate"
                         placeholder="Steps To Recreate "
                         value={this.state.stepsToRecreate}
                         onChange={this.handlechange}
@@ -670,7 +722,7 @@ console.log(mail);
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Entered By">
                   <Select
-                  id="enteredBy"
+                    id="enteredBy"
                     placeholder="Entered By"
                     onChange={this.handleChangeEnterrdBy}
                     name="enteredBy"
@@ -691,15 +743,19 @@ console.log(mail);
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Found In ">
                   <Select
-                  id="foundIn"
+                    id="foundIn"
                     placeholder="Found In "
                     name="foundIn"
                     type="text"
-                    onChange={this.handleChangeFoundIn}
+                    onChange={this.onChangeFoundIn}
                   >
-                    <Option value="Release1">Release1</Option>
-                    <Option value="Release2">Release2</Option>
-                    <Option value="Release3">Release3</Option>
+                    {this.state.defectfoundIn.map(function (item, index) {
+                      return (
+                        <Option key={index} value={item.releaseName}>
+                          {item.releaseName}
+                        </Option>
+                      );
+                    })}
                   </Select>
 
 
@@ -709,7 +765,7 @@ console.log(mail);
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Assign To">
                   <Select
-                  id="assignTo"
+                    id="assignTo"
                     placeholder="Assign To"
                     name="assignTo"
                     type="text"
@@ -730,7 +786,7 @@ console.log(mail);
                     rules: [{ required: true, message: "Please select Type!" }]
                   })(
                     <Select
-                    id="SelectType"
+                      id="SelectType"
                       placeholder="Type "
                       defaultValue="Select Type"
                       onChange={this.onChangeType}
@@ -755,7 +811,7 @@ console.log(mail);
                     ]
                   })(
                     <Select
-                    id="Severity"
+                      id="Severity"
                       placeholder="Severity "
                       onChange={this.onChangeSeverity}
                     >
@@ -778,7 +834,7 @@ console.log(mail);
                     ]
                   })(
                     <Select
-                    id="Priority"
+                      id="Priority"
                       placeholder="Priority"
                       onChange={this.onChangePriority}
                     >
@@ -796,7 +852,6 @@ console.log(mail);
             </Row>
             <Row>
               <Col span={8} style={{ padding: "5px" }}>
-                -
                 <Form.Item label="Status">
                   {getFieldDecorator("gender7", {
                     rules: [
@@ -804,7 +859,7 @@ console.log(mail);
                     ]
                   })(
                     <Select
-                    id="Status"
+                      id="Status"
                       placeholder="Status"
                       onChange={this.onChangeStatus}
                       defaultValue="New"
@@ -821,12 +876,12 @@ console.log(mail);
                 </Form.Item>
               </Col>
               <Col span={14} style={{ padding: "5px" }}>
-              {/* <Upload {...this.state.addAttachment}>
+                {/* <Upload {...this.state.addAttachment}>
                 <Button >
                   <Icon type="upload" /> Click to Upload
                 </Button>
               </Upload> */}
-            </Col>
+              </Col>
             </Row>
           </Form>
         </Modal>

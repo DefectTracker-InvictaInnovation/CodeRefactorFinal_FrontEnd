@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Popconfirm,
+  notification,
   message
 } from "antd";
 import Highlighter from "react-highlight-words";
@@ -36,7 +37,13 @@ function onChange(sorter) {
   console.log("params", sorter);
 }
 
-
+const openNotificationWithIcon = type => {
+  notification[type]({
+    message: 'Warning Message',
+    description:
+      'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+  });
+};
 
 export default class App extends React.Component {
   constructor(props) {
@@ -58,6 +65,8 @@ export default class App extends React.Component {
       employeeEmail: "",
       Name:'',
       Email:'',
+      designationid:'',
+      designationname:'',
       Designationname:'',
       visible1:false,
       visiblepro:false,
@@ -134,7 +143,7 @@ export default class App extends React.Component {
 
         let des= response.data.map(function (item, index) {
           return (
-            <Option key={index} value={item.designationname}>
+            <Option key={index} value={item.designationid}>
               {item.designationname}
             </Option>
           );
@@ -468,18 +477,18 @@ console.log(id)
         key: "empId",
         // ...this.getColumnSearchProps("empId"),
         render: (text, data = this.state.patients) => (
-          <Popconfirm
-            id="employeeDelete"
-            title="Are you sure delete this Row?"
-            onConfirm={this.handleDelete.bind(this, data.empId)}
-            onCancel={cancel}
-            okText="Yes"
-            cancelText="No"
-          >
+          // <Popconfirm
+          //   id="employeeDelete"
+          //   title="Are you sure delete this Row?"
+          //   onConfirm={this.handleDelete.bind(this, data.empId)}
+          //   onCancel={cancel}
+          //   okText="Yes"
+          //   cancelText="No"
+          // >
             <a>
-              <Icon id="delete" type="delete" style={{ fontSize: "18px", color: "red" }} />
+              <Icon id="delete" type="delete" style={{ fontSize: "18px", color: "red" }} onClick={() => openNotificationWithIcon('warning')}/>
             </a>
-          </Popconfirm>
+          
         ),
         key: "delete",
         width: "8%"
@@ -565,19 +574,16 @@ console.log(id)
               <Row>
                 <Col span={8} style={{ padding: "5px" }}>
                   <Form.Item label="Designation">
-                   <Select
+                    <Select
                       // defaultValue="Select Designation"
                       id="employeeDesignation"
-                      value={this.state.employeeDesignation}
                       onChange={this.onChangeEmployeeDesignation}
-                      
+                      value={this.state.employeeDesignation}
                     >
-                      {this.state.des}
-                    </Select> 
-                   
+                     {this.state.des}
+                    </Select>
                   </Form.Item>
                 </Col>
-                
                 <Col span={16} style={{ padding: "5px" }}>
                   <Form.Item label="Email Id">
                     <Input

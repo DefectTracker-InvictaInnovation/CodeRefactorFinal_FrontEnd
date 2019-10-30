@@ -224,22 +224,22 @@ class AuditLog extends React.Component {
         title: "Defect Id",
         dataIndex: "defectId"
       },
-      {
-        title: "Action",
-        key: "action",
-        render: () => (
-          <span>
-            <a onClick={this.showModal}>
-              <a href="#">
-                <Icon
-                  type="fullscreen"
-                  style={{ fontSize: "17px", color: "green" }}
-                />
-              </a>
-            </a>
-          </span>
-        )
-      }
+      // {
+      //   title: "Action",
+      //   key: "action",
+      //   render: () => (
+      //     <span>
+      //       <a onClick={this.showModal}>
+      //         <a href="#">
+      //           <Icon
+      //             type="fullscreen"
+      //             style={{ fontSize: "17px", color: "green" }}
+      //           />
+      //         </a>
+      //       </a>
+      //     </span>
+      //   )
+      // }
     ];
     const menu = (
       <Menu onClick={this.handleMenuClick}>

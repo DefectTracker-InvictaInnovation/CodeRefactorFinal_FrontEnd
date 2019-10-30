@@ -141,7 +141,9 @@ class CompanyDashboard extends React.Component {
             value1:'',
             value2:'',
             value3:'',
-            name:''
+            name:'',
+            value4:'',
+            value5:''
         }
     }
 
@@ -196,6 +198,33 @@ class CompanyDashboard extends React.Component {
           });
     
       }
+
+       getHRcount() {
+        const url = API_BASE_URL_EMP+'/getTotalHRCount';
+        axios.get(url)
+    
+          .then(response => this.setState({
+            value4: response.data,
+          }))
+          .catch(function (error) {
+            console.log(error);
+          });
+    
+      }
+
+      getTecLeadcount() {
+        const url = API_BASE_URL_EMP+'/getTotalTecLeadCount';
+        axios.get(url)
+    
+          .then(response => this.setState({
+            value5: response.data,
+          }))
+          .catch(function (error) {
+            console.log(error);
+          });
+    
+      }
+
       visibledash =(list)=>{
           if(list){this.setState({
             name:list[2],
@@ -209,6 +238,8 @@ console.log(list[2])
         this.getDevelopercount();
         this.getQacount();
         this.getPmcount();
+        this.getHRcount();
+        this.getTecLeadcount();
     }
 
 
@@ -325,8 +356,8 @@ console.log(list[2])
                                         boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
                                     }} className="res">
                                     <div>
-                                        <h1>QA Leads</h1>
-                                        <h2>5</h2>
+                                        <h1>Human Resources</h1>
+                                        <h2>{this.state.value4}</h2>
 
                                         <div>
                                             <img src={QALeadIcon} alt="sorry no img" style={{ height: "8em" }} />
@@ -354,7 +385,7 @@ console.log(list[2])
                                     }}>
                                     <div>
                                         <h1>Tech Leads</h1>
-                                        <h2>5</h2>
+                                        <h2>{this.state.value5}</h2>
 
                                         <div>
                                             <img src="https://img.icons8.com/clouds/112/000000/mind-map.png" alt="sorry no img" />
