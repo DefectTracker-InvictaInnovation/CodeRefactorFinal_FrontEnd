@@ -8,7 +8,7 @@ import "react-image-lightbox/style.css";
 import { API_BASE_URL, API_BASE_URL_EMP, CURRENT_USER } from '../../constants/index';
 import { ROLE_NAME } from '../../constants/index';
 import DefectLog from "./DefectLog";
-
+import DefectAdd from "./DefectAdd";
 const TreeNode = TreeSelect.TreeNode;
 const Option = Select.Option;
 const { TextArea } = Input;
@@ -139,6 +139,7 @@ class TableFilter extends React.Component {
       afterpriority: '',
       afterassignTo: '',
       aftertype: '',
+      Alldefect:''
       
     };
     this.handleDelete = this.handleDelete.bind(this);
@@ -164,6 +165,7 @@ class TableFilter extends React.Component {
 
     this.fetchProjects = this.fetchProjects.bind(this);
     this.onChangeProject = this.onChangeProject.bind(this);
+    this.onChangeProjects = this.onChangeProjects.bind(this);
     this.fetchModules = this.fetchModules.bind(this);
     this.onChangeModule = this.onChangeModule.bind(this);
     this.fetchTypes = this.fetchTypes.bind(this);
@@ -275,6 +277,29 @@ class TableFilter extends React.Component {
         _this.setState({ projects: response.data });
         console.log(_this.state.projects);
       });
+  }
+
+  onChangeProjects(value,defaultValue) {
+    
+    this.setState({
+      projectId: `${value}`
+    });
+    console.log(value);
+    console.log(defaultValue);
+    var _this = this;
+    if(value=="All"){
+      this.refreshDefect()
+    }else{
+    axios
+      .get(API_BASE_URL + "/getAllDefectsByProjectId/"+value)
+      .then(function (response) {
+        console.log(response.data)
+        _this.setState({
+          defect:response.data,
+         
+        })
+      });
+    }
   }
   fetchModules() {
     var _this = this;
@@ -647,7 +672,8 @@ class TableFilter extends React.Component {
       .get(API_BASE_URL + "/getAllDefects")
       .then(response => {
         console.warn("Refresh Service is working");
-        this.setState({ defect: response.data });
+        this.setState({ defect: response.data ,
+        Alldefect:response.data});
       });
   }
 
@@ -1396,7 +1422,42 @@ class TableFilter extends React.Component {
     return (
       <div>
         <EditorIn />
+        <Row>
+          <Col span={4}>
+          <DefectAdd/>
+          </Col>
+        <Col span={8}>
 
+        </Col>
+        <Col span={7}>
+
+        </Col>
+        <Col span={5}>
+        <Select
+          placeholder="Select the Project"
+          style={{ width: 220 }}
+          defaultValue="All"
+          onChange={this.onChangeProjects}
+         
+        >
+          <Option value="All">All</Option>
+       
+           {this.state.projects.map(function (item, index) {
+                        return (
+                          <Option key={index}  defaultValue="All" value={item.projectId}>
+                            {item.projectName}
+                          </Option>
+                        );
+                      })}
+          {/* <Option value="jack">Jack (100)</Option>
+          <Option value="lucy">Lucy (101)</Option> */}
+        </Select>
+        </Col>
+       
+        </Row>
+        
+        <br />
+          <br />
 
 
         <Table

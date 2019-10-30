@@ -48,7 +48,7 @@ class DefectComponent extends React.Component {
                     }}>
                     <div className="row" align="left">
                     <Col >
-                    <DefectAdd/>
+                    
           </Col>
           
           <br />

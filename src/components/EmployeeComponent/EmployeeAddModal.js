@@ -428,7 +428,7 @@ axios.post("http://localhost:8084/employeeservice/saveemployee", this.state.form
                         message: "Please input your Photo!"
                       }
                     ]
-                  })(
+                  })(<Icon type="upload" />
               
                   )} */}
                    <input type="file" className="form-control" name="file" multiple onChange={this.onFileChangeHandler}/>
