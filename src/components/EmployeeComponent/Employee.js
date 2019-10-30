@@ -39,9 +39,9 @@ function onChange(sorter) {
 
 const openNotificationWithIcon = type => {
   notification[type]({
-    message: 'Warning Message',
+    message: 'This is Warning Message',
     description:
-      'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+      "This is the contain Valuable Data.If You delete this all data can't retrive!!!!",
   });
 };
 
