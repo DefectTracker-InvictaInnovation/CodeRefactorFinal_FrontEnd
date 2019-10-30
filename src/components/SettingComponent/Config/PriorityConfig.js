@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Table, Divider, Modal, Button, Icon, Upload, Form, Input, Col, Row, Popconfirm } from 'antd';
+import { Table, Divider, Modal, Button, Icon, Upload, Form, Input, Col, Row, Popconfirm,message } from 'antd';
 import { SketchPicker } from 'react-color';
 import reactCSS from 'reactcss';
 import Dropdown from 'react-dropdown';
@@ -8,7 +8,9 @@ import 'react-dropdown/style.css'
 import axios from 'axios';
 import { ChromePicker } from 'react-color';
 
-
+const NameRegex = RegExp(/^[a-zA-Z]+$/);
+const ValidRegex = RegExp(/^[0-9a-zA-Z]+$/);
+const DurationRegex = RegExp(/^[0-9]+$/);
 const options = [
   {
     value: "arrow-up",
@@ -27,10 +29,25 @@ const defaultOption = "Select an Icon";
 
 const rgbHex = require('rgb-hex');
 const hexRgb = require('hex-rgb');
+const formValid = ({ formerrors, ...rest }) => {
+  let valid = true;
+
+  // validate form errors being empty
+  Object.values(formerrors).forEach(val => {
+    val.length > 0 && (valid = false);
+  });
+
+  // validate the form was filled out
+  Object.values(rest).forEach(val => {
+    val === null && (valid = false);
+  });
+
+  return valid;
+};
 
 
 
-export default class PriorityConfig extends React.Component {
+ class PriorityConfig extends React.Component {
   state = {
     visible: false,
     visibleEditModal: false,
@@ -60,14 +77,80 @@ export default class PriorityConfig extends React.Component {
       value: '',
       color: '',
       icon: '',
-      id: ''
+      id: '',
+      formerrors: {
+        name: "",
+        value: "",
+        color: "",
+        icon: ""
+        
+      },
     }
+  };
+  handlechange = (e) => {
+    e.preventDefault();
+
+    const { name, value } = e.target;
+    let formerrors = { ...this.state.formerrors };
+
+    switch (name) {
+      case "name":
+        if (!ValidRegex.test(value)) {
+          formerrors.name = "Invalid Name";
+        } else if (value.length > 30) {
+          formerrors.name = "Should be less than 8 characters";
+        } else {
+          formerrors.name = "";
+        }
+        break;
+      case "value":
+        if (!NameRegex.test(value)) {
+          formerrors.value = "Invalid value";
+        }
+        if (value.length > 10) {
+          formerrors.value = "Should be less than 70 characters";
+        } else {
+          formerrors.value = "";
+        }
+        break;
+
+      case "icon":
+        if (!NameRegex.test(value)) {
+          formerrors.icon = "Invalid Icon";
+        } else if (value.length > 30) {
+          formerrors.icon = "Should be less than 30 characters";
+        } else {
+          formerrors.icon = "";
+        }
+        break;
+
+      case "color":
+        if (!NameRegex.test(value)) {
+          formerrors.color = "Invalid color";
+        } else if (value.length > 30) {
+          formerrors.color = "Should be less than 30 characters";
+        } else {
+          formerrors.color = "";
+        }
+        break;
+
+        
+      default:
+        break;
+    }
+    this.setState({ formerrors, [name]: value }, () => console.log(this.state));
   };
 
   componentDidMount() {
     //this.componentWillMount()
     this.getDefectPriority()
   }
+  // onChangeName(value) {
+  //   this.setState({
+  //     name: `${value}`
+  //   });
+  //   console.log(this.state.name);
+  // }
 
   onChangeName(e) {
     this.setState({
@@ -154,27 +237,100 @@ export default class PriorityConfig extends React.Component {
       })
     this.setState({ visible: false })
   }
-
   handleOk = e => {
-    this.getDefectPriority();
-    let colorStringValue = '#' + rgbHex(this.state.color.r, this.state.color.g, this.state.color.b);
-    const obj = {
-      name: this.state.name,
-      value: this.state.value,
-      icon: this.state.icon,
-      color: colorStringValue
-    }
-    axios.post('http://localhost:8083/productservice/defectpriority', obj)
+    e.preventDefault();
+
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        console.log("Received values of form: ", values);
+        message.success("Successfully Added!!!");
+        this.setState({ visible: false });
+      } else {
+      }
+    });
+    if (formValid(this.state)) {
+      console.info(`
+        --SUBMITTING--
+         Priority Name: ${this.state.name}
+         Priority value:${this.state.value}
+         Priority Color: ${this.state.color}
+         Priority Icon : ${this.state.icon}
+ `);
+
+ this.getDefectPriority();
+     let colorStringValue = '#' + rgbHex(this.state.color.r, this.state.color.g, this.state.color.b);
+     const obj = {
+       name: this.state.name,
+       value: this.state.value,
+       icon: this.state.icon,
+       color: colorStringValue
+     }
+
+      console.log(obj);
+      axios.post('http://localhost:8083/productservice/defectpriority', obj)
       .then(res => this.getDefectPriority());
-    console.log(obj);
-    this.setState({
-      name: '',
-      value: '',
-      icon: '',
-      color: '',
-      visible: false
-    })
+          console.log(obj);
+          this.setState({
+            name: '',
+            value: '',
+            icon: '',
+            color: '',
+            visible: false
+        
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    } else {
+      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+    }
   };
+
+//   handleOk = e => {
+
+//     e.preventDefault();
+
+//     this.props.form.validateFieldsAndScroll((err, values) => {
+//       if (!err) {
+//         console.log("Received values of form: ", values);
+//         message.success("Successfully Added!!!");
+//         this.setState({ visible: false });
+//       } else {
+//       }
+//     });
+//     if (formValid(this.state)) {
+//       console.info(`
+//         --SUBMITTING--
+       
+//         Priority Name: ${this.state.name}
+//         Priority value:${this.state.value}
+//         Priority Color: ${this.state.color}
+//         Priority Icon : ${this.state.icon}
+        
+//  `);
+
+//     this.getDefectPriority();
+//     let colorStringValue = '#' + rgbHex(this.state.color.r, this.state.color.g, this.state.color.b);
+//     const obj = {
+//       name: this.state.name,
+//       value: this.state.value,
+//       icon: this.state.icon,
+//       color: colorStringValue
+//     }
+//     axios.post('http://localhost:8083/productservice/defectpriority', obj)
+//       .then(res => this.getDefectPriority());
+//     console.log(obj);
+//     this.setState({
+//       name: '',
+//       value: '',
+//       icon: '',
+//       color: '',
+//       visible: false
+//     })
+//   } else {
+//     console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+//   }
+//   };
 
   handleEditOk = (id) => {
     let colorString = '#' + rgbHex(this.state.color.r, this.state.color.g, this.state.color.b);
@@ -247,6 +403,8 @@ export default class PriorityConfig extends React.Component {
   };
 
   render() {
+    const { getFieldDecorator } = this.props.form;
+    const { formerrors } = this.state;
 
     const columns = [
       {
@@ -369,59 +527,131 @@ export default class PriorityConfig extends React.Component {
               }}>
 
               <Form labelCol={{ span: 5 }} wrapperCol={{ span: 12 }} onSubmit={this.handleSubmit}>
-                <Form.Item label="Name">
-                  <Input
-                    id="priorityName"
-                    type="text"
-                    className="form-control"
-                    value={this.state.name}
-                    onChange={this.onChangeName}
-                  />
+              <Form.Item label="Name">
+                  <div>
+                    {getFieldDecorator("name", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Name!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        id="name"
+                        className={
+                          formerrors.name.length > 0 ? "error" : null
+                        }
+                        placeholder="name "
+                        name="name"
+                        value={this.state.name}
+                        onChange={this.onChangeName}
+                      />
+                    )}
+                  </div>
+                  {formerrors.name.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.name}
+                    </span>
+                  )}
                 </Form.Item>
                 <Form.Item label="Description">
-                  <Input
-                    id="priorityValue"
-                    type="text"
-                    className="form-control"
-                    value={this.state.value}
-                    onChange={this.onChangeValue}
-                  />
+                  <div>
+                    {getFieldDecorator("Value", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Description!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        id="Value"
+                        className={
+                          formerrors.value.length > 0 ? "error" : null
+                        }
+                        placeholder="Description "
+                        name="Description"
+                        value={this.state.value}
+                        onChange={this.onChangeValue}
+                      />
+                    )}
+                  </div>
+                  {formerrors.value.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.value}
+                    </span>
+                  )}
                 </Form.Item>
+                
+                
                 <Form.Item label="Icon"  >
-                  {/* <Upload {...props}>
-                    <Button>
-                      <Icon type="upload" /> Upload
-                    </Button>
-                  </Upload> */}
+                <div>
+                    {getFieldDecorator("icon", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please select Icon!"
+                        }
+                      ]
+                    })(
+                 
                   <Dropdown
-                    id="priorityIcon"
+                    id="icon"
                     options={options}
                     //onClick={this.handleSelect}
                     onChange={this.onChangeIcon}
                     value={this.state.icon}
                     placeholder="Select an option"
                   />
-                  {/* <select value={this.state.icon} onChange={this.handleSelect}>
-                    <option value="arrow-up"> <Icon type={'arrow-up'} /> </option>
-                    <option value="swap"> <Icon type={'swap'} /> </option>
-                    <option value="arrow-down"> <Icon type={'arrow-down'} /> </option>
-                  </select> */}
+                  
+                  )}
+                  </div>
+                  {formerrors.icon.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.icon}
+                    </span>
+                  )}
                 </Form.Item>
                 <Form.Item id="colour" label="Colour">
-                  <div style={styles.swatch} onClick={this.handleClick}>
-                    <div style={styles.color} />
-                  </div>
-                  {this.state.displayColorPicker ? <div style={styles.popover}>
+                <div style={styles.swatch} onClick={this.handleClick}>
+                <div style={styles.color} />
+                    {getFieldDecorator("color", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please select Icon!"
+                        }
+                      ]
+                    }) (
+                      <div>
+                   {this.state.displayColorPicker ? <div style={styles.popover}>
                     <div style={styles.cover} onClick={this.handleClose} />
                     <SketchPicker id="colour" color={this.state.color} onChange={this.handleChange} />
-                  </div> : null}
-                  {/* <div>
-                    <button onClick={this.handleClick}>Pick Color</button>
-                    {this.state.displayColorPicker ? <div style={styles.popover}>
-                      <div style={styles.cover} onClick={this.handleClose} />
-                      <ChromePicker />
-                    </div> : null}
-                  </div> */}
+                  </div> : null}</div>
+                  )}</div>
+                   {formerrors.color.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.color}
+                    </span>
+                  )}
+                  
+                 
+                
+                  
+                  
                 </Form.Item>
               </Form>
             </div>
@@ -492,3 +722,4 @@ export default class PriorityConfig extends React.Component {
     );
   }
 }
+export default Form.create()(PriorityConfig);

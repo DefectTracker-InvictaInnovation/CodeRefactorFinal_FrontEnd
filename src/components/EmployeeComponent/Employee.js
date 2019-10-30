@@ -54,7 +54,7 @@ export default class App extends React.Component {
     this.onChangeEmployeeEmail = this.onChangeEmployeeEmail.bind(this);
     this.onChangeEmployeeDesignation = this.onChangeEmployeeDesignation.bind(this);
     this.handleOk = this.handleOk.bind(this);
-    this.fetchDesignations = this.fetchDesignations.bind(this);
+    this.fetchDesignations = this.fetchDesignations.bind(this); 
 
     this.state = {
       employeeautoId: "",
