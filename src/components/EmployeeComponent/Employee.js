@@ -650,7 +650,7 @@ console.log(id)
                       placeholder="Employee Name"
                       value={this.state.employeeName}
                       onChange={this.onChangeEmployeeName}
-                      onChange={this.onChange}
+                      // onChange={this.onChange}
                     />
                     )}
                     </div>
@@ -672,7 +672,7 @@ console.log(id)
                       placeholder="Employee FirstName"
                       value={this.state.employeeFirstName}
                       onChange={this.onChangeEmployeeFirstName}
-                      onChange={this.onChange}
+                      // onChange={this.onChange}
                     />
                     )}
                     </div>
@@ -696,7 +696,7 @@ console.log(id)
                       id="employeeDesignation"
                       value={this.state.employeeDesignation}
                       onChange={this.onChangeEmployeeDesignation}
-                      onChange={this.onChange}
+                      // onChange={this.onChange}
                     >
                       {this.state.des}
                     </Select> 
@@ -721,7 +721,7 @@ console.log(id)
                       placeholder="Email Id"
                       value={this.state.employeeEmail}
                       onChange={this.onChangeEmployeeEmail}
-                      onChange={this.onChange}
+                      // onChange={this.onChange}
                     />
                     )}
                     </div>
