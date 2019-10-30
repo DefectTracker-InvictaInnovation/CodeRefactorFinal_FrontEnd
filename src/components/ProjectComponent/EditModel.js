@@ -20,6 +20,7 @@ export default class Model extends React.Component {
     this.onChangeprojectName = this.onChangeprojectName.bind(this);
     this.onChangeDuration = this.onChangeDuration.bind(this);
     this.onChangeStatus = this.onChangeStatus.bind(this);
+    this.onChangeProjectAbbr=this.onChangeProjectAbbr.bind(this);
     this.onChangeType = this.onChangeType.bind(this);
     this.onChangeEndDate = this.onChangeEndDate.bind(this);
     this.onChangeStartDate = this.onChangeStartDate.bind(this);
@@ -33,6 +34,7 @@ export default class Model extends React.Component {
       endDate: '',
       status: '',
       type: '',
+      projectAbbr:"",
       projecttype:[],
       projectstatus:[]
     }
@@ -42,7 +44,6 @@ export default class Model extends React.Component {
     this.fetchStatus = this.fetchStatus.bind(this);
     this.onChangeStatus = this.onChangeStatus.bind(this);
   };
-  // state= {visibleEditModal:false};
   componentDidMount() {
     this.handleEdit(this.props.projectProps)
     this.fetchTypes();
@@ -70,7 +71,18 @@ export default class Model extends React.Component {
     });
     console.log(this.state.type);
   };
-
+  onChangeProjectAbbre(value) {
+    this.setState({
+      projectAbbr: `${value}`
+    });
+    console.log(this.state.projectAbbr);
+  }
+  onChangeProjectAbbr(value) {
+    this.setState({
+     projectAbbr: `${value}`
+   });
+    console.log(this.state.projectAbbr);
+  }
   fetchTypes() {
     var _this = this;
     axios
@@ -115,7 +127,6 @@ export default class Model extends React.Component {
   };
 
   onChangeStartDate(date, dateString) {
-    //this.setState({startDate: dateString});
     this.setState({ startDate: dateString }, () =>
       console.log(this.state.startDate)
     );
@@ -149,6 +160,7 @@ export default class Model extends React.Component {
         this.setState({
           projectId:response.data.projectId,
           projectName: response.data.projectName,
+          projectAbbr:response.data.projectAbbr,
           duration: response.data.duration,
           status: response.data.status,
           startDate: response.data.startDate,
@@ -167,6 +179,7 @@ export default class Model extends React.Component {
     const obj = {
       projectId: this.state.projectId,
       projectName: this.state.projectName,
+      projectAbbr:this.state.projectAbbr,
       duration: this.state.duration,
       status: this.state.status,
       startDate: this.state.startDate,
@@ -184,6 +197,7 @@ export default class Model extends React.Component {
       projectName: '',
       duration: '',
       status: '',
+      projectAbbr:'',
       startDate: '',
       endDate: '',
       type: '',
@@ -238,7 +252,20 @@ export default class Model extends React.Component {
                     value={this.state.projectName}
                     onChange={this.onChangeprojectName}
                   />
-                </Form.Item>{" "}
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+            <Col span={24}>
+                <Form.Item label="Project Name">
+                <Input
+                        id="projectAbbr"
+                        placeholder="Project Abbrevation"
+                        name="projectAbbr"
+                        value={this.state.projectAbbr}
+                        onChange={this.onChangeProjectAbbr}
+                      />
+                </Form.Item>
               </Col>
             </Row>
 
@@ -318,16 +345,6 @@ export default class Model extends React.Component {
                       </Select>
                 </Form.Item>
               </Col>
-              {/* 
-              <Col span={8} style={{ padding: "5px" }}>
-                <Form.Item label="Config Id">
-                  <Input
-                    placeholder="Config Id"
-                    value={this.state.configId}
-                    onChange={this.onChangeconfigId}
-                  />
-                </Form.Item>{" "}
-              </Col> */}
             </Row>
           </Form>
         </Modal>
