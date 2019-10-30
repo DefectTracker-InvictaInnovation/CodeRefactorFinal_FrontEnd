@@ -7,6 +7,7 @@ import {  ACCESS_TOKEN } from './../../../constants/index';
 import {  ROLE_NAME } from './../../../constants/index';
 import {   IS_AUTHENTICATED,CURRENT_USER } from './../../../constants/index';
 import axios from "axios";
+import { NavLink } from 'react-router-dom';
 const FormItem = Form.Item;
 
 class index extends Component{
@@ -105,6 +106,9 @@ handleSubmit(event) {
         </FormItem>
         <FormItem>
           <Button type="primary" htmlType="submit" size="large" className="login-form-button">Login</Button>
+          <a className="login-form-forgot" href="/forgot">
+            Forgot password
+          </a>
          
         </FormItem>
       </Form>

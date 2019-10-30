@@ -16,6 +16,8 @@ import { ACCESS_TOKEN } from '../../constants/index';
 import { ROLE_NAME } from '../../constants/index';
 import { IS_AUTHENTICATED } from '../../constants/index';
 
+//forgot component for routing
+import Forgot from './Login/forgot';
 
 
 class App extends React.Component {
@@ -191,7 +193,7 @@ else if(localStorage.getItem(ROLE_NAME)==='ROLE_PRODUCT_ADMIN'){
     
   
 <Switch>
-
+<Route exact path="/forgot" render={props => <Forgot {...props}/>}/>
 
    <Route exact path="/login" 
     render={(props) => <WrappedNormalLoginForm onLogin={this.handleLogin} {...props} />}> 

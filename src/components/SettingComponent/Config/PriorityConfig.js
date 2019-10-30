@@ -28,20 +28,7 @@ const defaultOption = "Select an Icon";
 const rgbHex = require('rgb-hex');
 const hexRgb = require('hex-rgb');
 
-// const props = {
-//   action: '//jsonplaceholder.typicode.com/posts/',
-//   listType: 'picture',
-//   previewFile(file) {
-//     console.log('Your upload file:', file);
-//     // Your process logic. Here we just mock to the same file
-//     return fetch('https://next.json-generator.com/api/json/get/4ytyBoLK8', {
-//       method: 'POST',
-//       body: file,
-//     })
-//       .then(res => res.json())
-//       .then(({ thumbnail }) => thumbnail);
-//   },
-// };
+
 
 export default class PriorityConfig extends React.Component {
   state = {
@@ -223,15 +210,7 @@ export default class PriorityConfig extends React.Component {
     });
   };
 
-  // state = {
-  //   displayColorPicker: false,
-  //   color: {
-  //     r: '241',
-  //     g: '112',
-  //     b: '19',
-  //     a: '1',
-  //   },
-  // };
+ 
 
   handleClick = () => {
     this.setState({ displayColorPicker: !this.state.displayColorPicker })
