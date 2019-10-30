@@ -21,6 +21,8 @@ const { MonthPicker, RangePicker } = DatePicker;
 const NameRegex = RegExp(/^[a-zA-Z]+$/);
 const ValidRegex = RegExp(/^[0-9a-zA-Z]+$/);
 const DurationRegex = RegExp(/^[0-9]+$/);
+const ProjectAbbrRegex = RegExp(/^[0-9]+$/);
+
 const config = {
   rules: [{ type: "object", required: true, message: "Please select time!" }]
 };
@@ -55,6 +57,7 @@ class Model extends React.Component {
       startDate: "",
       endDate: "",
       duration: "",
+      projectAbbr: "",
       status: "",
       visible: false,
       formerrors: {
@@ -64,6 +67,7 @@ class Model extends React.Component {
         startDate: "",
         endDate: "",
         duration: "",
+        projectAbbr: "",
         status: ""
       },
       // defectType: [],
@@ -83,6 +87,7 @@ class Model extends React.Component {
     this.onChangeProjectId = this.onChangeProjectId.bind(this);
     this.onChangeProjectName = this.onChangeProjectName.bind(this);
     this.onChangeDuration = this.onChangeDuration.bind(this);
+    this.onChangeProjectAbbr=this.onChangeProjectAbbr.bind(this);
     this.onChangeStartDate = this.onChangeStartDate.bind(this);
     this.onChangeEndDate = this.onChangeEndDate.bind(this);
   }
@@ -143,6 +148,15 @@ class Model extends React.Component {
           formerrors.duration = "";
         }
         break;
+        // case "abbreviation":
+        //   if (!AbbreviationRegex.test(value)) {
+        //     formerrors.abbreviation = "Invalid Abbreviation";
+        //   } else if (value.length > 30) {
+        //     formerrors.abbreviation = "Should be less than 10 characters";
+        //   } else {
+        //     formerrors.abbreviation = "";
+        //   }
+        //   break;
       default:
         break;
     }
@@ -172,12 +186,12 @@ class Model extends React.Component {
     console.log(this.state.duration);
   }
 
-  // onChangeType(value) {
-  //   this.setState({
-  //     type: `${value}`
-  //   });
-  //   console.log(this.state.type);
-  // }
+   onChangeProjectAbbr(value) {
+     this.setState({
+      projectAbbr: `${value}`
+    });
+     console.log(this.state.projectAbbr);
+   }
   handleChangeType = value => {
     this.setState({ type: value });
   };
@@ -254,6 +268,7 @@ class Model extends React.Component {
         Project Start Date: ${this.state.startDate}
         Project End Date: ${this.state.endDate}
         Project Duration: ${this.state.duration}
+        project Project Abbr: ${this.state.projectAbbr}
         Project Status : ${this.state.status}
  `);
 
@@ -264,6 +279,7 @@ class Model extends React.Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         duration: this.state.duration,
+        projectAbbr:this.state.projectAbbr,
         status: this.state.status
       };
 
@@ -561,10 +577,43 @@ class Model extends React.Component {
                 </Form.Item>
               </Col>
             </Row>
+            <Row gutter={16}>
+            <Col span={12}>
+                <Form.Item
+                  label="Abbreviation">
+                  <div>
+                    {getFieldDecorator("projectAbbr", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Project Abbreviation!"
+                        }
+                      ]
+                    })(
+                      <Input
+                        id="projectAbbr"
+                        placeholder="Abbreviation"
+                        name="projectAbbr"
+                        value={this.state.projectAbbr}
+                        onChange={this.handlechange}
+                      />
+                    )}
+                  </div>
+                  {formerrors.projectAbbr.length > 0 && (
+                    <span
+                      className="error"
+                      style={{ color: "red", fontSize: "14px" }}
+                    >
+                      {formerrors.projectAbbr}
+                    </span>
+                  )}
+                </Form.Item>
+              </Col>
+              </Row>
           </Form>
         </Modal>
       </div>
     );
-  }
+                  }
 }
 export default Form.create()(Model);

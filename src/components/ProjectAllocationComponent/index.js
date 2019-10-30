@@ -468,8 +468,37 @@ export default class ProjectManageAllocation extends React.Component {
                                 marginRight: '0px'
                             }}>
                             <Col span={0}></Col>
+                            <Col span={4}>
 
-                            <Col span={3}>
+                                <div>
+
+                                    <Button
+                                        style={{
+                                            backgroundColor: '#ff3f34',
+                                            color: '#fff'
+                                        }}
+                                        onClick={() => this.setModal2Visible(true)}>
+                                        Project Deallocation
+                                    </Button>
+
+                                    <Modal
+                                        title="Project Deallocation "
+                                        width="80%"
+                                        style={{
+                                            top: 20
+                                        }}
+                                        visible={this.state.modal2Visible}
+                                        onOk={() => this.setModal2Visible(false)}
+                                        onCancel={() => this.setModal2Visible(false)}>
+
+                                        <DeApp />
+                                    </Modal>
+                                </div>
+                            </Col>
+                            
+
+
+                            <Col span={4}>
 
                                 <div>
 
@@ -539,7 +568,7 @@ export default class ProjectManageAllocation extends React.Component {
                                     </Modal>
                                 </div>
                             </Col>
-                            <Col span={3}>
+                            <Col span={4}>
 
                                 <div>
 
@@ -549,7 +578,7 @@ export default class ProjectManageAllocation extends React.Component {
                                             color: '#fff'
                                         }}
                                         onClick={() => this.setModal2Visible(true)}>
-                                        Deallocation
+                                        Role Deallocation
                                     </Button>
 
                                     <Modal
@@ -566,10 +595,107 @@ export default class ProjectManageAllocation extends React.Component {
                                     </Modal>
                                 </div>
                             </Col>
+                              <Col span={4}>
 
-                            <Col span={3}>
+                                <div>
+
+                                    <Button type="primary" onClick={() => this.setModal1Visible(true)}>
+                                        Module Allocation
+                                    </Button>
+
+                                    <Modal
+                                        title="Project Allocation"
+                                        width="80%"
+                                        visible={this.state.modal1Visible}
+                                        onOk={() => this.setModal1Visible(false)}
+                                        onCancel={() => this.setModal1Visible(false)}>
+
+                                        <Select
+                                            showSearch
+                                            style={{ width: 200, marignBottom: '20px' }}
+                                            placeholder="Select a Role"
+                                            optionFilterProp="children"
+                                            onChange={this.handleChange}
+                                            // onFocus={onFocus}
+                                            // onBlur={onBlur}
+                                            onSearch={onSearch}
+                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                            <OptGroup label="Projects">
+                                                {this.state.project.map((item, index) => {
+                                                    return <Option key={index} value={item.projectId}> {item.projectName}</Option>
+                                                })}
+                                            </OptGroup>
+
+                                        </Select>
+                                        &nbsp;&nbsp;
+                                        <Select
+                                            showSearch
+                                            style={{ width: 200, marignBottom: '20px' }}
+                                            placeholder="Select a Role"
+                                            optionFilterProp="children"
+                                            onChange={this.onChangeRole}
+                                            // onFocus={onFocus}
+                                            // onBlur={onBlur}
+                                            onSearch={onSearch}
+                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
+                                            <OptGroup label="Roles">
+
+                                                {this.state.role}
+                                            </OptGroup>
+
+                                        </Select>
+                                        {/* <Roll value={this.state.value1} /> */}
+                                        <br></br>
+                                        <br></br>
+                                        <TableTransfer
+                                            dataSource={this.state.list1}
+                                            targetKeys={this.state.targetKeys}
+                                            showSearch={true}
+                                            onChange={this.onChange}
+                                            filterOption={(inputValue, item) =>
+                                                item.employeeid.indexOf(inputValue) !== -1 ||
+                                                item.name.indexOf(inputValue) !== -1 ||
+                                                item.firstname.indexOf(inputValue) !== -1 ||
+                                                item.designationname.indexOf(inputValue) !== -1
+                                            }
+                                            leftColumns={leftTableColumns}
+                                            rightColumns={rightTableColumns}
+                                            selectedKeys={this.saveRole(targetKeys)}
+                                        />
+                                    </Modal>
+                                </div>
+                            </Col>
+
+                            {/* <Col span={4}>
                                 <div>
                                    <AllocateMember/>
+                                </div>
+                            </Col> */}
+                             <Col span={3}>
+
+                                <div>
+
+                                    <Button
+                                        style={{
+                                            backgroundColor: '#ff3f34',
+                                            color: '#fff'
+                                        }}
+                                        onClick={() => this.setModal2Visible(true)}>
+                                        Module Deallocation
+                                    </Button>
+
+                                    <Modal
+                                        title="Project Deallocation "
+                                        width="80%"
+                                        style={{
+                                            top: 20
+                                        }}
+                                        visible={this.state.modal2Visible}
+                                        onOk={() => this.setModal2Visible(false)}
+                                        onCancel={() => this.setModal2Visible(false)}>
+
+                                        <DeApp />
+                                    </Modal>
                                 </div>
                             </Col>
 

@@ -366,7 +366,7 @@ export default class Allocation extends React.Component {
  </Button>,
           ]}
 >
-          <div><Select id="projects" defaultValue="Project" style={{ width: 200 }} onChange={this.handleChange}>
+          <div><Select id="projects" defaultValue="Project" style={{ width: 200}} onChange={this.handleChange}>
             <OptGroup label="Projects">
               {this.state.project.map((item, index) => {
                 return <Option key={index} value={item.projectId}> {item.projectName}</Option>
