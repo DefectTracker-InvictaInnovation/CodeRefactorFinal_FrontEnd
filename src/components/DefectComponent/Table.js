@@ -466,6 +466,7 @@ class TableFilter extends React.Component {
     const obj = {
       //empId: this.state.employeeautoId,
       defectId: this.state.defectId,
+      defectAbbr:this.state.defectAbbr,
       type: this.state.type,
       moduleId: this.state.moduleId,
       abbre: this.state.abbre,
@@ -559,6 +560,7 @@ class TableFilter extends React.Component {
         this.setState({
           // employeeautoId: response.data.empId,
           defectId: response.data.defectId,
+          defectAbbr:response.data.defectAbbr,
           type: response.data.type,
           moduleId: response.data.moduleId,
           abbre: response.data.abbre,
@@ -740,6 +742,7 @@ class TableFilter extends React.Component {
     this.onSubmit();
     const defectList = {
       defectId: this.state.defectId,
+      defectAbbr:this.state.defectAbbr,
       moduleId: this.state.moduleId,
       projectId: this.state.projectId,
       severity: this.state.severity,
@@ -1006,6 +1009,10 @@ class TableFilter extends React.Component {
   handleChangeDateandTime = value => {
     this.setState({ dateAndTime: value })
   }
+
+  handleChnagedefectAbbr =value =>{
+    this.setState({defectAbbr:value})
+  }
   // handleChangeFixedIn = value => {
   //    this.setState({ type: value });
   //};
@@ -1204,6 +1211,7 @@ class TableFilter extends React.Component {
         this.setState({
           // employeeautoId: response.data.empId,
           defectId: response.data.defectId,
+          defectAbbr:response.data.defectAbbr,
           type: response.data.type,
           moduleId: response.data.moduleName,
           abbre: response.data.abbre,
@@ -1507,10 +1515,10 @@ class TableFilter extends React.Component {
               <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Defect Id">
                   <Input
-                    id="defectId"
+                    id="defectAbbr"
                     placeholder="Defect Id"
-                    value={this.state.defectId}
-                    name="defectId"
+                    value={this.state.defectAbbr}
+                    name="defectAbbr"
                     type="text"
                     onChange={this.handlechange}
                   />
@@ -1797,6 +1805,9 @@ class TableFilter extends React.Component {
           <Row>
             <Col span={10} style={{ padding: "5px" }}>
               <p>
+                <b>Defect ID:</b>
+              </p>
+              <p>
                 <b>Project Name:</b>
               </p>
               <p>
@@ -1850,6 +1861,7 @@ class TableFilter extends React.Component {
 
             </Col>
             <Col span={14} style={{ padding: "8px" }}>
+              <p>{this.state.defectAbbr}</p>
               <p>{this.state.projectId}</p>
               <p>{this.state.moduleId}</p>
               <p>{this.state.defectDescription}</p>
