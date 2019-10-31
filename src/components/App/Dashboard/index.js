@@ -55,6 +55,7 @@ import {getUserProfile} from '../Login/util/ApiUtil';
 import { ACCESS_TOKEN ,CURRENT_USER} from '../../../constants/index';
 import { isEmptyStatement } from '@babel/types';
 import { fromJS } from 'immutable';
+import forgot from '../Login/forgot';
 // Company Components
 
 
@@ -203,7 +204,7 @@ clearTimeout() {
                     {/* <Route path="/">
                         <HeaderComponent/>
                     </Route> */}
-
+                   
                     <Content
                         style={{
                         margin: '24px 16px 0'

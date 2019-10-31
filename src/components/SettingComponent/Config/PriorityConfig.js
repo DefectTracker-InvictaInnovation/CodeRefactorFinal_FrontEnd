@@ -526,7 +526,7 @@ const formValid = ({ formerrors, ...rest }) => {
 
               }}>
 
-              <Form labelCol={{ span: 5 }} wrapperCol={{ span: 12 }} onSubmit={this.handleSubmit}>
+              <Form labelCol={{ span: 6 }} wrapperCol={{ span: 12 }} onSubmit={this.handleSubmit}>
               <Form.Item label="Name">
                   <div>
                     {getFieldDecorator("name", {

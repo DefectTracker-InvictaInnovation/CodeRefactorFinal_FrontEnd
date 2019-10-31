@@ -51,8 +51,6 @@ class DefectComponent extends React.Component {
                     
           </Col>
           
-          <br />
-          <br />
           
           <TableFilter/>
           

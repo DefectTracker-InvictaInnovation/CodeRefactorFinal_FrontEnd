@@ -15,6 +15,7 @@ import DefectDashboard from './../DashboardComponent/DefectDashboard';
 import { ACCESS_TOKEN } from '../../constants/index';
 import { ROLE_NAME } from '../../constants/index';
 import { IS_AUTHENTICATED } from '../../constants/index';
+import Reset from '../App/Login/reset';
 
 //forgot component for routing
 import Forgot from './Login/forgot';
@@ -194,6 +195,10 @@ else if(localStorage.getItem(ROLE_NAME)==='ROLE_PRODUCT_ADMIN'){
   
 <Switch>
 <Route exact path="/forgot" render={props => <Forgot {...props}/>}/>
+<Route path="/Reset">
+                        <Reset/>
+                    </Route>
+
 
    <Route exact path="/login" 
     render={(props) => <WrappedNormalLoginForm onLogin={this.handleLogin} {...props} />}> 
