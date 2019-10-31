@@ -564,42 +564,6 @@ class DefectAdd extends React.Component {
           <Form>
             <Row>
               <Col span={8} style={{ padding: "5px" }}>
-                <Form.Item label="Defect Id">
-                  <div>
-                    {getFieldDecorator("defectId", {
-                      rules: [
-                        {
-                          required: true,
-                          message: "Please input employeeId!"
-                        }
-                      ]
-                    })(
-                      <Input
-                        id="DefectId"
-                        className={
-                          formerrors.defectId.length > 0 ? "error" : null
-                        }
-
-                        placeholder="Defect Id"
-                        value={this.state.defectId}
-                        name="defectId"
-                        type="text"
-                        onChange={this.handlechange}
-                      />
-                    )}
-                  </div>
-
-                  {formerrors.defectId.length > 0 && (
-                    <span
-                      className="error"
-                      style={{ color: "red", fontSize: "14px" }}
-                    >
-                      {formerrors.defectId}
-                    </span>
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={8} style={{ padding: "5px" }}>
                 <Form.Item label="Project">
                   {getFieldDecorator("gender1", {
                     rules: [
@@ -645,6 +609,20 @@ class DefectAdd extends React.Component {
                       })}
                     </Select>
                   )}
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ padding: "5px" }}>
+                <Form.Item label="Assign To">
+                  <Select
+                    id="assignTo"
+                    placeholder="Assign To"
+                    name="assignTo"
+                    type="text"
+                    onChange={this.handleChangeAssignTo}
+                  >
+                    {this.state.assignToopt}
+                  </Select>
+
                 </Form.Item>
               </Col>
               <Col span={24} style={{ padding: "5px" }}>
@@ -744,20 +722,29 @@ class DefectAdd extends React.Component {
                 </Form.Item>
               </Col>
               <Col span={8} style={{ padding: "5px" }}>
-                <Form.Item label="Assign To">
-                  <Select
-                    id="assignTo"
-                    placeholder="Assign To"
-                    name="assignTo"
-                    type="text"
-                    onChange={this.handleChangeAssignTo}
-                  >
-                    {this.state.assignToopt}
-                  </Select>
-
+                <Form.Item label="Status">
+                  {getFieldDecorator("gender7", {
+                    rules: [
+                      { required: true, message: "Please select status!" }
+                    ]
+                  })(
+                    <Select
+                      id="Status"
+                      placeholder="Status"
+                      onChange={this.onChangeStatus}
+                      defaultValue="New"
+                    >
+                      {this.state.defectStatus.map(function (item, index) {
+                        return (
+                          <Option key={index} value={item.name}>
+                            {item.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  )}
                 </Form.Item>
               </Col>
-
             </Row>
 
             <Row>
@@ -829,39 +816,6 @@ class DefectAdd extends React.Component {
                     </Select>
                   )}
                 </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={8} style={{ padding: "5px" }}>
-                <Form.Item label="Status">
-                  {getFieldDecorator("gender7", {
-                    rules: [
-                      { required: true, message: "Please select status!" }
-                    ]
-                  })(
-                    <Select
-                      id="Status"
-                      placeholder="Status"
-                      onChange={this.onChangeStatus}
-                      defaultValue="New"
-                    >
-                      {this.state.defectStatus.map(function (item, index) {
-                        return (
-                          <Option key={index} value={item.name}>
-                            {item.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={14} style={{ padding: "5px" }}>
-                {/* <Upload {...this.state.addAttachment}>
-                <Button >
-                  <Icon type="upload" /> Click to Upload
-                </Button>
-              </Upload> */}
               </Col>
             </Row>
           </Form>

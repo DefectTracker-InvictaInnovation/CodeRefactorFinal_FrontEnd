@@ -15,7 +15,7 @@ import {
 import { Component } from "react";
 import React from "react";
 import axios from "axios";
-
+import { API_BASE_URL } from './../../constants/index'
 const { Option } = Select;
 
 class Modulesubmodule extends Component {
@@ -27,7 +27,7 @@ class Modulesubmodule extends Component {
       moduleId: "",
       moduleName: "",
       projectid: "",
-      projectName:"",
+      projectName: "",
       projectId: "",
       subModuleId: "",
       subModuleName: "",
@@ -45,8 +45,10 @@ class Modulesubmodule extends Component {
       modules: [],
       submodules: [],
       allModules: [],
-      projectId1:'',
-      id:''
+      projectId1: '',
+      id: '',
+     projects1: [],
+     assignModule:''
       // data6:[]
 
     };
@@ -58,7 +60,7 @@ class Modulesubmodule extends Component {
     this.onChangesubModuleId = this.onChangesubModuleId.bind(this);
     this.onChangesubModuleName = this.onChangesubModuleName.bind(this);
     this.onChangeprojectId = this.onChangeprojectId.bind(this);
-
+    this.handleChangemoduleName = this.handleChangemoduleName.bind(this);
     this.handleOk3 = this.handleOk3.bind(this);
     this.fetchProject = this.fetchProject.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -73,6 +75,8 @@ class Modulesubmodule extends Component {
     this.handleSubmoduleEdit = this.handleSubmoduleEdit.bind(this);
     this.getAllSubModules = this.getAllSubModules.bind(this);
     this.fetchModules = this.fetchModules.bind(this);
+    this.fetchProjects = this.fetchProjects.bind(this);
+    this.onChangeProjects = this.onChangeProjects.bind(this);
   }
 
 
@@ -82,7 +86,7 @@ class Modulesubmodule extends Component {
     this.getAllModules();
     this.getAllSubModules();
     this.fetchModules();
-
+    this.fetchProjects();
     this.getallsub();
     this.GetAllmodule();
   }
@@ -110,6 +114,57 @@ class Modulesubmodule extends Component {
         // alert(_this.state.project[0].projectId);
       });
   }
+
+  fetchProjects() {
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/GetAllproject")
+      .then(response => {
+        // handle success
+        console.log(response);
+        //alert(response.data[0].projectId)
+        _this.setState({ project: response.data });
+
+        let pro = response.data.map((post, index) => {
+
+          return (
+            <Option key={index} value={post.projectId}>
+              {post.projectName}
+            </Option>
+          );
+        })
+
+        this.setState({ pro });
+        // alert(_this.state.project[0].projectId);
+      });
+  }
+
+  onChangeProjects(projectId,value) {
+    
+    this.setState({
+      projectId: `${value}`
+    });
+    console.log(projectId);
+    var _this = this;
+    axios
+      .get("http://localhost:8081/defectservices/GetAllmodule/"+projectId)
+      .then(function (response) {
+        console.log(response.data);
+        let assignModule = response.data.map((post, index) => {
+          
+            return <Option key={index} value={post.moduleId}>{post.moduleName}</Option>
+      
+        });
+
+        _this.setState({ assignModule:assignModule });
+        console.log(response.data);
+      });
+    console.log(_this.state.projectId);
+  }
+
+  handleChangemoduleName = value => {
+    this.setState({ moduleId: value });
+  };
 
   //DELETE-METHOD 1 = WORKING
   handleDelete = moduleId => {
@@ -194,7 +249,7 @@ class Modulesubmodule extends Component {
           moduleName: response.data.moduleName,
           projectId1: response.data.projectid
         });
-        
+
       })
       .catch(function (error) {
         console.log(error);
@@ -224,6 +279,7 @@ class Modulesubmodule extends Component {
       moduleName: e.target.value
     });
   }
+  
 
   onChangemoduleId(e) {
     this.setState({
@@ -420,7 +476,8 @@ class Modulesubmodule extends Component {
     const serverport = {
       subModuleId: this.state.subModuleId,
       subModuleName: this.state.subModuleName,
-      moduleId: this.state.moduleId
+      moduleId: this.state.moduleId,
+      moduleName:this.state.moduleName
     };
     console.log(serverport);
     axios.post("http://localhost:8081/defectservices/createSubModule", serverport)
@@ -433,6 +490,7 @@ class Modulesubmodule extends Component {
       subModuleId: "",
       subModuleName: "",
       moduleId: "",
+      moduleName:"",
       visible2: false
     });
   };
@@ -592,7 +650,7 @@ class Modulesubmodule extends Component {
       { title: "Submodule ID", dataIndex: "subModuleId", key: "subModuleId" },
       { title: "Submodule Name", dataIndex: "subModuleName", key: "subModuleName" },
       {
-        render: (text, data = this.state.patients,expanded) => (
+        render: (text, data = this.state.patients, expanded) => (
           <Icon
             id="editModule"
             type="edit"
@@ -757,13 +815,22 @@ class Modulesubmodule extends Component {
                 onChange={this.onChangesubModuleName}
               />
             </Form.Item>
+            <Form.Item label="Project Name:">
+              <Select
+                id="projectId"
+                placeholder="Select Project"
+                onChange={this.onChangeProjects}
+              >
+                 {this.state.pro}
+              </Select>
+            </Form.Item>
             <Form.Item label="Module Name:">
               <Select
                 id="moduleId"
-                defaultValue="Select Module"
-                onChange={(e) => this.onChangemodule(e)} value={this.state.moduleId}
+                placeholder="Select Module"
+                onChange={this.handleChangemoduleName}
               >
-                {this.state.drop}
+                {this.state.assignModule}
               </Select>
             </Form.Item>
           </Form>

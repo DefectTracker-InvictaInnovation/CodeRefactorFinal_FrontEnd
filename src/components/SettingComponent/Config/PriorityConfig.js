@@ -646,12 +646,7 @@ const formValid = ({ formerrors, ...rest }) => {
                     >
                       {formerrors.color}
                     </span>
-                  )}
-                  
-                 
-                
-                  
-                  
+                  )} 
                 </Form.Item>
               </Form>
             </div>
