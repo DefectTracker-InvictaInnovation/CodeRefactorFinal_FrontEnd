@@ -183,7 +183,7 @@ class Modulesubmodule extends Component {
   fetchModules() {
     var _this = this;
     axios
-      .get("http://localhost:8081/defectservices/GetAllmodule")
+      .get("http://localhost:8081/defectservices/getallmodule")
       .then(response => {
         // handle success
         console.log(response);
@@ -204,7 +204,7 @@ class Modulesubmodule extends Component {
   }
 
   async getAllModules() {
-    const url = "http://localhost:8081/defectservices/GetAllmodule";
+    const url = "http://localhost:8081/defectservices/getallmodule";
     const response = await fetch(url);
     const data = await response.json();
     console.log(data);

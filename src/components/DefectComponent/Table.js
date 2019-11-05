@@ -1505,7 +1505,6 @@ class TableFilter extends React.Component {
         <Modal
           title="Edit Defects"
           visible={this.state.visible}
-          // onOk={this.handleEditOk.bind(this, this.state.defectId)}
           onOk={this.handleOk.bind(this, this.state.defectId)}
           onCancel={this.handleCancel}
           width="600px"
@@ -1533,6 +1532,7 @@ class TableFilter extends React.Component {
                     //style={{ width: 120 }}
                     onChange={this.onChangeProject}
                     value={this.state.projectId}
+                    disabled
                   >
                     {this.state.projects.map(function (item, index) {
                       return (
