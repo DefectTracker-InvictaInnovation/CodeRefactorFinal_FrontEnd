@@ -245,10 +245,10 @@ export default class Allocation extends React.Component {
       for (var i = 0; i < 11; i++) {
         if (targetKeys[i] == index) {
           console.log(post.empId)
-          let data1 = [{
+          let data1 = {
             empId: post.empId,
             projectId: this.state.value1
-          }]
+          }
 
           this.setState = {
             data1
@@ -256,7 +256,7 @@ export default class Allocation extends React.Component {
           console.log(data1)
           axios
             .post(
-              "http://localhost:8081/defectservices/saveresourceTable",
+              "http://localhost:8081/defectservices/saveresource",
               data1
             )
             .then(res =>{console.log(res.data)          

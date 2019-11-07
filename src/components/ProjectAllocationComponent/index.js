@@ -15,13 +15,13 @@ import {
     Icon
 } from 'antd';
 import React from 'react';
-import AllocateMember from './AllocateMember';
 import App from './AllocateMember';
 import DeApp from './DeAllocateMember';
 import Roll from './RollAllocate';
 import axios from 'axios';
 import difference from 'lodash/difference';
-
+import {API_BASE_URL,ACCESS_TOKEN} from './../../constants/index'
+import AllocateMember from './AllocateMember';
 
 /**Role Allocation**/
 const resourceAllcation = [];
@@ -217,7 +217,7 @@ export default class ProjectManageAllocation extends React.Component {
 
     fetchResourceallocation() {
         var _this = this;
-        axios.get('http://localhost:8081/defectservices/getallresource')
+        axios.get(API_BASE_URL+'/getallresource',{ headers: { Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)}})
             .then(function (response) {
                 // handle success
                 console.log(response.data);
@@ -298,7 +298,7 @@ export default class ProjectManageAllocation extends React.Component {
 
     fetchProjects() {
         var _this = this;
-        axios.get('http://localhost:8081/defectservices/GetAllproject')
+        axios.get(API_BASE_URL+'/GetAllproject',{ headers: { Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)}})
             .then(function (response) {
                 // handle success
                 console.log(response.data);
@@ -310,15 +310,15 @@ export default class ProjectManageAllocation extends React.Component {
 
     fetchRole() {
         var _this = this;
-        axios.get('http://localhost:8081/defectservices/getAllRoleInfo')
+        axios.get(API_BASE_URL+'/getAllRoleInfo',{ headers: { Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)}})
             .then(function (response) {
                 // handle success
-                let role = response.data.map((item, index) => {
+              let role=  response.data.map((item, index) => {    
                     return <Option key={index} value={item.roleId}> {item.roleName}</Option>
                 });
                 console.log(response.data);
-                _this.setState({ role });
-
+                _this.setState({ role});
+            
             });
     }
 
@@ -359,42 +359,49 @@ export default class ProjectManageAllocation extends React.Component {
 
     setModal1Visible(modal1Visible) {
         console.log(this.state.data1);
-        let data3 = JSON.stringify(this.state.data1);
-        console.log(data3)
-        axios.post("http://localhost:8081/defectservices/saverole", this.state.data1)
-            .then(res => {
-                axios.get("http://localhost:8081/defectservices/getAllRole")
-                    .then(res => {
+let data3=JSON.stringify(this.state.data1);
+console.log(data3)
+        axios.post(API_BASE_URL+"/saverole",this.state.data1,{ headers: { Authorization: 'Bearer ' + localStorage.getItem(ACCESS_TOKEN)}})
+        .then(res=>{
+    //         axios.get("http://localhost:8081/defectservices/getAllRole")
+    //             .then(res=>{
 
-                        const user = {
-                            name: res.data[0].name,
-                            username: res.data[0].firstname,
-                            email: res.data[0].email,
-                            role: res.data[0].roleName,
-                            password: res.data[0].name
-                        }
+    //                 const user = {
+    //                     name:res.data[0].name ,
+    //                     username:res.data[0].firstname,
+    //                     email:res.data[0].email ,
+    //                     role: res.data[0].roleName,
+    //                     password:res.data[0].name 
+    //                   }
 
-                        console.log(user);
-                        axios
-                            .post(
-                                "http://localhost:8085/loginservice/api/auth/signup",
-                                user
-                            )
-                            .then(res => console.log(res.data))
-                            .catch(error => {
-                                console.log(error);
-                            });
-                        console.log(res.data)
+    //                   console.log(user);
+    //  axios
+    //     .post(
+    //       "http://localhost:8085/loginservice/api/auth/signup",
+    //       user
+    
+    //     )
+    //     .then(res => console.log(res.data))
+    //     .catch(error => {
+    //       console.log(error);
+    //     });
+    //                 console.log(res.data)
+                
+    //             })
+    // axios.get('http://localhost:8081/defectservices/saveuser')
+    // .then(function (response) {
+    // });
 
-                    })
-
-                console.log(res)
-            })
+            console.log(res)})
         this.setState({ modal1Visible });
     }
 
     setModal2Visible(modal2Visible) {
         this.setState({ modal2Visible });
+    }
+
+    setModal3Visible(modal3Visible) {
+        this.setState({ modal3Visible });
     }
 
     render() {
@@ -454,7 +461,7 @@ export default class ProjectManageAllocation extends React.Component {
             //     render: actions => <a onClick={this.showModal}><Icon type="edit" style={{ fontSize: '14px', color: 'blue' }} /></a>,
             // },
         ];
-        const _this = this;
+const _this=this;
         return (
             <React.Fragment>
                 <Row>
@@ -468,42 +475,13 @@ export default class ProjectManageAllocation extends React.Component {
                                 marginRight: '0px'
                             }}>
                             <Col span={0}></Col>
-                            <Col span={4}>
 
-                                <div>
-
-                                    <Button
-                                        style={{
-                                            backgroundColor: '#ff3f34',
-                                            color: '#fff'
-                                        }}
-                                        onClick={() => this.setModal2Visible(true)}>
-                                        Project Deallocation
-                                    </Button>
-
-                                    <Modal
-                                        title="Project Deallocation "
-                                        width="80%"
-                                        style={{
-                                            top: 20
-                                        }}
-                                        visible={this.state.modal2Visible}
-                                        onOk={() => this.setModal2Visible(false)}
-                                        onCancel={() => this.setModal2Visible(false)}>
-
-                                        <DeApp />
-                                    </Modal>
-                                </div>
-                            </Col>
-                            
-
-
-                            <Col span={4}>
+                            <Col span={3}>
 
                                 <div>
 
                                     <Button type="primary" onClick={() => this.setModal1Visible(true)}>
-                                        Role Allocation
+                                        Roll Allocation
                                     </Button>
 
                                     <Modal
@@ -542,7 +520,7 @@ export default class ProjectManageAllocation extends React.Component {
                                             onSearch={onSearch}
                                             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
                                             <OptGroup label="Roles">
-
+                                            
                                                 {this.state.role}
                                             </OptGroup>
 
@@ -565,10 +543,50 @@ export default class ProjectManageAllocation extends React.Component {
                                             rightColumns={rightTableColumns}
                                             selectedKeys={this.saveRole(targetKeys)}
                                         />
+                                        {/* <Modal
+                                            title="Edit Role"
+                                            visible={this.state.visible}
+                                            onOk={this.handleOk}
+                                            onCancel={this.handleCancel}
+                                        >
+                                            <Row>
+                                                <Col span={5}>
+                                                    <p><b>EmployeeID </b></p>
+                                                    <p><b>FirstName </b></p>
+                                                    <p><b>LastName</b></p>
+                                                    <p><b>Designation </b></p>
+                                                    <p><b>Select Role</b></p>
+
+                                                </Col>
+                                                <Col span={2}>
+                                                    <p><b>:</b></p>
+                                                    <p><b>:</b></p>
+                                                    <p><b>:</b></p>
+                                                    <p><b>:</b></p>
+                                                    <p><b>:</b></p>
+                                                </Col>
+                                                <Col span={5}>
+                                                    <p>EMP001</p>
+                                                    <p>John Doe</p>
+                                                    <p>Software Engineer</p>
+                                                    <p>Developer</p>
+                                                    <p>
+                                                        <Select defaultValue="Select Role" style={{ width: 200 }} onChange={this.handleChange}>
+                                                            <Option value="Tech Lead">Tech Lead</Option>
+                                                            <Option value="QA Lead">QA Lead</Option>
+                                                            <Option value="Software Engineer">Software Engineer</Option>
+                                                            <Option value="Senior Software Engineer">Senior Software Engineer</Option>
+                                                            <Option value="Junior Software Engineer">Senior Software Engineer</Option>
+                                                        </Select>
+                                                    </p>
+                                                </Col>
+                                            </Row>
+
+                                        </Modal> */}
                                     </Modal>
                                 </div>
                             </Col>
-                            <Col span={4}>
+                            <Col span={3}>
 
                                 <div>
 
@@ -578,12 +596,12 @@ export default class ProjectManageAllocation extends React.Component {
                                             color: '#fff'
                                         }}
                                         onClick={() => this.setModal2Visible(true)}>
-                                        Role Deallocation
+                                        Deallocation
                                     </Button>
 
                                     <Modal
-                                        title="Deallocation Role"
-                                        width="80%"
+                                        title="20px to Top"
+                                        width="60%"
                                         style={{
                                             top: 20
                                         }}
@@ -595,107 +613,28 @@ export default class ProjectManageAllocation extends React.Component {
                                     </Modal>
                                 </div>
                             </Col>
-                              <Col span={4}>
 
+                            <Col span={3}>
                                 <div>
-
-                                    <Button type="primary" onClick={() => this.setModal1Visible(true)}>
+                                    {/* <Button type="primary" onClick={() => this.setModal3Visible(true)}>
                                         Module Allocation
-                                    </Button>
+                                    </Button> */}
 
-                                    <Modal
+                                    {/* <Modal
                                         title="Project Allocation"
-                                        width="80%"
-                                        visible={this.state.modal1Visible}
-                                        onOk={() => this.setModal1Visible(false)}
-                                        onCancel={() => this.setModal1Visible(false)}>
-
-                                        <Select
-                                            showSearch
-                                            style={{ width: 200, marignBottom: '20px' }}
-                                            placeholder="Select a Role"
-                                            optionFilterProp="children"
-                                            onChange={this.handleChange}
-                                            // onFocus={onFocus}
-                                            // onBlur={onBlur}
-                                            onSearch={onSearch}
-                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                            <OptGroup label="Projects">
-                                                {this.state.project.map((item, index) => {
-                                                    return <Option key={index} value={item.projectId}> {item.projectName}</Option>
-                                                })}
-                                            </OptGroup>
-
-                                        </Select>
-                                        &nbsp;&nbsp;
-                                        <Select
-                                            showSearch
-                                            style={{ width: 200, marignBottom: '20px' }}
-                                            placeholder="Select a Role"
-                                            optionFilterProp="children"
-                                            onChange={this.onChangeRole}
-                                            // onFocus={onFocus}
-                                            // onBlur={onBlur}
-                                            onSearch={onSearch}
-                                            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}>
-                                            <OptGroup label="Roles">
-
-                                                {this.state.role}
-                                            </OptGroup>
-
-                                        </Select>
-                                        {/* <Roll value={this.state.value1} /> */}
-                                        <br></br>
-                                        <br></br>
-                                        <TableTransfer
-                                            dataSource={this.state.list1}
-                                            targetKeys={this.state.targetKeys}
-                                            showSearch={true}
-                                            onChange={this.onChange}
-                                            filterOption={(inputValue, item) =>
-                                                item.employeeid.indexOf(inputValue) !== -1 ||
-                                                item.name.indexOf(inputValue) !== -1 ||
-                                                item.firstname.indexOf(inputValue) !== -1 ||
-                                                item.designationname.indexOf(inputValue) !== -1
-                                            }
-                                            leftColumns={leftTableColumns}
-                                            rightColumns={rightTableColumns}
-                                            selectedKeys={this.saveRole(targetKeys)}
-                                        />
-                                    </Modal>
-                                </div>
-                            </Col>
-
-                            {/* <Col span={4}>
-                                <div>
-                                   <AllocateMember/>
-                                </div>
-                            </Col> */}
-                             <Col span={3}>
-
-                                <div>
-
-                                    <Button
-                                        style={{
-                                            backgroundColor: '#ff3f34',
-                                            color: '#fff'
-                                        }}
-                                        onClick={() => this.setModal2Visible(true)}>
-                                        Module Deallocation
-                                    </Button>
-
-                                    <Modal
-                                        title="Project Deallocation "
-                                        width="80%"
+                                        width="60%"
                                         style={{
                                             top: 20
                                         }}
-                                        visible={this.state.modal2Visible}
-                                        onOk={() => this.setModal2Visible(false)}
-                                        onCancel={() => this.setModal2Visible(false)}>
+                                        visible={this.state.modal3Visible}
+                                        onOk={() => this.setModal3Visible(false)}
+                                        onCancel={() => this.setModal3Visible(false)}>
+                                        
 
-                                        <DeApp />
-                                    </Modal>
+                                        <br />
+                                        <App />
+                                    </Modal> */}
+                                    <AllocateMember/>
                                 </div>
                             </Col>
 

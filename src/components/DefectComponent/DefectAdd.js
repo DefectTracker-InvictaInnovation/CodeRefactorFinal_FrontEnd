@@ -427,7 +427,7 @@ class DefectAdd extends React.Component {
         // dateAndTime: this.state.dateAndTime,
       };
       console.log(serverport);
-      axios.post(API_BASE_URL + "/saveDefect/", serverport)
+      axios.post(API_BASE_URL + "/saveDefect", serverport)
 
         .then(res => console.log(res.data))
         .catch(error => {

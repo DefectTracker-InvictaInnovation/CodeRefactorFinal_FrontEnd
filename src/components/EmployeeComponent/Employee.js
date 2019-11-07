@@ -164,6 +164,7 @@ export default class App extends React.Component {
       designationid: this.state.employeeDesignation,
       email: this.state.employeeEmail
     };
+    console.log(obj);
     axios
       .put(API_BASE_URL_EMP + "/update/" + empId, obj)
       .then(response => this.getAllEmployees());
@@ -255,8 +256,9 @@ var _this=this;
           employeeId: response.data.employeeid,
           employeeName: response.data.name,
           employeeFirstName: response.data.firstname,
-          employeeDesignation: response.data.designationname,
-          employeeEmail: response.data.email
+          employeeDesignation: response.data.designationid,
+          employeeEmail: response.data.email,
+          
         });
       })
       .catch(function (error) {

@@ -241,13 +241,13 @@ class Modulesubmodule extends Component {
       moduleId: moduleId
     });
     axios
-      .get("http://localhost:8081/defectservices/GetmoduleById/" + moduleId)
+      .get("http://localhost:8081/defectservices/findallmoduleinfo/" + moduleId)
       .then(response => {
         console.log(response.data);
         this.setState({
           moduleId: response.data.moduleId,
           moduleName: response.data.moduleName,
-          projectId1: response.data.projectid
+          projectId1: response.data.project.projectId
         });
 
       })
@@ -370,7 +370,7 @@ class Modulesubmodule extends Component {
     };
     axios
       .put("http://localhost:8081/defectservices/updateSubModule/" + subModuleId, obj)
-      .then(response => this.getAllSubModules());
+      .then(response => this.GetAllmodule());
     this.setState({
       subModuleId: "",
       subModuleName: "",
@@ -437,11 +437,16 @@ class Modulesubmodule extends Component {
     const obj = {
       moduleId: this.state.moduleId,
       moduleName: this.state.moduleName,
-      projectId: this.state.projectId
+      project:{
+      projectId: this.state.projectId1
+      }
     };
+   
+let obj1=JSON.stringify(obj);
+console.log(obj1)
     axios
-      .put("http://localhost:8081/defectservices/updateModule/" + moduleId, obj)
-      .then(response => this.getAllModules());
+      .put("http://localhost:8081/defectservices/updatemodule/" + this.state.moduleId, obj)
+      .then(response => this.GetAllmodule());
     this.setState({
       moduleId: "",
       moduleName: "",
@@ -522,9 +527,10 @@ class Modulesubmodule extends Component {
     console.log(ModuleData);
     axios
       .post("http://localhost:8081/defectservices/createmodule", ModuleData)
-      .then({
-        // this.sGetAllmodule();
-      })
+      // .then({
+      //   // this.sGetAllmodule();
+      // })
+      .then(response => this.GetAllmodule())
       .catch(error => {
         console.log(error);
       });
@@ -612,7 +618,7 @@ class Modulesubmodule extends Component {
     console.log(moduleId);
     axios
       .delete(
-        `http://localhost:8081/defectservices/deleteModuleById/` + moduleId
+        "http://localhost:8081/defectservices/deleteModuleById/" + moduleId
       )
       .then(console.log(moduleId))
       .catch(err => console.log(err));
@@ -705,7 +711,7 @@ class Modulesubmodule extends Component {
       { title: "Project Name", dataIndex: "projectName", key: "projectName" },
 
       {
-        render: (text, data = this.state.patients) => (
+        render: (text, data = this.state.data) => (
           <Icon
             type="edit"
             onClick={this.handleEdit.bind(this, data.moduleId)}
@@ -714,14 +720,14 @@ class Modulesubmodule extends Component {
         )
       },
       {
-        render: () => (
+        render: (record) => (
           // render: (text, data = this.state.patients) => (
           <Popconfirm
             placement="topLeft"
             title={text}
             okText="Yes"
             cancelText="No"
-            onConfirm={this.handleDelete.bind(this, data.moduleId)}
+            onConfirm={this.handleDelete.bind(this, record.moduleId)}
           >
             <Icon type="delete" style={{ color: "red" }} />
           </Popconfirm>
@@ -787,7 +793,6 @@ class Modulesubmodule extends Component {
           <Button id="addSubModule" type="primary" onClick={this.showModal2}>
             Add SubModule
           </Button>
-
         </div>
         <Table
           className="components-table-demo-nested"
@@ -857,7 +862,7 @@ class Modulesubmodule extends Component {
               <Input id="projectId" placeholder="input placeholder"
                 value={this.state.projectId1}
                 onChange={this.onChangeprojectid} />
-
+                
             </Form.Item>
           </Form>
         </Modal>
