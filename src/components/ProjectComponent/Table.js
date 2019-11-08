@@ -46,7 +46,7 @@ export default class App extends React.Component {
   }
   componentDidMount() {
     // page refresh
-    this.getAllProjects();
+  //  this.getAllProjects();
   }
   //DELETE-METHOD 1 = WORKING
   handleDelete = projectId => {

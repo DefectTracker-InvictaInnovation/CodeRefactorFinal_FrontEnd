@@ -363,32 +363,7 @@ export default class ProjectManageAllocation extends React.Component {
         console.log(data3)
         axios.post("http://localhost:8081/defectservices/saverole", this.state.data1)
             .then(res => {
-                axios.get("http://localhost:8081/defectservices/getAllRole")
-                    .then(res => {
-
-                        const user = {
-                            name: res.data[0].name,
-                            username: res.data[0].firstname,
-                            email: res.data[0].email,
-                            role: res.data[0].roleName,
-                            password: res.data[0].name
-                        }
-
-                        console.log(user);
-                        axios
-                            .post(
-                                "http://localhost:8085/loginservice/api/auth/signup",
-                                user
-                            )
-                            .then(res => console.log(res.data))
-                            .catch(error => {
-                                console.log(error);
-                            });
-                        console.log(res.data)
-
-                    })
-
-                console.log(res)
+               console.log(res.data)
             })
         this.setState({ modal1Visible });
     }

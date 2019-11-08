@@ -11,6 +11,7 @@ import {
 } from "antd";
 import React from "react";
 import axios from "axios";
+import {Link} from "react-router-dom";
 const { Option } = Select;
 function confirm(e) {
   console.log(e);
@@ -323,6 +324,9 @@ class Model extends React.Component {
         <Button id="addProject" type="primary" onClick={this.showModal}>
           Add Project
         </Button>
+        <Link to = "/configure">
+                    <Button>Configure</Button>
+                    </Link>
         <br />
         <Modal
           title="Add Project"
@@ -597,6 +601,7 @@ class Model extends React.Component {
                       })}
                       </Select>
                     )}
+                    <br></br>
                   </div>
                 </Form.Item>
               </Col>

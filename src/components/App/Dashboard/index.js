@@ -4,6 +4,11 @@ import {Route, Switch} from 'react-router-dom'
 import './index.css';
 import HeaderComponent from '../HeaderComponent';
 import SiderComponent from '../SiderComponent';
+import Configure from '../../ProjectComponent/Configure';
+import PriorityConfiguration from '../../DefectComponent/PriorityConfig';
+import SeverityConfiguration from '../../DefectComponent/SeverityConfig';
+import StatusConfiguration from '../../DefectComponent/StatusConfig';
+import TypeConfiguration from '../../DefectComponent/TypeConfig';
 
 // Dashboard Components
 import DefectDashboard from '../../DashboardComponent/DefectDashboard';
@@ -211,7 +216,7 @@ clearTimeout() {
                     }}>
 
                         <Switch>
-
+                        
                         {/* <Route path="/home" 
                   render={(props) => <CompanyDashboard history={this.props.history} {...props} />}></Route> */}
 <Route path="/home" component={CompanyDashboard}/>
@@ -232,7 +237,11 @@ clearTimeout() {
                   render={(props) => <Profile isAuthenticated={localStorage.getItem(IS_AUTHENTICATED)} currentUser={localStorage.getItem(CURRENT_USER)} {...props}  />}>
                 </Route>
 
-
+                <Route path="/Configure" component={Configure}/>
+                <Route path="/PriorityConfig" component={PriorityConfiguration}/>
+                <Route path="/SeverityConfig" component={SeverityConfiguration}/>
+                <Route path="/StatusConfig" component={StatusConfiguration}/>
+                <Route path="/TypeConfig" component={TypeConfiguration}/>
                             <Route path='/dashboard/developer'>
                                 <DeveloperDashboard/>
                             </Route>
