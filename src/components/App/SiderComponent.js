@@ -212,7 +212,7 @@ class SiderComponent extends React.Component {
           >
               {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
              <Menu.Item key="15">
-              <Link to="/settings/generalsetting">General Configuration</Link>
+              <Link to="/settings/generalsetting">General Setting</Link>
             </Menu.Item>:""}
             {localStorage.getItem(ROLE_NAME)==='ROLE_HR' ? 
              <Menu.Item key="16">

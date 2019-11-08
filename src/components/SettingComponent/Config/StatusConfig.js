@@ -604,7 +604,7 @@ export default class StatusConfig extends React.Component {
 
           </Modal>
           <Table id="countStatus" columns={columns} dataSource={this.state.DefectStatus} />
-          Total Number of Defect Status: {this.state.TotalDefectStatus}
+          {/* Total Number of Defect Status: {this.state.TotalDefectStatus} */}
           <Icon type="square" />
         </div>
       </React.Fragment>

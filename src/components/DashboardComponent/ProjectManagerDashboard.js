@@ -1,9 +1,9 @@
 import React from 'react';
-import { Breadcrumb, Statistic, Card, Row, Col, Icon, Timeline, Divider, Progress, Table, Button } from 'antd';
+import { Breadcrumb, Statistic, Card, Row, Col, Icon, Timeline, Select, Progress, Table, Button } from 'antd';
 import ChartBar from './assets/ChartBar';
 import ChartPolar from './assets/ChartPolar';
 import { Chart } from 'primereact/chart';
-import {API_BASE_URL,CURRENT_USER} from '../../../src/constants/index';
+import { API_BASE_URL, CURRENT_USER } from '../../../src/constants/index';
 import DeveloperDefectDetail from './Elements/DeveloperDefectDetail';
 import DeveloperDefectPercentage from './Elements/DeveloperDefectPercentage';
 import DeveloperDefectStatusChart from './Elements/DeveloperDefectStatusChart';
@@ -13,7 +13,7 @@ import DeveloperLineChart from './Elements/DeveloperLineChart';
 //import PrimeReact from './PrimeReact';
 import DashboardConfig from './DashboardConfig';
 import axios from 'axios';
-
+const Option = Select.Option;
 
 //table data
 
@@ -26,68 +26,109 @@ class ProjectManagerDashboard extends React.Component {
     state = {
         filteredInfo: null,
         sortedInfo: null,
-        color:'',
-        highsev:'',
-        mediumsev:'',
-        lowsev:'',
-      DefectCount: [],
-      value:'',
-      density:'',
-      StatusNew:'',
-      StatusOpen:'',
-      StatusClose:'',
-      StatusRejected:'',
-      StatusReOpen:'',
-      StatusFixed:'',
-      StatusDefered:'',
-      ratio:'',
-      selectedlist:'',
-      name:'',
-      name1:'',
-      name2:'',
-      name3:'',
-      name4:'',
-      name5:''
+        color: '',
+        highsev: '',
+        mediumsev: '',
+        lowsev: '',
+        DefectCount: [],
+        value: '',
+        density: '',
+        StatusNew: '',
+        StatusOpen: '',
+        StatusClose: '',
+        StatusRejected: '',
+        StatusReOpen: '',
+        StatusFixed: '',
+        StatusDefered: '',
+        ratio: '',
+        selectedlist: '',
+        name: '',
+        name1: '',
+        name2: '',
+        name3: '',
+        name4: '',
+        name5: '',
+        role:'',
+        projectid:''
 
 
 
     };
-    
-getHigh(){
+
+    getHigh() {
 
         axios
-        .get(API_BASE_URL+"/getseverityhigcount")
-        .then(res=>{
-            console.log(res.data)
-            this.setState({
-                highsev:res.data
+            .get(API_BASE_URL + "/getseverityhigcount")
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    highsev: res.data
+                })
             })
-        })
-}
+    }
 
-getMedium(){
-    axios
-    .get(API_BASE_URL+'/getseveritymediumcount')
-    .then(res=>{
-        console.log(res.data)
-        this.setState({
-            mediumsev:res.data
-        })
-    })
-}
+    getMedium() {
+        axios
+            .get(API_BASE_URL + '/getseveritymediumcount')
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    mediumsev: res.data
+                })
+            })
+    }
 
-getLow(){
-    axios
-    .get(API_BASE_URL+'/getseveritylowcount')
-    .then(res=>{
-        console.log(res.data)
-        this.setState({
-            lowsev:res.data
-        })
-    })
-}
+    getLow() {
+        axios
+            .get(API_BASE_URL + '/getseveritylowcount')
+            .then(res => {
+                console.log(res.data)
+                this.setState({
+                    lowsev: res.data
+                })
+            })
+    }
 
+    getallRole() {
+        const drop=[]
+        var _this = this;
+        axios
+          .get("http://localhost:8081/defectservices/getAllRole")
+          .then(function (response) {
+            console.log(response.data);
+          let d=  response.data.map(post=>{
+                if("Romipraveen"==post.name){
+                    return <Option  value={post.projectId}>{post.projectName}</Option>
+                    // drop.push(post.projectId)
+                }
+                
+            })
+            _this.setState({d})
+           console.log(drop)
+
+//          let d=()=>{  for(var i=0;i<drop.length;i++){
+// return <Option key={i} value={drop[i]}>{drop[i]}</Option>
+//            }
+//            _this.setState({d})
+//         }
+        
+            })
+        }
+
+        onChangeRole=(value)=> {
     
+           this.setState({projectid:value})
+           this.getStatusNew(value);
+           this.getStatusOpen(value);
+           this.getStatusReOpen(value);
+           this.getStatusRejected(value);
+           this.getStatusFixed(value);
+           this.getStatusDefered(value);
+           this.getStatusClose(value);
+            console.log(value)
+
+          }
+
 
     handleChange = (pagination, filters, sorter) => {
         console.log('Various parameters', pagination, filters, sorter);
@@ -118,76 +159,76 @@ getLow(){
     };
 
 
-    getStatusNew(){
+    getStatusNew(value) {
         axios
-        .get(API_BASE_URL+'/getStatusNew')
-        .then(res=> {
-            this.setState({
-                StatusNew:res.data
-            })
+            .get(API_BASE_URL + '/getStatusNew/'+value)
+            .then(res => {
+                this.setState({
+                    StatusNew: res.data
+                })
 
-        })
+            })
     }
 
-    getStatusOpen(){
+    getStatusOpen(value) {
         axios
-        .get(API_BASE_URL+'/getStatusOpen')
-        .then(res=> {
-            this.setState({
-                StatusOpen:res.data
+            .get(API_BASE_URL + '/getStatusOpen/'+value)
+            .then(res => {
+                this.setState({
+                    StatusOpen: res.data
+                })
             })
-        })
     }
 
-    getStatusClose(){
+    getStatusClose(value) {
         axios
-        .get(API_BASE_URL+'/getStatusClose')
-        .then(res=> {
-            this.setState({
-                StatusClose:res.data
+            .get(API_BASE_URL + '/getStatusClose/'+value)
+            .then(res => {
+                this.setState({
+                    StatusClose: res.data
+                })
             })
-        })
 
     }
-    getStatusRejected(){
+    getStatusRejected(value) {
         axios
-        .get(API_BASE_URL+'/getStatusRejected')
-        .then(res=> {
-            this.setState({
-              StatusRejected:res.data  
+            .get(API_BASE_URL + '/getStatusRejected/'+value)
+            .then(res => {
+                this.setState({
+                    StatusRejected: res.data
+                })
             })
-        })
 
     }
-    getStatusReOpen(){
+    getStatusReOpen(value) {
         axios
-        .get(API_BASE_URL+'/getStatusReOpen')
-        .then(res=> {
-            this.setState({
-                StatusReOpen:res.data
+            .get(API_BASE_URL + '/getStatusReOpen/'+value)
+            .then(res => {
+                this.setState({
+                    StatusReOpen: res.data
+                })
             })
-        })
 
     }
 
-    getStatusFixed(){
+    getStatusFixed(value) {
         axios
-        .get(API_BASE_URL+'/getStatusFixed')
-        .then(res=> {
-            this.setState({
-                StatusFixed:res.data
+            .get(API_BASE_URL + '/getStatusFixed/'+value)
+            .then(res => {
+                this.setState({
+                    StatusFixed: res.data
+                })
             })
-        })
 
     }
-    getStatusDefered(){
+    getStatusDefered(value) {
         axios
-        .get(API_BASE_URL+'/getStatusDefered')
-        .then(res=> {
-            this.setState({
-              StatusDefered:res.data  
+            .get(API_BASE_URL + '/getStatusDefered/'+value)
+            .then(res => {
+                this.setState({
+                    StatusDefered: res.data
+                })
             })
-        })
 
     }
     // table decalration End
@@ -197,210 +238,211 @@ getLow(){
 
     Note: Please do necessary commenting and follow code standard.
       */
-getHigh1(){
-    axios
-        .get(API_BASE_URL+'/gethightcount')
-        .then(res=> {
-            let color=""
-            if(3>res.data){
-               color='#12cc1f'
-            }else{
-                color='#d60f0f'
-            }
-            
-            console.log(res.data)
-              this.setState({
-                  high:res.data,
-                  color
-              })  
-              console.log(this.state.color)
+    getHigh1() {
+        axios
+            .get(API_BASE_URL + '/gethightcount')
+            .then(res => {
+                let color = ""
+                if (3 > res.data) {
+                    color = '#12cc1f'
+                } else {
+                    color = '#d60f0f'
+                }
+
+                console.log(res.data)
+                this.setState({
+                    high: res.data,
+                    color
+                })
+                console.log(this.state.color)
             })
-}
+    }
 
 
-getLow1(){
-    axios
-        .get(API_BASE_URL+'/getlowcount')
-        .then(res=> {
-            let color=""
-            if(3>res.data){
-               color='#12cc1f'
-            }else{
-                color='#d60f0f'
-            }
-            
-            console.log(res.data)
-              this.setState({
-                  low:res.data,
-                  color
-              })  
-              console.log(this.state.color)
-            })
-}
+    getLow1() {
+        axios
+            .get(API_BASE_URL + '/getlowcount')
+            .then(res => {
+                let color = ""
+                if (3 > res.data) {
+                    color = '#12cc1f'
+                } else {
+                    color = '#d60f0f'
+                }
 
-getMedium1(){
-    axios
-        .get(API_BASE_URL+'/getcountmedium')
-        .then(res=> {
-            let color=""
-            if(3>res.data){
-               color='#12cc1f'
-            }else{
-                color='#d60f0f'
-            }
-            
-            console.log(res.data)
-              this.setState({
-                  medium:res.data,
-                  color
-              })  
-              console.log(this.state.color)
+                console.log(res.data)
+                this.setState({
+                    low: res.data,
+                    color
+                })
+                console.log(this.state.color)
             })
-}
+    }
 
-getSeverityIndex(){
-    axios
-        .get(API_BASE_URL+'/getseverityindex')
-        .then(res=> {
-            let color=""
-            if(3>res.data){
-               color='#12cc1f'
-            }else{
-                color='#d60f0f'
-            }
-            
-            console.log(res.data)
-              this.setState({
-                  severityindex:res.data,
-                  color
-              })  
-              console.log(this.state.color)
+    getMedium1() {
+        axios
+            .get(API_BASE_URL + '/getcountmedium')
+            .then(res => {
+                let color = ""
+                if (3 > res.data) {
+                    color = '#12cc1f'
+                } else {
+                    color = '#d60f0f'
+                }
+
+                console.log(res.data)
+                this.setState({
+                    medium: res.data,
+                    color
+                })
+                console.log(this.state.color)
             })
-}
+    }
+
+    getSeverityIndex() {
+        axios
+            .get(API_BASE_URL + '/getseverityindex')
+            .then(res => {
+                let color = ""
+                if (3 > res.data) {
+                    color = '#12cc1f'
+                } else {
+                    color = '#d60f0f'
+                }
+
+                console.log(res.data)
+                this.setState({
+                    severityindex: res.data,
+                    color
+                })
+                console.log(this.state.color)
+            })
+    }
 
     componentDidMount() {
         this.getConfiguration();
-       this.getHigh1();
-     this.getHigh();
-       this.getMedium();
-       this.getLow();
-       this.getLow1();
-       this.getMedium1();
-       this.getSeverityIndex();
-       this.getdefectdensity();
-       this.getdefectcount();
-       this.getStatusClose();
-       this.getStatusDefered();
-       this.getStatusFixed();
-       this.getStatusNew();
-       this.getStatusOpen();
-       this.getStatusReOpen();
-       this.getStatusRejected();
+        this.getHigh1();
+        this.getHigh();
+        this.getMedium();
+        this.getLow();
+        this.getLow1();
+        this.getMedium1();
+        this.getSeverityIndex();
+        this.getdefectdensity();
+        this.getdefectcount();
+        this.getStatusClose();
+        this.getStatusDefered();
+        this.getStatusFixed();
+        this.getStatusNew();
+        this.getStatusOpen();
+        this.getStatusReOpen();
+        this.getStatusRejected();
         this.getDefectRatio();
         this.gettotaldefectwithRe();
+        this.getallRole();
 
     }
-    getDefectRatio(){
+    getDefectRatio() {
         axios
-        .get(API_BASE_URL+'/getCount')
-        .then(res=>{
+            .get(API_BASE_URL + '/getCount')
+            .then(res => {
 
-            this.setState({
-                ratio:res.data
+                this.setState({
+                    ratio: res.data
+                })
+
             })
-            
-        })
     }
 
-     getdefectcount() {
-        const url = API_BASE_URL+'/getTotalDefectCount';
+    getdefectcount() {
+        const url = API_BASE_URL + '/getTotalDefectCount';
         axios.get(url)
-    
-          .then(response => this.setState({
-            value: response.data,
-          }))
-          .catch(function (error) {
-            console.log(error);
-          });
-    
-      }
-       getdefectdensity(){
-        const url =API_BASE_URL+ '/getDefectDensity';
+
+            .then(response => this.setState({
+                value: response.data,
+            }))
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+    getdefectdensity() {
+        const url = API_BASE_URL + '/getDefectDensity';
         axios.get(url)
-    
-          .then(response => this.setState({
-            density: response.data,
-          }))
-          .catch(function (error) {
-            console.log(error);
-          });
-    
-      }
-      gettotaldefectwithRe(){
-          var _this=this
+
+            .then(response => this.setState({
+                density: response.data,
+            }))
+            .catch(function (error) {
+                console.log(error);
+            });
+
+    }
+    gettotaldefectwithRe() {
+        var _this = this
         axios
-        .get(API_BASE_URL+"/getAllDefects")
-        .then(response => {
-          console.warn(response.data);
-             var openHigh=0;
-          response.data.map((post,index)=>{
-            // var openHigh=0;
-              if(post.severity=="High" && post.status=="Open"){
-                  openHigh=openHigh+1;
-                  
-              }
-              
-          });
-          console.log(openHigh)
-          _this.setState({ openHigh });
+            .get(API_BASE_URL + "/getAllDefects")
+            .then(response => {
+                console.warn(response.data);
+                var openHigh = 0;
+                response.data.map((post, index) => {
+                    // var openHigh=0;
+                    if (post.severity == "High" && post.status == "Open") {
+                        openHigh = openHigh + 1;
 
-          console.log(this.state.openHigh);
+                    }
 
-        })
+                });
+                console.log(openHigh)
+                _this.setState({ openHigh });
+
+                console.log(this.state.openHigh);
+
+            })
     }
 
-    getConfiguration=()=>{
+    getConfiguration = () => {
         axios
-        .get(`http://localhost:8083/productservice/getbyusername/`+localStorage.getItem(CURRENT_USER))
-        .then(res => {
-            let selectedlist=res.data[0];
-            console.log(selectedlist)
-            this.setState({selectedlist});
-            console.log(this.state.selectedlist)
-            console.log(res.data[0].dashboardList[0]);
-            for(var i=0;i<10;i++){
-                if(res.data[0].dashboardList[i]==="DeveloperDefectDetail"){
-                    console.log("name")
-                    this.setState({name:"DeveloperDefectDetail"})
-                }else if(res.data[0].dashboardList[i]==="DeveloperDefectPercentage"){
-                    console.log("name1")
-                    this.setState({name1:"DeveloperDefectPercentage"})
-                }else if(res.data[0].dashboardList[i]==="DeveloperDefectStatusChart"){
-                    console.log("name2")
-                    this.setState({name2:"DeveloperDefectStatusChart"})
-                }else if(res.data[0].dashboardList[i]==="DeveloperRadarChart"){
-                    console.log("name3")
-                    this.setState({name3:"DeveloperRadarChart"})
-                }else if(res.data[0].dashboardList[i]==="DefectTypeDoughnutChart"){
-                    console.log("name4")
-                    this.setState({name4:"DefectTypeDoughnutChart"})
-                }else if(res.data[0].dashboardList[i]==="DeveloperLineChart"){
-                    console.log("name5")
-                    this.setState({name5:"DeveloperLineChart"})
+            .get(`http://localhost:8083/productservice/getbyusername/` + localStorage.getItem(CURRENT_USER))
+            .then(res => {
+                let selectedlist = res.data[0];
+                console.log(selectedlist)
+                this.setState({ selectedlist });
+                console.log(this.state.selectedlist)
+                console.log(res.data[0].dashboardList[0]);
+                for (var i = 0; i < 10; i++) {
+                    if (res.data[0].dashboardList[i] === "DeveloperDefectDetail") {
+                        console.log("name")
+                        this.setState({ name: "DeveloperDefectDetail" })
+                    } else if (res.data[0].dashboardList[i] === "DeveloperDefectPercentage") {
+                        console.log("name1")
+                        this.setState({ name1: "DeveloperDefectPercentage" })
+                    } else if (res.data[0].dashboardList[i] === "DeveloperDefectStatusChart") {
+                        console.log("name2")
+                        this.setState({ name2: "DeveloperDefectStatusChart" })
+                    } else if (res.data[0].dashboardList[i] === "DeveloperRadarChart") {
+                        console.log("name3")
+                        this.setState({ name3: "DeveloperRadarChart" })
+                    } else if (res.data[0].dashboardList[i] === "DefectTypeDoughnutChart") {
+                        console.log("name4")
+                        this.setState({ name4: "DefectTypeDoughnutChart" })
+                    } else if (res.data[0].dashboardList[i] === "DeveloperLineChart") {
+                        console.log("name5")
+                        this.setState({ name5: "DeveloperLineChart" })
+                    }
                 }
-            }
- 
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-        // console.log(this.state.name);
-      }
 
-      visibledash(list){
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        // console.log(this.state.name);
+    }
+
+    visibledash(list) {
         console.log(list);
     }
-        
+
 
     render() {
 
@@ -457,22 +499,22 @@ getSeverityIndex(){
         const data5 = {
             labels: ['High', 'Medium', 'Low'],
             datasets: [
-              {
-                data: [this.state.highsev, this.state.mediumsev,this.state.lowsev],
-                backgroundColor: [
-                  "#FF6384",
-                  "#4CAF50",
-                  "#FFCE56",
-                  
-                ],
-                hoverBackgroundColor: [
-                  "#FF6384",
-                  "#4CAF50",
-                  "#FFCE56",
-              
-                ]
-              }]
-          };
+                {
+                    data: [this.state.highsev, this.state.mediumsev, this.state.lowsev],
+                    backgroundColor: [
+                        "#FF6384",
+                        "#4CAF50",
+                        "#FFCE56",
+
+                    ],
+                    hoverBackgroundColor: [
+                        "#FF6384",
+                        "#4CAF50",
+                        "#FFCE56",
+
+                    ]
+                }]
+        };
 
         // Table functions End
         //Chart data
@@ -482,7 +524,7 @@ getSeverityIndex(){
         return (
             <React.Fragment>
                 <Row>
-                    <Col span={23}>
+                    <Col span={20}>
                         <Breadcrumb style={{
                             marginBottom: '6px',
                             marginTop: '-10px'
@@ -492,9 +534,19 @@ getSeverityIndex(){
                             <Breadcrumb.Item>PM Dashboard</Breadcrumb.Item>
                         </Breadcrumb>
                     </Col>
+                    <Col span={3}>
+                        <Select
+                            placeholder="Select the Project"
+                            style={{ width: 120 }}
+                            onChange={this.onChangeRole}
+
+                        >
+                            {this.state.d}
+                        </Select>
+                    </Col>
                     <Col span={1} >
                         <div id="components-dropdown-demo-dropdown-button" style={{ marginLeft: "-2.1em" }}>
-                            <DashboardConfig dashconfig={this.visibledash} reload={this.getConfiguration} list={this.selectedlist}/>
+                            <DashboardConfig dashconfig={this.visibledash} reload={this.getConfiguration} list={this.selectedlist} />
                         </div>
                     </Col>
                 </Row>
@@ -506,17 +558,17 @@ getSeverityIndex(){
 
                 }}>
                     <Row>
-                        
 
-                            <Col span={6}>
+
+                        <Col span={6}>
                             <Card style={{ margin: "10px 5px 0 -2px", borderRadius: "5px" }}>
                                 <Statistic
                                     title="High Severity"
                                     value={this.state.high}
                                     // precision={2}
                                     valueStyle={{ color: this.state.color }}
-                                    prefix={<Icon type="arrow-up" style={{color:"red"}}/>}
-                                  
+                                    prefix={<Icon type="arrow-up" style={{ color: "red" }} />}
+
                                     suffix="%"
                                 />
                             </Card>
@@ -531,14 +583,14 @@ getSeverityIndex(){
                                     title="Medium Severity"
                                     value={this.state.medium}
                                     // precision={2}
-                                    valueStyle={{ color: this.state.color  }}
-                                    prefix={<Icon type="arrow-up" style={{color:"orange"}}/>}
+                                    valueStyle={{ color: this.state.color }}
+                                    prefix={<Icon type="arrow-up" style={{ color: "orange" }} />}
 
-                                    
+
                                     suffix="%"
                                 />
                             </Card></Col>
-                              
+
 
                         <Col span={6}>
                             <Card style={{ margin: "10px 5px", borderRadius: "5px" }}>
@@ -547,7 +599,7 @@ getSeverityIndex(){
                                     value={this.state.low}
 
                                     valueStyle={{ color: this.state.color }}
-                                    prefix={<Icon type="arrow-down" style={{color:"green"}}/>}
+                                    prefix={<Icon type="arrow-down" style={{ color: "green" }} />}
                                     suffix="%"
 
                                 />
@@ -560,14 +612,14 @@ getSeverityIndex(){
                                     valueStyle={{ color: '#007673' }}
                                     precision={2}
                                     prefix={<Icon type="sync" spin />}
-                                    // suffix="%"
+                                // suffix="%"
 
                                 />
                             </Card></Col>
-                            <Col span={6}>
+                        <Col span={6}>
                             <Card style={{ margin: "10px 5px 0 -2px", borderRadius: "5px" }}>
                                 <Statistic
-                                    
+
                                     title="Defect to Remarks Ratio"
                                     value={this.state.ratio}
                                     precision={2}
@@ -584,7 +636,7 @@ getSeverityIndex(){
                             <Card style={{ margin: "10px 5px", borderRadius: "5px" }}>
                                 <Statistic
 
-                                    
+
 
                                     title="Defect Density"
                                     value={this.state.density}
@@ -595,17 +647,17 @@ getSeverityIndex(){
                                     suffix="%"
                                 />
                             </Card></Col>
-                            <Col span={6}>
+                        <Col span={6}>
                             <Card style={{ margin: "10px 5px 0 -2px", borderRadius: "5px" }}>
                                 <Statistic
-                                    
+
                                     title="Total Defect"
                                     value={this.state.value}
-                                    
+
                                     valueStyle={{ color: '#3f8600' }}
                                     prefix={<Icon type="safety-certificate" theme="filled" />}
 
-                                    
+
                                 />
                             </Card>
                         </Col>
@@ -613,14 +665,14 @@ getSeverityIndex(){
                         <Col span={6}>
                             <Card style={{ margin: "10px 5px 0 -2px", borderRadius: "5px" }}>
                                 <Statistic
-                                    
+
                                     title="Total Open High"
                                     value={this.state.openHigh}
-                                    
-                                    valueStyle={{ color: '#3f8600' }}
-                                    prefix={<Icon type="safety-certificate" theme="filled" style={{color:'#e30931'}} />}
 
-                                    
+                                    valueStyle={{ color: '#3f8600' }}
+                                    prefix={<Icon type="safety-certificate" theme="filled" style={{ color: '#e30931' }} />}
+
+
                                 />
                             </Card>
                         </Col>
@@ -636,10 +688,10 @@ getSeverityIndex(){
 
                     <Row style={{ margin: "-20px 0 0 0 " }}>
                         <Col span={12} key="1">
-                        <div className="content-section implementation" style={{ borderRadius: "5px", margin: "0 0 0 5px" }} >
+                            <div className="content-section implementation" style={{ borderRadius: "5px", margin: "0 0 0 5px" }} >
 
 
-                            <ChartBar  />
+                                <ChartBar />
                             </div>
                         </Col>
                         <Col span={12} key="2">
@@ -711,9 +763,9 @@ getSeverityIndex(){
                     <Row style={{ margin: "-10px 0 0 0 " }}>
                         <Col span={12} key="3">
                             {/* <ChartPolar /> */}<div style={{ padding: 20, background: '#fff', Height: "150px", width: "38em" }} >
-                            <Chart type="pie" data={data5} style={{ padding: "0 0 70px 0" }} />
+                                <Chart type="pie" data={data5} style={{ padding: "0 0 70px 0" }} />
                             </div>
-                            
+
                         </Col>
                         <Col span={12} key="4">
 
@@ -742,128 +794,128 @@ getSeverityIndex(){
                     </Row>
                     <div style={{ marginBottom: "0.4em" }}></div>
                     <Row>
-                    {this.state.name==="DeveloperDefectDetail" ? 
-                    <Col span={12} key="5">
-                    <Row>
-                                <div
-                                    style={{
-                                        padding: 24,
-                                        background: '#fff',
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        width: "532px",
-                                        borderRadius: "0.2em",
-                                        height: '280px',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-                                   
-                                    <DeveloperDefectDetail/>
-                                </div>
-                            </Row>
-                    </Col>:''}
-                    <div style={{ marginBottom: "-1em" }}></div>
-                    <Col span={12} key="6">
-                  
-                        
-                    {this.state.name1==="DeveloperDefectPercentage" ? <div
-                                    style={{
-                                        padding: 24,
-                                        background: '#fff',
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        width: "530px",
-                                        borderRadius: "0.2em",
-                                        height: '280px',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>
-                                   
-                                    <DeveloperDefectPercentage/>
-                                    
-                                </div>:''} 
-                 
-                            
-                    </Col>
-                </Row>
+                        {this.state.name === "DeveloperDefectDetail" ?
+                            <Col span={12} key="5">
+                                <Row>
+                                    <div
+                                        style={{
+                                            padding: 24,
+                                            background: '#fff',
+                                            border: "#605877",
+                                            zIndex: "5000",
+                                            width: "532px",
+                                            borderRadius: "0.2em",
+                                            height: '280px',
+                                            boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                        }}>
 
-                <div style={{ marginBottom: "0.4em" }}></div>
-                    <Row>
-                    {this.state.name2==="DeveloperDefectStatusChart" ? 
-                    <Col span={12}   key="7" style={{
-                        padding: 2,
-                        background: '#fff',
-                        border: "#605877",
-                        zIndex: "5000",
-                        width: "532px",
-                        borderRadius: "0.2em",
-                        minHeight: '100%',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                    }}>
-                        
-                                 <DeveloperDefectStatusChart/>          
-                    </Col>:''}
-                
-                    <div style={{ marginBottom: "0.1em" }}></div>
-                    {this.state.name3==="DeveloperRadarChart" ?      <Col span={10}>
-                                   
-                    <div
-                                    style={{
-                                        padding: 14,
-                                        marginLeft: "0.5em",
-                                        background: '#fff',
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        width: "532px",
-                                        borderRadius: "0.2em",
-                                        minHeight: '80%',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>  
-                                    <DeveloperRadarChart/>
-                                </div>
-                            
-                            
-                    </Col>:''}
-                </Row>
-                <div style={{ marginBottom: "0.4em" }}></div>
-                    <Row>
-                
-                    {this.state.name4==="DefectTypeDoughnutChart" ?               <Col span={12} key="8" style={{
-                        padding: 2,
-                        background: '#fff',
-                        border: "#605877",
-                        zIndex: "5000",
-                        width: "532px",
-                        borderRadius: "0.2em",
-                        height: "25em",
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                    }}>
-                        
-                                 <DefectTypeDoughnutChart/>          
-                    </Col>:''}
-                
-                    <div style={{ marginBottom: "0.1em" }}></div>
-                    {this.state.name5==="DeveloperLineChart" ?       <Col span={10} key="9"> 
-                                   
-                  <div
-                                    style={{
-                                        padding: 14,
-                                        marginLeft: "0.5em",
-                                        background: '#fff',
-                                        border: "#605877",
-                                        zIndex: "5000",
-                                        width: "532px",
-                                        borderRadius: "0.2em",
-                                        minHeight: '80%',
-                                        boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
-                                    }}>  
-                                    <DeveloperLineChart/>
-                                </div>
-                            
-                            
-                    </Col>:''}
-                </Row>
+                                        <DeveloperDefectDetail />
+                                    </div>
+                                </Row>
+                            </Col> : ''}
+                        <div style={{ marginBottom: "-1em" }}></div>
+                        <Col span={12} key="6">
 
-                
-</div>
+
+                            {this.state.name1 === "DeveloperDefectPercentage" ? <div
+                                style={{
+                                    padding: 24,
+                                    background: '#fff',
+                                    border: "#605877",
+                                    zIndex: "5000",
+                                    width: "530px",
+                                    borderRadius: "0.2em",
+                                    height: '280px',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                }}>
+
+                                <DeveloperDefectPercentage />
+
+                            </div> : ''}
+
+
+                        </Col>
+                    </Row>
+
+                    <div style={{ marginBottom: "0.4em" }}></div>
+                    <Row>
+                        {this.state.name2 === "DeveloperDefectStatusChart" ?
+                            <Col span={12} key="7" style={{
+                                padding: 2,
+                                background: '#fff',
+                                border: "#605877",
+                                zIndex: "5000",
+                                width: "532px",
+                                borderRadius: "0.2em",
+                                minHeight: '100%',
+                                boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                            }}>
+
+                                <DeveloperDefectStatusChart />
+                            </Col> : ''}
+
+                        <div style={{ marginBottom: "0.1em" }}></div>
+                        {this.state.name3 === "DeveloperRadarChart" ? <Col span={10}>
+
+                            <div
+                                style={{
+                                    padding: 14,
+                                    marginLeft: "0.5em",
+                                    background: '#fff',
+                                    border: "#605877",
+                                    zIndex: "5000",
+                                    width: "532px",
+                                    borderRadius: "0.2em",
+                                    minHeight: '80%',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                }}>
+                                <DeveloperRadarChart />
+                            </div>
+
+
+                        </Col> : ''}
+                    </Row>
+                    <div style={{ marginBottom: "0.4em" }}></div>
+                    <Row>
+
+                        {this.state.name4 === "DefectTypeDoughnutChart" ? <Col span={12} key="8" style={{
+                            padding: 2,
+                            background: '#fff',
+                            border: "#605877",
+                            zIndex: "5000",
+                            width: "532px",
+                            borderRadius: "0.2em",
+                            height: "25em",
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                        }}>
+
+                            <DefectTypeDoughnutChart />
+                        </Col> : ''}
+
+                        <div style={{ marginBottom: "0.1em" }}></div>
+                        {this.state.name5 === "DeveloperLineChart" ? <Col span={10} key="9">
+
+                            <div
+                                style={{
+                                    padding: 14,
+                                    marginLeft: "0.5em",
+                                    background: '#fff',
+                                    border: "#605877",
+                                    zIndex: "5000",
+                                    width: "532px",
+                                    borderRadius: "0.2em",
+                                    minHeight: '80%',
+                                    boxShadow: '0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)', transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)'
+                                }}>
+                                <DeveloperLineChart />
+                            </div>
+
+
+                        </Col> : ''}
+                    </Row>
+
+
+                </div>
             </React.Fragment>
 
         );
