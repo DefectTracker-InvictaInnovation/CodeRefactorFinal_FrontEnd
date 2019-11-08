@@ -129,7 +129,7 @@ class DefectAdd extends React.Component {
     this.fetchStatus();
     this.fetchTypes();
     this.fetchProjects();
-    this.fetchModules();
+    // this.fetchModules();
     this.fetchPrioritys();
     this.fetchSeveritys();
     this.enteredBy();
@@ -182,14 +182,27 @@ class DefectAdd extends React.Component {
       });
   }
 
-  fetchModules() {
+  fetchModules(value) {
     var _this = this;
     axios
       .get("http://localhost:8081/defectservices/FindallMain")
       .then(function (response) {
         console.log(response.data);
-        _this.setState({ modules: response.data });
-        console.log(_this.state.modules);
+
+        let x=response.data.map(function (item, index) {
+                       
+          if(value == item.project.projectId){
+            return (
+              <Option key={index} value={item.moduleId}>
+                {item.moduleName}
+              </Option>
+            );
+          }
+          
+        })
+
+         _this.setState({x });
+        // console.log(_this.state.modules);
       });
   }
 
@@ -261,7 +274,7 @@ class DefectAdd extends React.Component {
     this.setState({
       projectId: `${value}`
     });
-
+this.fetchModules(value)
     var _this = this;
     axios
       .get(API_BASE_URL + '/getallresource')
@@ -600,13 +613,7 @@ class DefectAdd extends React.Component {
                       defaultValue="Select Module"
                       onChange={this.onChangeModule}
                     >
-                      {this.state.modules.map(function (item, index) {
-                        return (
-                          <Option key={index} value={item.moduleId}>
-                            {item.moduleName}
-                          </Option>
-                        );
-                      })}
+                      {this.state.x}
                     </Select>
                   )}
                 </Form.Item>

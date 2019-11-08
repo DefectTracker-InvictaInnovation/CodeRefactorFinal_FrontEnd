@@ -583,7 +583,7 @@ export default class DefectTypeConfic extends React.Component {
 
           </Modal>
           <Table id="countDefectType" columns={columns} dataSource={this.state.DefectType} />
-          Total Number of Defect Type: {this.state.CountDefectType}
+          {/* Total Number of Defect Type: {this.state.CountDefectType} */}
           <Icon type="square" />
         </div>
       </React.Fragment >

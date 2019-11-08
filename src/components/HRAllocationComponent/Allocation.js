@@ -354,7 +354,7 @@ export default class Allocation extends React.Component {
           visible={this.state.visible}
           title="Allocating Members for Project"
           width="99%"
-          height="40%"
+          height="45%"
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           footer={[
@@ -400,19 +400,19 @@ export default class Allocation extends React.Component {
 
 
           />
-          <Switch
+          {/* <Switch
             unCheckedChildren="disabled"
             checkedChildren="disabled"
             checked={disabled}
             onChange={this.triggerDisable}
-            style={{ marginTop: 10 }}
-          />
+            style={{ marginTop: 10 ,marginBottom:5,size:20}}
+          /> */}
           <Switch
             unCheckedChildren="showSearch"
             checkedChildren="showSearch"
             checked={showSearch}
             onChange={this.triggerShowSearch}
-            style={{ marginTop: 10 }}
+            style={{ marginTop: 10 ,marginBottom:5,size:20}}
           />
         </Modal>
       </div>

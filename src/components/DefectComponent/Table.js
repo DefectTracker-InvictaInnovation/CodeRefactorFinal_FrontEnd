@@ -86,7 +86,7 @@ class TableFilter extends React.Component {
       defectId: "",
       abbre: "",
       projectId: "",
-      defectAbbr:"",
+      defectAbbr: "",
       //moduleId: "",
       priority: "Medium",
       severity: "Medium",
@@ -98,7 +98,7 @@ class TableFilter extends React.Component {
       reassignTo: "",
       enteredBy: "",
       fixedBy: "",
-      fixDate:"",
+      fixDate: "",
       availableIn: "",
       foundIn: "",
       fixedIn: "",
@@ -139,8 +139,8 @@ class TableFilter extends React.Component {
       afterpriority: '',
       afterassignTo: '',
       aftertype: '',
-      Alldefect:''
-      
+      Alldefect: ''
+
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.refreshDefect = this.refreshDefect.bind(this);
@@ -279,26 +279,26 @@ class TableFilter extends React.Component {
       });
   }
 
-  onChangeProjects(value,defaultValue) {
-    
+  onChangeProjects(value, defaultValue) {
+
     this.setState({
       projectId: `${value}`
     });
     console.log(value);
     console.log(defaultValue);
     var _this = this;
-    if(value=="All"){
+    if (value == "All") {
       this.refreshDefect()
-    }else{
-    axios
-      .get(API_BASE_URL + "/getAllDefectsByProjectId/"+value)
-      .then(function (response) {
-        console.log(response.data)
-        _this.setState({
-          defect:response.data,
-         
-        })
-      });
+    } else {
+      axios
+        .get(API_BASE_URL + "/getAllDefectsByProjectId/" + value)
+        .then(function (response) {
+          console.log(response.data)
+          _this.setState({
+            defect: response.data,
+
+          })
+        });
     }
   }
   fetchModules() {
@@ -466,7 +466,7 @@ class TableFilter extends React.Component {
     const obj = {
       //empId: this.state.employeeautoId,
       defectId: this.state.defectId,
-      defectAbbr:this.state.defectAbbr,
+      defectAbbr: this.state.defectAbbr,
       type: this.state.type,
       moduleId: this.state.moduleId,
       abbre: this.state.abbre,
@@ -560,7 +560,7 @@ class TableFilter extends React.Component {
         this.setState({
           // employeeautoId: response.data.empId,
           defectId: response.data.defectId,
-          defectAbbr:response.data.defectAbbr,
+          defectAbbr: response.data.defectAbbr,
           type: response.data.type,
           moduleId: response.data.moduleId,
           abbre: response.data.abbre,
@@ -674,8 +674,10 @@ class TableFilter extends React.Component {
       .get(API_BASE_URL + "/getAllDefects")
       .then(response => {
         console.warn("Refresh Service is working");
-        this.setState({ defect: response.data ,
-        Alldefect:response.data});
+        this.setState({
+          defect: response.data,
+          Alldefect: response.data
+        });
       });
   }
 
@@ -735,14 +737,14 @@ class TableFilter extends React.Component {
       comments: "",
       images: []
     });
-    
+
   };
 
   handleOk = () => {
     this.onSubmit();
     const defectList = {
       defectId: this.state.defectId,
-      defectAbbr:this.state.defectAbbr,
+      defectAbbr: this.state.defectAbbr,
       moduleId: this.state.moduleId,
       projectId: this.state.projectId,
       severity: this.state.severity,
@@ -1010,8 +1012,8 @@ class TableFilter extends React.Component {
     this.setState({ dateAndTime: value })
   }
 
-  handleChnagedefectAbbr =value =>{
-    this.setState({defectAbbr:value})
+  handleChnagedefectAbbr = value => {
+    this.setState({ defectAbbr: value })
   }
   // handleChangeFixedIn = value => {
   //    this.setState({ type: value });
@@ -1211,7 +1213,7 @@ class TableFilter extends React.Component {
         this.setState({
           // employeeautoId: response.data.empId,
           defectId: response.data.defectId,
-          defectAbbr:response.data.defectAbbr,
+          defectAbbr: response.data.defectAbbr,
           type: response.data.type,
           moduleId: response.data.moduleName,
           abbre: response.data.abbre,
@@ -1229,7 +1231,7 @@ class TableFilter extends React.Component {
           foundIn: response.data.foundIn,
           fixedIn: response.data.fixedIn,
           dateAndTime: response.data.dateAndTime,
-          fixDate:response.data.fixDate
+          fixDate: response.data.fixDate
           //employeeFirstName:response.data.firstname,
           // employeeDesignation: response.data.designationid,
           //employeeEmail: response.data.email
@@ -1432,40 +1434,40 @@ class TableFilter extends React.Component {
         <EditorIn />
         <Row>
           <Col span={4}>
-          <DefectAdd/>
+            <DefectAdd />
           </Col>
-        <Col span={8}>
+          <Col span={8}>
 
-        </Col>
-        <Col span={7}>
+          </Col>
+          <Col span={7}>
 
-        </Col>
-        <Col span={5}>
-        <Select
-          placeholder="Select the Project"
-          style={{ width: 220 }}
-          defaultValue="All"
-          onChange={this.onChangeProjects}
-         
-        >
-          <Option value="All">All</Option>
-       
-           {this.state.projects.map(function (item, index) {
-                        return (
-                          <Option key={index}  defaultValue="All" value={item.projectId}>
-                            {item.projectName}
-                          </Option>
-                        );
-                      })}
-          {/* <Option value="jack">Jack (100)</Option>
+          </Col>
+          <Col span={5}>
+            <Select
+              placeholder="Select the Project"
+              style={{ width: 220 }}
+              defaultValue="All"
+              onChange={this.onChangeProjects}
+
+            >
+              <Option value="All">All</Option>
+
+              {this.state.projects.map(function (item, index) {
+                return (
+                  <Option key={index} defaultValue="All" value={item.projectId}>
+                    {item.projectName}
+                  </Option>
+                );
+              })}
+              {/* <Option value="jack">Jack (100)</Option>
           <Option value="lucy">Lucy (101)</Option> */}
-        </Select>
-        </Col>
-       
+            </Select>
+          </Col>
+
         </Row>
-        
+
         <br />
-          <br />
+        <br />
 
 
         <Table
@@ -1802,113 +1804,181 @@ class TableFilter extends React.Component {
           onCancel={this.handleCancelView}
           width="600px"
         >
-          <Row>
-            <Col span={10} style={{ padding: "5px" }}>
-              <p>
-                <b>Defect ID:</b>
-              </p>
-              <p>
-                <b>Project Name:</b>
-              </p>
-              <p>
-                <b>Module Name:</b>
-              </p>
-              <p>
-                <b>Description:</b>
-              </p>
-              <p>
-                <b>Steps to Recreate:</b>
-              </p>
-              <p>
-                <b>Severity:</b>
-              </p>
-              <p>
-                <b>Priority:</b>
-              </p>
-              <p>
-                <b>Defect Type:</b>
-              </p>
-              <p>
-                <b>Found In:</b>
-              </p>
-              <p>
-                <b>Fixed In:</b>
-              </p>
+         
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Defect ID:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.defectAbbr}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Project Name:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.projectId}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Module Name:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.moduleId}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Description:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.defectDescription}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Steps to Recreate:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.stepsToRecreate}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Severity:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>
+                    {this.state.severity}
+                  </p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Priority:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>
+                    {this.state.priority}
+                  </p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Defect Type:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.type}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Found In:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                <p>{this.state.foundIn}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Fixed In:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                <p>{this.state.fixedIn}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Entered By:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                <p>{this.state.enteredBy}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Entered Date:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.dateAndTime}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Assigned To:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.assignTo}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Fixed By:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.fixedBy}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                  <p>
+                    <b>Available Date:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.availableIn}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
 
-              <p>
-                <b>Entered By:</b>
-              </p>
-              <p>
-                <b>Entered Date:</b>
-              </p>
-              <p>
-                <b>Assigned To:</b>
-              </p>
-              <p>
-                <b>Fixed By:</b>
-              </p>
-              <p>
-                <b>Available Date:</b>
-              </p>
-              <p>
-                <b>Status:</b>
-              </p>
-              {/* <p>
-                <b>Comments:</b>
-              </p> */}
-              <p>
-              </p>
+                  <p>
+                    <b>Status:</b>
+                  </p>
+                </Col>
+                <Col span={12}>
+                  <p> {this.state.status}</p>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12}>
+                <p><b>Updated Date and Time:</b></p>
+                </Col>
+                <Col span={12}>
+                  <p>{this.state.fixDate}</p>
+                </Col>
+              </Row>
 
-            </Col>
-            <Col span={14} style={{ padding: "8px" }}>
-              <p>{this.state.defectAbbr}</p>
-              <p>{this.state.projectId}</p>
-              <p>{this.state.moduleId}</p>
-              <p>{this.state.defectDescription}</p>
-              <p>{this.state.stepsToRecreate}</p>
-              <p>
-                {this.state.severity}
-              </p>
-              <p>
-                {this.state.priority}
-              </p>
-              <p>{this.state.type}</p>
-              <p>{this.state.foundIn}</p>
-              <p>{this.state.fixedIn}</p>
-              <p>{this.state.enteredBy}</p>
-              <p>{this.state.dateAndTime}</p>
-              <p>{this.state.assignTo}</p>
-              <p>{this.state.fixedBy}</p>
-              <p>{this.state.availableIn}</p>
-              <p>
-                {/* <Select
-                  showSearch
-                  style={{ width: 200 }}
-                  defaultValue="New"
-                  optionFilterProp="children"
-                  onChange={this.onChange1}
-                  onFocus={this.onFocus}
-                  onBlur={this.onBlur}
-                  onSearch={this.onSearch}
-                  filterOption={(input, option) =>
-                    option.props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
-                >
-                  <Option value="New">New</Option>
-                  <Option value="open">open</Option>
-                  <Option value="fixed">fixed</Option>
-                  <Option value="close">close</Option>
-                  <Option value="reopen">reopen</Option>
-                  <Option value="rejected">rejected</Option>
-                </Select> */}
-                {this.state.status}
-              </p>
-
-              {/* <p>{this.state.comment}</p> */}
-            </Col>
-          </Row>
           {/* <Row>
             <Col span={10} style={{ padding: "5px" }}>
               <Button
@@ -1969,9 +2039,6 @@ class TableFilter extends React.Component {
               />
             }
           /> */}
-          <div>
-          <p><b>Updated Date and Time: {this.state.fixDate}</b></p>
-          </div>
         </Modal>
 
       </div>
